@@ -8,6 +8,7 @@ import {
   Menu as MenuIcon,
   PanelLeftClose,
   PanelLeftOpen,
+  LogOut,
   UserRound,
   X,
 } from "lucide-react";
@@ -15,6 +16,7 @@ import {
 import { SkipLink } from "@/components/skip-link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { logoutAction } from "@/app/(auth)/actions";
 
 const navigationItems = [
   { href: "/dashboard", label: "Home", icon: House, exact: true },
@@ -24,6 +26,7 @@ const navigationItems = [
 type SidebarPanelProps = {
   collapsed?: boolean;
   mobile?: boolean;
+  viewer: DashboardViewer;
   onClose?: () => void;
   onToggle?: () => void;
 };
@@ -31,6 +34,7 @@ type SidebarPanelProps = {
 function SidebarPanel({
   collapsed = false,
   mobile = false,
+  viewer,
   onClose,
   onToggle,
 }: SidebarPanelProps) {
@@ -107,18 +111,31 @@ function SidebarPanel({
       </nav>
 
       <div className="border-t border-sidebar-border p-3">
-        <button
-          type="button"
-          disabled
-          title={collapsed ? "Account" : undefined}
-          className={cn(
-            "flex h-11 w-full items-center rounded-lg border border-sidebar-border bg-sidebar px-3 text-sm font-medium text-sidebar-foreground/55",
-            collapsed ? "justify-center" : "gap-3",
-          )}
-        >
-          <UserRound aria-hidden="true" className="size-4.5 shrink-0" strokeWidth={1.8} />
-          <span className={collapsed ? "sr-only" : undefined}>Account</span>
-        </button>
+        <form action={logoutAction}>
+          <button
+            type="submit"
+            title={collapsed ? "Log out" : undefined}
+            className={cn(
+              "flex min-h-11 w-full items-center rounded-lg border border-sidebar-border bg-sidebar px-3 text-left text-sm outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/30",
+              collapsed ? "justify-center" : "gap-3",
+            )}
+          >
+            <UserRound
+              aria-hidden="true"
+              className="size-4.5 shrink-0"
+              strokeWidth={1.8}
+            />
+            <span className={cn("min-w-0 flex-1", collapsed && "sr-only")}>
+              <span className="block truncate font-medium">{viewer.displayName}</span>
+              <span className="block truncate text-xs text-sidebar-foreground/55">
+                {viewer.roleLabel}
+              </span>
+            </span>
+            {!collapsed && (
+              <LogOut aria-hidden="true" className="size-4 shrink-0 text-sidebar-foreground/55" />
+            )}
+          </button>
+        </form>
       </div>
     </aside>
   );
@@ -126,9 +143,15 @@ function SidebarPanel({
 
 type DashboardShellProps = {
   children: ReactNode;
+  viewer: DashboardViewer;
 };
 
-function DashboardShell({ children }: DashboardShellProps) {
+type DashboardViewer = {
+  displayName: string;
+  roleLabel: string;
+};
+
+function DashboardShell({ children, viewer }: DashboardShellProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -169,6 +192,7 @@ function DashboardShell({ children }: DashboardShellProps) {
       >
         <SidebarPanel
           collapsed={collapsed}
+          viewer={viewer}
           onToggle={() => setCollapsed((current) => !current)}
         />
       </div>
@@ -211,7 +235,7 @@ function DashboardShell({ children }: DashboardShellProps) {
         }}
         className="fixed inset-y-0 left-0 m-0 h-dvh max-h-none w-[min(20rem,calc(100vw-2rem))] max-w-none border-0 bg-transparent p-0 text-left shadow-2xl outline-none backdrop:bg-foreground/25 md:hidden"
       >
-        <SidebarPanel mobile onClose={closeMobileSidebar} />
+        <SidebarPanel mobile viewer={viewer} onClose={closeMobileSidebar} />
       </dialog>
     </div>
   );

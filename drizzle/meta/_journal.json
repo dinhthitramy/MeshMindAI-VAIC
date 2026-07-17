@@ -8,6 +8,20 @@
       "when": 1784276621206,
       "tag": "0000_create-users",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784282874140,
+      "tag": "0001_auth_rbac",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784283749929,
+      "tag": "0002_backfill_user_roles",
+      "breakpoints": true
     }
   ]
 }

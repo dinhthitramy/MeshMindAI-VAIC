@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useActionState,
   useRef,
   useState,
   type ChangeEvent,
@@ -9,7 +10,7 @@ import {
 } from "react";
 import Link from "next/link";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
@@ -17,6 +18,7 @@ import { cn } from "@/lib/utils";
 
 import { AuthCard } from "./auth-card";
 import { PasswordField } from "./password-field";
+import { signupAction, type AuthActionState } from "../actions";
 
 const steps = ["Account", "About you", "Security"];
 const stepTitles = ["Start with your email", "Tell us about you", "Choose a password"];
@@ -53,11 +55,16 @@ const initialValues: SignupValues = {
   passwordConfirmation: "",
 };
 
+const initialActionState: AuthActionState = { status: "idle" };
+
 function SignupFlow() {
   const [step, setStep] = useState(0);
   const [values, setValues] = useState(initialValues);
   const [passwordError, setPasswordError] = useState("");
-  const [isComplete, setIsComplete] = useState(false);
+  const [actionState, action, pending] = useActionState(
+    signupAction,
+    initialActionState,
+  );
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
   const previousStepRef = useRef(step);
 
@@ -79,40 +86,21 @@ function SignupFlow() {
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
     if (step < steps.length - 1) {
+      event.preventDefault();
       setStep((current) => current + 1);
       return;
     }
 
     if (values.password !== values.passwordConfirmation) {
+      event.preventDefault();
       setPasswordError("Passwords do not match.");
-      return;
     }
-
-    setIsComplete(true);
   }
 
   function goBack() {
     setPasswordError("");
     setStep((current) => Math.max(0, current - 1));
-  }
-
-  if (isComplete) {
-    return (
-      <AuthCard
-        title="Signup screen complete"
-        description="Your details stayed in this browser only. No account was created because authentication is not connected yet."
-      >
-        <Link
-          href="/login"
-          className={cn(buttonVariants({ size: "lg" }), "w-full")}
-        >
-          Continue to login
-        </Link>
-      </AuthCard>
-    );
   }
 
   return (
@@ -148,7 +136,15 @@ function SignupFlow() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form action={action} onSubmit={handleSubmit} className="space-y-5">
+        {step === steps.length - 1 && (
+          <>
+            <input type="hidden" name="email" value={values.email} />
+            <input type="hidden" name="fullName" value={values.fullName} />
+            <input type="hidden" name="birthMonth" value={values.birthMonth} />
+            <input type="hidden" name="birthYear" value={values.birthYear} />
+          </>
+        )}
         <h2
           ref={stepHeadingRef}
           tabIndex={-1}
@@ -168,9 +164,15 @@ function SignupFlow() {
               placeholder="you@example.com"
               value={values.email}
               onChange={updateValue}
+              aria-invalid={Boolean(actionState.fieldErrors?.email)}
               required
               autoFocus
             />
+            {actionState.fieldErrors?.email?.[0] && (
+              <p role="alert" className="text-sm text-destructive">
+                {actionState.fieldErrors.email[0]}
+              </p>
+            )}
           </div>
         )}
 
@@ -185,8 +187,14 @@ function SignupFlow() {
                 placeholder="Your full name"
                 value={values.fullName}
                 onChange={updateValue}
+                aria-invalid={Boolean(actionState.fieldErrors?.fullName)}
                 required
               />
+              {actionState.fieldErrors?.fullName?.[0] && (
+                <p role="alert" className="text-sm text-destructive">
+                  {actionState.fieldErrors.fullName[0]}
+                </p>
+              )}
             </div>
             <fieldset className="grid gap-2">
               <legend className="text-sm font-medium">Date of birth</legend>
@@ -201,6 +209,7 @@ function SignupFlow() {
                     autoComplete="bday-month"
                     value={values.birthMonth}
                     onChange={updateValue}
+                    aria-invalid={Boolean(actionState.fieldErrors?.birthMonth)}
                     required
                   >
                     <option value="" disabled>
@@ -228,6 +237,7 @@ function SignupFlow() {
                     placeholder="Year"
                     value={values.birthYear}
                     onChange={updateValue}
+                    aria-invalid={Boolean(actionState.fieldErrors?.birthYear)}
                     required
                   />
                 </div>
@@ -243,9 +253,12 @@ function SignupFlow() {
               name="password"
               label="Password"
               autoComplete="new-password"
+              minLength={12}
               value={values.password}
               onChange={updateValue}
-              aria-invalid={passwordError ? true : undefined}
+              aria-invalid={
+                passwordError || actionState.fieldErrors?.password ? true : undefined
+              }
               aria-describedby={passwordError ? "signup-password-error" : undefined}
               required
             />
@@ -254,22 +267,53 @@ function SignupFlow() {
               name="passwordConfirmation"
               label="Confirm password"
               autoComplete="new-password"
+              minLength={12}
               value={values.passwordConfirmation}
               onChange={updateValue}
               aria-invalid={passwordError ? true : undefined}
               aria-describedby={passwordError ? "signup-password-error" : undefined}
               required
             />
-            {passwordError && (
+            {(passwordError ||
+              actionState.fieldErrors?.password?.[0] ||
+              actionState.fieldErrors?.passwordConfirmation?.[0]) && (
               <p
                 id="signup-password-error"
                 role="alert"
                 className="text-sm text-destructive"
               >
-                {passwordError}
+                {passwordError ||
+                  actionState.fieldErrors?.password?.[0] ||
+                  actionState.fieldErrors?.passwordConfirmation?.[0]}
               </p>
             )}
+            <p className="text-xs leading-5 text-muted-foreground">
+              Use at least 12 characters.
+            </p>
           </>
+        )}
+
+        {actionState.message && (
+          <p
+            role={actionState.status === "error" ? "alert" : "status"}
+            className={cn(
+              "text-sm",
+              actionState.status === "error"
+                ? "text-destructive"
+                : "text-muted-foreground",
+            )}
+          >
+            {actionState.message}
+          </p>
+        )}
+        {actionState.status === "error" && actionState.fieldErrors && (
+          <ul className="space-y-1 text-sm text-destructive">
+            {Array.from(new Set(Object.values(actionState.fieldErrors).flat())).map(
+              (message) => (
+                <li key={message}>{message}</li>
+              ),
+            )}
+          </ul>
         )}
 
         <div className="flex gap-3 pt-1">
@@ -284,8 +328,17 @@ function SignupFlow() {
               Back
             </Button>
           )}
-          <Button type="submit" size="lg" className="flex-1">
-            {step === steps.length - 1 ? "Create account" : "Continue"}
+          <Button
+            type="submit"
+            size="lg"
+            className="flex-1"
+            disabled={pending}
+          >
+            {pending
+              ? "Creating account..."
+              : step === steps.length - 1
+                ? "Create account"
+                : "Continue"}
           </Button>
         </div>
       </form>

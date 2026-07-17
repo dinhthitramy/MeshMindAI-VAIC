@@ -19,14 +19,23 @@ function getDatabaseUrl() {
   return databaseUrl;
 }
 
-const pool =
-  globalForDatabase.postgresPool ??
-  new Pool({
-    connectionString: getDatabaseUrl(),
-  });
+function createDatabase() {
+  const pool =
+    globalForDatabase.postgresPool ??
+    new Pool({
+      connectionString: getDatabaseUrl(),
+    });
 
-if (process.env.NODE_ENV !== "production") {
-  globalForDatabase.postgresPool = pool;
+  if (process.env.NODE_ENV !== "production") {
+    globalForDatabase.postgresPool = pool;
+  }
+
+  return drizzle(pool, { schema });
 }
 
-export const db = drizzle(pool, { schema });
+let database: ReturnType<typeof createDatabase> | undefined;
+
+export function getDb() {
+  database ??= createDatabase();
+  return database;
+}

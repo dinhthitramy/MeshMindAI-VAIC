@@ -1,43 +1,43 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useActionState, useState, type FormEvent } from "react";
 import Link from "next/link";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import { PasswordField } from "./password-field";
+import { resetPasswordAction, type AuthActionState } from "../actions";
 
-function ResetPasswordForm() {
+const initialState: AuthActionState = { status: "idle" };
+
+function ResetPasswordForm({ token }: { token: string }) {
   const [error, setError] = useState("");
-  const [isComplete, setIsComplete] = useState(false);
+  const [state, action, pending] = useActionState(
+    resetPasswordAction,
+    initialState,
+  );
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const password = String(formData.get("password") ?? "");
     const confirmation = String(formData.get("passwordConfirmation") ?? "");
 
     if (password !== confirmation) {
+      event.preventDefault();
       setError("Passwords do not match.");
-      return;
     }
-
-    setError("");
-    setIsComplete(true);
   }
 
-  if (isComplete) {
+  if (state.status === "success") {
     return (
       <div className="space-y-5">
         <div
           role="status"
           className="rounded-xl border bg-muted/50 p-4 text-sm leading-6"
         >
-          <p className="font-medium">Password screen complete</p>
-          <p className="mt-1 text-muted-foreground">
-            No password was changed because authentication is not connected yet.
-          </p>
+          <p className="font-medium">Password reset complete</p>
+          <p className="mt-1 text-muted-foreground">{state.message}</p>
         </div>
         <Link
           href="/login"
@@ -51,15 +51,18 @@ function ResetPasswordForm() {
 
   return (
     <form
+      action={action}
       onSubmit={handleSubmit}
       onChange={() => setError("")}
       className="space-y-5"
     >
+      <input type="hidden" name="token" value={token} />
       <PasswordField
         id="reset-password"
         name="password"
         label="New password"
         autoComplete="new-password"
+        minLength={12}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? "reset-password-error" : undefined}
         required
@@ -70,17 +73,18 @@ function ResetPasswordForm() {
         name="passwordConfirmation"
         label="Confirm new password"
         autoComplete="new-password"
+        minLength={12}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? "reset-password-error" : undefined}
         required
       />
-      {error && (
+      {(error || state.message) && (
         <p id="reset-password-error" role="alert" className="text-sm text-destructive">
-          {error}
+          {error || state.message}
         </p>
       )}
-      <Button type="submit" size="lg" className="w-full">
-        Reset password
+      <Button type="submit" size="lg" className="w-full" disabled={pending}>
+        {pending ? "Resetting..." : "Reset password"}
       </Button>
       <Link
         href="/login"

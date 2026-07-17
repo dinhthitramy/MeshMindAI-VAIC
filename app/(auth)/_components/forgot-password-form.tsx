@@ -1,34 +1,31 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useActionState } from "react";
 import Link from "next/link";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { forgotPasswordAction, type AuthActionState } from "../actions";
+
+const initialState: AuthActionState = { status: "idle" };
 
 function ForgotPasswordForm() {
-  const [email, setEmail] = useState("");
+  const [state, action, pending] = useActionState(
+    forgotPasswordAction,
+    initialState,
+  );
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    setEmail(String(formData.get("email") ?? ""));
-  }
-
-  if (email) {
+  if (state.status === "success") {
     return (
       <div className="space-y-5">
         <div
           role="status"
           className="rounded-xl border bg-muted/50 p-4 text-sm leading-6"
         >
-          <p className="font-medium">Recovery screen complete</p>
-          <p className="mt-1 text-muted-foreground">
-            No email was sent to <span className="text-foreground">{email}</span>.
-            Email delivery will be connected later.
-          </p>
+          <p className="font-medium">Check your inbox</p>
+          <p className="mt-1 text-muted-foreground">{state.message}</p>
         </div>
         <Link
           href="/login"
@@ -41,7 +38,7 @@ function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form action={action} className="space-y-5">
       <div className="grid gap-2">
         <Label htmlFor="recovery-email">Email</Label>
         <Input
@@ -54,8 +51,13 @@ function ForgotPasswordForm() {
           autoFocus
         />
       </div>
-      <Button type="submit" size="lg" className="w-full">
-        Send reset link
+      {state.message && (
+        <p role="alert" className="text-sm text-destructive">
+          {state.message}
+        </p>
+      )}
+      <Button type="submit" size="lg" className="w-full" disabled={pending}>
+        {pending ? "Sending..." : "Send reset link"}
       </Button>
       <Link
         href="/login"

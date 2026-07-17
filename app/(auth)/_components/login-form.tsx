@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useActionState } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -8,21 +8,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { PasswordField } from "./password-field";
+import { loginAction, type AuthActionState } from "../actions";
+
+const initialState: AuthActionState = { status: "idle" };
 
 function LoginForm() {
-  const [submitted, setSubmitted] = useState(false);
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSubmitted(true);
-  }
+  const [state, action, pending] = useActionState(loginAction, initialState);
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      onChange={() => setSubmitted(false)}
-      className="space-y-5"
-    >
+    <form action={action} className="space-y-5">
       <div className="grid gap-2">
         <Label htmlFor="login-email">Email</Label>
         <Input
@@ -51,17 +45,15 @@ function LoginForm() {
         }
       />
 
-      <Button type="submit" size="lg" className="w-full">
-        Log in
-      </Button>
+      {state.message && (
+        <p role="alert" className="text-sm text-destructive">
+          {state.message}
+        </p>
+      )}
 
-      <p
-        role="status"
-        aria-live="polite"
-        className={submitted ? "text-center text-xs text-muted-foreground" : "sr-only"}
-      >
-        Authentication is not connected yet.
-      </p>
+      <Button type="submit" size="lg" className="w-full" disabled={pending}>
+        {pending ? "Logging in..." : "Log in"}
+      </Button>
 
       <p className="text-center text-sm text-muted-foreground">
         New to MeshMind?{" "}
