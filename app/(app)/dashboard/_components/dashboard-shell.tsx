@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { SkipLink } from "@/components/skip-link";
+import { ThemeSelector } from "@/components/theme-selector";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { logoutAction } from "@/app/(auth)/actions";
@@ -109,12 +110,22 @@ function SidebarPanel({
           );
         })}
       </nav>
+      
+      <div className="flex flex-col gap-2 border-t border-sidebar-border p-3">
+        <ThemeSelector
+          compact={collapsed}
+          className={
+            collapsed
+              ? "text-sidebar-foreground hover:bg-sidebar-accent"
+              : "w-full"
+          }
+        />
 
-      <div className="border-t border-sidebar-border p-3">
         <form action={logoutAction}>
           <button
             type="submit"
             title={collapsed ? "Log out" : undefined}
+            aria-label={collapsed ? `Log out ${viewer.displayName}` : undefined}
             className={cn(
               "flex min-h-11 w-full items-center rounded-lg border border-sidebar-border bg-sidebar px-3 text-left text-sm outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/30",
               collapsed ? "justify-center" : "gap-3",
@@ -125,14 +136,21 @@ function SidebarPanel({
               className="size-4.5 shrink-0"
               strokeWidth={1.8}
             />
+
             <span className={cn("min-w-0 flex-1", collapsed && "sr-only")}>
-              <span className="block truncate font-medium">{viewer.displayName}</span>
+              <span className="block truncate font-medium">
+                {viewer.displayName}
+              </span>
               <span className="block truncate text-xs text-sidebar-foreground/55">
                 {viewer.roleLabel}
               </span>
             </span>
+
             {!collapsed && (
-              <LogOut aria-hidden="true" className="size-4 shrink-0 text-sidebar-foreground/55" />
+              <LogOut
+                aria-hidden="true"
+                className="size-4 shrink-0 text-sidebar-foreground/55"
+              />
             )}
           </button>
         </form>
@@ -215,6 +233,7 @@ function DashboardShell({ children, viewer }: DashboardShellProps) {
           >
             <MenuIcon />
           </Button>
+          <ThemeSelector compact className="ml-auto" />
         </header>
         <main
           id="dashboard-content"

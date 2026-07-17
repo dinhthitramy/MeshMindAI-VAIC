@@ -1,7 +1,9 @@
 "use client";
 
 import { useId, useState, type ComponentProps, type ReactNode } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -32,18 +34,25 @@ function PasswordField({
         <Input
           id={inputId}
           type={isVisible ? "text" : "password"}
-          className={cn("pr-16", className)}
+          className={cn("pr-12", className)}
           {...props}
         />
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="icon-sm"
           aria-label={`${isVisible ? "Hide" : "Show"} ${label.toLowerCase()}`}
           aria-controls={inputId}
+          aria-pressed={isVisible}
           onClick={() => setIsVisible((visible) => !visible)}
-          className="absolute inset-y-1 right-1 rounded-md px-2 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/30"
+          className="absolute right-1.5 top-1/2 -translate-y-1/2 text-muted-foreground"
         >
-          {isVisible ? "Hide" : "Show"}
-        </button>
+          {isVisible ? (
+            <EyeOff aria-hidden="true" />
+          ) : (
+            <Eye aria-hidden="true" />
+          )}
+        </Button>
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { ChevronDown, UserRound } from "lucide-react";
 
 import { LogoPlaceholder } from "@/components/logo-placeholder";
+import { ThemeSelector } from "@/components/theme-selector";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getViewer } from "@/lib/auth/dal";
@@ -33,6 +35,10 @@ async function LandingHeader() {
           <details className="group relative md:hidden">
             <summary className="flex h-9 cursor-pointer list-none items-center rounded-full px-3 text-sm font-medium outline-none transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/30 [&::-webkit-details-marker]:hidden">
               Categories
+              <ChevronDown
+                aria-hidden="true"
+                className="ml-1 size-4 transition-transform group-open:rotate-180"
+              />
             </summary>
             <div className="absolute right-0 top-[calc(100%+0.5rem)] z-50 grid min-w-44 gap-1 rounded-xl border bg-popover p-2 text-popover-foreground shadow-lg">
               {categories.map((category) => (
@@ -47,10 +53,14 @@ async function LandingHeader() {
             </div>
           </details>
 
+          <ThemeSelector compact className="sm:hidden" />
+          <ThemeSelector className="hidden sm:flex" />
+
           <Link
             href={viewer ? "/dashboard" : "/login"}
             className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
           >
+            <UserRound data-icon="inline-start" aria-hidden="true" />
             Account
           </Link>
         </div>

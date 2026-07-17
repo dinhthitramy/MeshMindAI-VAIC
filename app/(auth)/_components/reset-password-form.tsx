@@ -2,6 +2,7 @@
 
 import { useActionState, useState, type FormEvent } from "react";
 import Link from "next/link";
+import { ArrowLeft, KeyRound, LogIn } from "lucide-react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -43,6 +44,7 @@ function ResetPasswordForm({ token }: { token: string }) {
           href="/login"
           className={cn(buttonVariants({ size: "lg" }), "w-full")}
         >
+          <LogIn data-icon="inline-start" aria-hidden="true" />
           Continue to login
         </Link>
       </div>
@@ -84,12 +86,17 @@ function ResetPasswordForm({ token }: { token: string }) {
         </p>
       )}
       <Button type="submit" size="lg" className="w-full" disabled={pending}>
+        <KeyRound data-icon="inline-start" aria-hidden="true" />
         {pending ? "Resetting..." : "Reset password"}
       </Button>
       <Link
         href="/login"
         className="block text-center text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
       >
+        <ArrowLeft
+          aria-hidden="true"
+          className="mr-1 inline size-3.5 align-[-0.15em]"
+        />
         Back to login
       </Link>
     </form>
