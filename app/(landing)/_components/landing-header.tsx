@@ -5,10 +5,12 @@ import { LogoPlaceholder } from "@/components/logo-placeholder";
 import { ThemeSelector } from "@/components/theme-selector";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getViewer } from "@/lib/auth/dal";
 
 const categories = ["Category 01", "Category 02", "Category 03"];
 
-function LandingHeader() {
+async function LandingHeader() {
+  const viewer = await getViewer().catch(() => null);
   return (
     <header className="border-b border-border/80 bg-background/95">
       <nav
@@ -55,7 +57,7 @@ function LandingHeader() {
           <ThemeSelector className="hidden sm:flex" />
 
           <Link
-            href="/login"
+            href={viewer ? "/dashboard" : "/login"}
             className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
           >
             <UserRound data-icon="inline-start" aria-hidden="true" />

@@ -5,15 +5,22 @@ import { ResetPasswordForm } from "../_components/reset-password-form";
 
 export const metadata: Metadata = {
   title: "Reset password",
+  referrer: "no-referrer",
 };
 
-export default function ResetPasswordPage() {
+export default async function ResetPasswordPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ token?: string }>;
+}) {
+  const { token = "" } = await searchParams;
+
   return (
     <AuthCard
       title="Set a new password"
       description="Choose and confirm the password you want to use next."
     >
-      <ResetPasswordForm />
+      <ResetPasswordForm token={token} />
     </AuthCard>
   );
 }
