@@ -3,9 +3,11 @@ import { Geist_Mono, Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import "./globals.css";
+import { AppPreloader } from "@/components/app-preloader";
 import { MotionProvider } from "@/components/motion-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
+import { preloaderInitializationScript } from "@/lib/preloader";
 import { themeInitializationScript } from "@/lib/theme";
 
 const inter = Inter({
@@ -32,6 +34,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await getLocale();
+  const daySeed = new Date().toISOString().slice(0, 10);
 
   return (
     <html
@@ -47,11 +50,16 @@ export default async function RootLayout({
         <script
           dangerouslySetInnerHTML={{ __html: themeInitializationScript }}
         />
+        <script
+          dangerouslySetInnerHTML={{ __html: preloaderInitializationScript }}
+        />
       </head>
       <body className="min-h-dvh">
         <NextIntlClientProvider>
           <ThemeProvider>
-            <MotionProvider>{children}</MotionProvider>
+            <MotionProvider>
+              <AppPreloader daySeed={daySeed}>{children}</AppPreloader>
+            </MotionProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

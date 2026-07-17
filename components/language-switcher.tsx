@@ -40,7 +40,7 @@ function LanguageSwitcher({
   return (
     <Button
       type="button"
-      variant="ghost"
+      variant="outline"
       size={compact ? "icon" : "sm"}
       title={
         compact
