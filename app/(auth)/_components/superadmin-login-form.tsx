@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,7 @@ import { PresencePanel } from "./presence-panel";
 const initialState: AuthActionState = { status: "idle" };
 
 function SuperadminLoginForm() {
+  const t = useTranslations("Auth");
   const [state, action, pending] = useActionState(
     superadminLoginAction,
     initialState,
@@ -42,7 +44,9 @@ function SuperadminLoginForm() {
                 value={state.challengeToken}
               />
               <div className="grid gap-2">
-                <Label htmlFor="superadmin-totp">Authentication code</Label>
+                <Label htmlFor="superadmin-totp">
+                  {t("superadmin.authenticationCode")}
+                </Label>
                 <Input
                   id="superadmin-totp"
                   name="token"
@@ -59,7 +63,9 @@ function SuperadminLoginForm() {
           ) : (
             <>
               <div className="grid gap-2">
-                <Label htmlFor="superadmin-identifier">Operations identifier</Label>
+                <Label htmlFor="superadmin-identifier">
+                  {t("superadmin.operationsIdentifier")}
+                </Label>
                 <Input
                   id="superadmin-identifier"
                   name="identifier"
@@ -71,7 +77,7 @@ function SuperadminLoginForm() {
               <PasswordField
                 id="superadmin-password"
                 name="password"
-                label="Password"
+                label={t("common.password")}
                 autoComplete="current-password"
                 required
               />
@@ -98,10 +104,10 @@ function SuperadminLoginForm() {
 
       <Button type="submit" size="lg" className="w-full" disabled={pending}>
         {pending
-          ? "Verifying..."
+          ? t("superadmin.submitting")
           : isMfaStep
-            ? "Verify and continue"
-            : "Continue"}
+            ? t("superadmin.verify")
+            : t("common.continue")}
       </Button>
     </form>
   );

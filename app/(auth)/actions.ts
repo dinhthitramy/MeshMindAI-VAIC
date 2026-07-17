@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { and, eq } from "drizzle-orm";
+import { getTranslations } from "next-intl/server";
 
 import { getDb } from "@/lib/db";
 import { roles, userRoles, users } from "@/lib/db/schema";
@@ -75,31 +76,49 @@ function valuesFrom(formData: FormData, names: string[]) {
   return Object.fromEntries(names.map((name) => [name, formData.get(name)]));
 }
 
-function invalidFields(
+async function invalidFields(
   fieldErrors: Record<string, string[] | undefined>,
-): AuthActionState {
+): Promise<AuthActionState> {
+  const t = await getTranslations("Auth");
+  const localizedMessages: Record<string, string> = {
+    "Password must be at least 12 characters.": t("validation.passwordMin"),
+    "Password must be at most 128 characters.": t("validation.passwordMax"),
+    "Password is too long.": t("validation.passwordLong"),
+    "Enter a valid email address.": t("validation.emailInvalid"),
+    "Enter your full name.": t("validation.fullNameInvalid"),
+    "Enter a valid birth year.": t("validation.birthYearInvalid"),
+    "Birth year cannot be in the future.": t("validation.birthYearFuture"),
+    "Passwords do not match.": t("validation.passwordMismatch"),
+    "Enter the six-digit authentication code.": t("validation.totpInvalid"),
+  };
+
   return {
     status: "error",
-    message: "Check the highlighted fields and try again.",
+    message: t("actions.checkFields"),
     fieldErrors: Object.fromEntries(
       Object.entries(fieldErrors).filter(
         (entry): entry is [string, string[]] => Boolean(entry[1]?.length),
-      ),
+      ).map(([field, messages]) => [
+        field,
+        messages.map((message) => localizedMessages[message] ?? message),
+      ]),
     ),
   };
 }
 
-function serviceUnavailable(): AuthActionState {
+async function serviceUnavailable(): Promise<AuthActionState> {
+  const t = await getTranslations("Auth.actions");
   return {
     status: "error",
-    message: "Authentication is temporarily unavailable. Please try again.",
+    message: t("serviceUnavailable"),
   };
 }
 
-function invalidCredentials(): AuthActionState {
+async function invalidCredentials(): Promise<AuthActionState> {
+  const t = await getTranslations("Auth.actions");
   return {
     status: "error",
-    message: "Invalid email or password.",
+    message: t("invalidCredentials"),
   };
 }
 
@@ -142,6 +161,7 @@ export async function signupAction(
   _previousState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
+  const t = await getTranslations("Auth.actions");
   let accountCreated = false;
   const parsed = signupSchema.safeParse(
     valuesFrom(formData, [
@@ -164,7 +184,7 @@ export async function signupAction(
     if (ip && !(await limit("signup:ip", ip, SIGNUP_POLICY))) {
       return {
         status: "error",
-        message: "Too many signup attempts. Please try again later.",
+        message: t("signupRateLimit"),
       };
     }
 
@@ -217,7 +237,7 @@ export async function signupAction(
     if (isUniqueEmailError(error)) {
       return {
         status: "error",
-        message: "Could not create an account with those details.",
+        message: t("accountCreationFailed"),
       };
     }
 
@@ -225,8 +245,7 @@ export async function signupAction(
       if (accountCreated) {
         return {
           status: "success",
-          message:
-            "Your account was created, but automatic sign-in is unavailable. Try logging in again shortly.",
+          message: t("accountCreatedLoginUnavailable"),
         };
       }
 
@@ -244,6 +263,7 @@ export async function loginAction(
   _previousState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
+  const t = await getTranslations("Auth.actions");
   const parsed = loginSchema.safeParse(valuesFrom(formData, ["email", "password"]));
 
   if (!parsed.success) {
@@ -260,7 +280,7 @@ export async function loginAction(
     if (!ipAllowed || !accountAllowed) {
       return {
         status: "error",
-        message: "Too many login attempts. Please try again later.",
+        message: t("loginRateLimit"),
       };
     }
 
@@ -320,6 +340,7 @@ export async function superadminLoginAction(
   previousState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
+  const t = await getTranslations("Auth.actions");
   const isMfaStep =
     previousState.status === "mfa" || Boolean(formData.get("challengeToken"));
 
@@ -333,7 +354,7 @@ export async function superadminLoginAction(
 
       if (!parsed.success) {
         return {
-          ...invalidFields(parsed.error.flatten().fieldErrors),
+          ...(await invalidFields(parsed.error.flatten().fieldErrors)),
           challengeToken: String(formData.get("challengeToken") ?? ""),
           status: "mfa",
         };
@@ -349,7 +370,7 @@ export async function superadminLoginAction(
         return {
           status: "mfa",
           challengeToken: parsed.data.challengeToken,
-          message: "Too many attempts. Start the sign-in process again later.",
+          message: t("tooManyAttemptsRestart"),
         };
       }
 
@@ -363,7 +384,7 @@ export async function superadminLoginAction(
         return {
           status: "mfa",
           challengeToken: parsed.data.challengeToken,
-          message: "Invalid or expired authentication code.",
+          message: t("invalidAuthenticationCode"),
         };
       }
 
@@ -396,7 +417,7 @@ export async function superadminLoginAction(
     );
 
     if (!parsed.success) {
-      return { status: "error", message: "Invalid credentials." };
+      return { status: "error", message: t("invalidSuperadminCredentials") };
     }
 
     const [ipAllowed, identifierAllowed] = await Promise.all([
@@ -407,7 +428,7 @@ export async function superadminLoginAction(
     if (!ipAllowed || !identifierAllowed) {
       return {
         status: "error",
-        message: "Too many attempts. Please try again later.",
+        message: t("tooManyAttempts"),
       };
     }
 
@@ -418,7 +439,7 @@ export async function superadminLoginAction(
       ))
     ) {
       await auditBestEffort({ action: "auth.superadmin_login_failed" });
-      return { status: "error", message: "Invalid credentials." };
+      return { status: "error", message: t("invalidSuperadminCredentials") };
     }
 
     return {
@@ -450,9 +471,10 @@ export async function forgotPasswordAction(
   _previousState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
+  const t = await getTranslations("Auth.actions");
   const genericSuccess: AuthActionState = {
     status: "success",
-    message: "If that account exists, password reset instructions have been sent.",
+    message: t("recoverySent"),
   };
   const parsed = forgotPasswordSchema.safeParse(valuesFrom(formData, ["email"]));
 
@@ -502,6 +524,7 @@ export async function resetPasswordAction(
   _previousState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
+  const t = await getTranslations("Auth.actions");
   const parsed = resetPasswordSchema.safeParse(
     valuesFrom(formData, ["token", "password", "passwordConfirmation"]),
   );
@@ -520,7 +543,7 @@ export async function resetPasswordAction(
     if (!ipAllowed || !tokenAllowed) {
       return {
         status: "error",
-        message: "Too many reset attempts. Please try again later.",
+        message: t("resetRateLimit"),
       };
     }
 
@@ -530,7 +553,7 @@ export async function resetPasswordAction(
     if (!user) {
       return {
         status: "error",
-        message: "This password reset link is invalid or has expired.",
+        message: t("invalidResetLink"),
       };
     }
 
@@ -549,7 +572,7 @@ export async function resetPasswordAction(
 
     return {
       status: "success",
-      message: "Your password has been reset. You can now log in.",
+      message: t("resetSuccess"),
     };
   } catch (error) {
     if (error instanceof RedisUnavailableError) {

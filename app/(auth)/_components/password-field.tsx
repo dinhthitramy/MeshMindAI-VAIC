@@ -3,6 +3,7 @@
 import { useId, useState, type ComponentProps, type ReactNode } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +22,7 @@ function PasswordField({
   className,
   ...props
 }: PasswordFieldProps) {
+  const t = useTranslations("Auth.common");
   const generatedId = useId();
   const inputId = id ?? generatedId;
   const [isVisible, setIsVisible] = useState(false);
@@ -42,7 +44,9 @@ function PasswordField({
           type="button"
           variant="ghost"
           size="icon-sm"
-          aria-label={`${isVisible ? "Hide" : "Show"} ${label.toLowerCase()}`}
+          aria-label={t(isVisible ? "hideField" : "showField", {
+            field: label.toLocaleLowerCase(),
+          })}
           aria-controls={inputId}
           aria-pressed={isVisible}
           onClick={() => setIsVisible((visible) => !visible)}

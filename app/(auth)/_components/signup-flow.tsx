@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, UserPlus } from "lucide-react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,22 +24,7 @@ import { PasswordField } from "./password-field";
 import { PresencePanel } from "./presence-panel";
 import { signupAction, type AuthActionState } from "../actions";
 
-const steps = ["Account", "About you", "Security"];
-const stepTitles = ["Start with your email", "Tell us about you", "Choose a password"];
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+const monthNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
 
 type SignupValues = {
   email: string;
@@ -67,6 +53,17 @@ const stepVariants: Variants = {
 };
 
 function SignupFlow() {
+  const t = useTranslations("Auth");
+  const steps = [
+    t("signup.steps.account"),
+    t("signup.steps.about"),
+    t("signup.steps.security"),
+  ];
+  const stepTitles = [
+    t("signup.stepTitles.email"),
+    t("signup.stepTitles.about"),
+    t("signup.stepTitles.password"),
+  ];
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState(1);
   const [values, setValues] = useState(initialValues);
@@ -105,7 +102,7 @@ function SignupFlow() {
 
     if (values.password !== values.passwordConfirmation) {
       event.preventDefault();
-      setPasswordError("Passwords do not match.");
+      setPasswordError(t("common.passwordMismatch"));
     }
   }
 
@@ -117,19 +114,22 @@ function SignupFlow() {
 
   return (
     <AuthCard
-      title="Create your account"
-      description="Complete the three short steps below to set up your profile."
+      title={t("signup.title")}
+      description={t("signup.description")}
     >
       <div className="mb-7 space-y-3">
         <div className="flex items-center justify-between gap-4 text-xs font-medium">
           <span className="text-muted-foreground">
-            Step {step + 1} of {steps.length}
+            {t("signup.stepCount", {
+              current: step + 1,
+              total: steps.length,
+            })}
           </span>
           <span>{steps[step]}</span>
         </div>
         <div
           role="progressbar"
-          aria-label="Signup progress"
+          aria-label={t("signup.progress")}
           aria-valuemin={1}
           aria-valuemax={steps.length}
           aria-valuenow={step + 1}
@@ -182,13 +182,13 @@ function SignupFlow() {
           >
             {step === 0 && (
               <div className="grid gap-2">
-                <Label htmlFor="signup-email">Email</Label>
+                <Label htmlFor="signup-email">{t("common.email")}</Label>
                 <Input
                   id="signup-email"
                   name="email"
                   type="email"
                   autoComplete="email"
-                  placeholder="you@example.com"
+                  placeholder={t("common.emailPlaceholder")}
                   value={values.email}
                   onChange={updateValue}
                   aria-invalid={Boolean(actionState.fieldErrors?.email)}
@@ -216,12 +216,12 @@ function SignupFlow() {
             {step === 1 && (
               <>
                 <div className="grid gap-2">
-                  <Label htmlFor="signup-name">Full name</Label>
+                  <Label htmlFor="signup-name">{t("signup.fullName")}</Label>
                   <Input
                     id="signup-name"
                     name="fullName"
                     autoComplete="name"
-                    placeholder="Your full name"
+                    placeholder={t("signup.fullNamePlaceholder")}
                     value={values.fullName}
                     onChange={updateValue}
                     aria-invalid={Boolean(actionState.fieldErrors?.fullName)}
@@ -244,11 +244,13 @@ function SignupFlow() {
                   </AnimatePresence>
                 </div>
                 <fieldset className="grid gap-2">
-                  <legend className="text-sm font-medium">Date of birth</legend>
+                  <legend className="text-sm font-medium">
+                    {t("signup.dateOfBirth")}
+                  </legend>
                   <div className="grid grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] gap-3">
                     <div className="grid gap-2">
                       <Label htmlFor="signup-birth-month" className="sr-only">
-                        Birth month
+                        {t("signup.birthMonth")}
                       </Label>
                       <Select
                         id="signup-birth-month"
@@ -260,18 +262,18 @@ function SignupFlow() {
                         required
                       >
                         <option value="" disabled>
-                          Month
+                          {t("signup.month")}
                         </option>
-                        {months.map((month, index) => (
-                          <option key={month} value={index + 1}>
-                            {month}
+                        {monthNumbers.map((month) => (
+                          <option key={month} value={month}>
+                            {t(`signup.months.${month}`)}
                           </option>
                         ))}
                       </Select>
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="signup-birth-year" className="sr-only">
-                        Birth year
+                        {t("signup.birthYear")}
                       </Label>
                       <Input
                         id="signup-birth-year"
@@ -281,7 +283,7 @@ function SignupFlow() {
                         autoComplete="bday-year"
                         min={1}
                         max={new Date().getFullYear()}
-                        placeholder="Year"
+                        placeholder={t("signup.year")}
                         value={values.birthYear}
                         onChange={updateValue}
                         aria-invalid={Boolean(actionState.fieldErrors?.birthYear)}
@@ -298,7 +300,7 @@ function SignupFlow() {
                 <PasswordField
                   id="signup-password"
                   name="password"
-                  label="Password"
+                  label={t("common.password")}
                   autoComplete="new-password"
                   minLength={12}
                   value={values.password}
@@ -312,7 +314,7 @@ function SignupFlow() {
                 <PasswordField
                   id="signup-password-confirmation"
                   name="passwordConfirmation"
-                  label="Confirm password"
+                  label={t("signup.confirmPassword")}
                   autoComplete="new-password"
                   minLength={12}
                   value={values.passwordConfirmation}
@@ -346,7 +348,7 @@ function SignupFlow() {
                   )}
                 </AnimatePresence>
                 <p className="text-xs leading-5 text-muted-foreground">
-                  Use at least 12 characters.
+                  {t("signup.passwordHint")}
                 </p>
               </>
             )}
@@ -412,7 +414,7 @@ function SignupFlow() {
                   onClick={goBack}
                 >
                   <ArrowLeft data-icon="inline-start" aria-hidden="true" />
-                  Back
+                  {t("signup.back")}
                 </Button>
               </motion.div>
             )}
@@ -425,16 +427,16 @@ function SignupFlow() {
               disabled={pending}
             >
               {pending
-                ? "Creating account..."
+                ? t("signup.submitting")
                 : step === steps.length - 1
                   ? (
                     <>
                       <UserPlus data-icon="inline-start" aria-hidden="true" />
-                      Create account
+                      {t("signup.submit")}
                     </>
                   ) : (
                     <>
-                      Continue
+                      {t("signup.continue")}
                       <ArrowRight data-icon="inline-end" aria-hidden="true" />
                     </>
                   )}
@@ -444,12 +446,12 @@ function SignupFlow() {
       </form>
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        {t("signup.existingUser")} {" "}
         <Link
           href="/login"
           className="font-medium text-foreground underline-offset-4 hover:underline"
         >
-          Log in
+          {t("signup.login")}
         </Link>
       </p>
     </AuthCard>

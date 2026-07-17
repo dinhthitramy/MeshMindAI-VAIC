@@ -3,6 +3,7 @@
 import { useId, type ComponentType, type SVGProps } from "react";
 import { Monitor, Moon, Sun } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
@@ -14,14 +15,13 @@ import {
 import { cn } from "@/lib/utils";
 
 type ThemeOption = {
-  label: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
 };
 
 const themeOptions: Record<ThemePreference, ThemeOption> = {
-  system: { label: "System", icon: Monitor },
-  light: { label: "Light", icon: Sun },
-  dark: { label: "Dark", icon: Moon },
+  system: { icon: Monitor },
+  light: { icon: Sun },
+  dark: { icon: Moon },
 };
 
 type ThemeSelectorProps = {
@@ -66,9 +66,12 @@ function ThemeIcon({
 
 function ThemeSelector({ className, compact = false }: ThemeSelectorProps) {
   const selectId = useId();
+  const t = useTranslations("Theme");
   const { theme, setTheme } = useTheme();
   const currentIndex = themePreferences.indexOf(theme);
   const nextTheme = themePreferences[(currentIndex + 1) % themePreferences.length];
+  const currentThemeLabel = t(theme);
+  const nextThemeLabel = t(nextTheme);
 
   if (compact) {
     return (
@@ -76,8 +79,11 @@ function ThemeSelector({ className, compact = false }: ThemeSelectorProps) {
         type="button"
         variant="ghost"
         size="icon"
-        title={`Theme: ${themeOptions[theme].label}`}
-        aria-label={`Theme: ${themeOptions[theme].label}. Switch to ${themeOptions[nextTheme].label}.`}
+        title={currentThemeLabel}
+        aria-label={t("currentSwitch", {
+          theme: currentThemeLabel,
+          nextTheme: nextThemeLabel,
+        })}
         onClick={() => setTheme(nextTheme)}
         className={className}
       >
@@ -90,7 +96,7 @@ function ThemeSelector({ className, compact = false }: ThemeSelectorProps) {
     <div className={cn("flex w-32 items-center gap-2", className)}>
       <ThemeIcon theme={theme} />
       <label htmlFor={selectId} className="sr-only">
-        Theme preference
+        {t("preference")}
       </label>
       <Select
         id={selectId}
@@ -100,7 +106,7 @@ function ThemeSelector({ className, compact = false }: ThemeSelectorProps) {
       >
         {themePreferences.map((preference) => (
           <option key={preference} value={preference}>
-            {themeOptions[preference].label}
+            {t(preference)}
           </option>
         ))}
       </Select>

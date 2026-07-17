@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,18 +15,19 @@ import { loginAction, type AuthActionState } from "../actions";
 const initialState: AuthActionState = { status: "idle" };
 
 function LoginForm() {
+  const t = useTranslations("Auth");
   const [state, action, pending] = useActionState(loginAction, initialState);
 
   return (
     <form action={action} className="space-y-5">
       <div className="grid gap-2">
-        <Label htmlFor="login-email">Email</Label>
+        <Label htmlFor="login-email">{t("common.email")}</Label>
         <Input
           id="login-email"
           name="email"
           type="email"
           autoComplete="email"
-          placeholder="you@example.com"
+          placeholder={t("common.emailPlaceholder")}
           required
         />
       </div>
@@ -33,7 +35,7 @@ function LoginForm() {
       <PasswordField
         id="login-password"
         name="password"
-        label="Password"
+        label={t("common.password")}
         autoComplete="current-password"
         required
         labelAction={
@@ -41,7 +43,7 @@ function LoginForm() {
             href="/forgot-password"
             className="text-xs font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
           >
-            Forgot password?
+            {t("login.forgotPassword")}
           </Link>
         }
       />
@@ -63,16 +65,16 @@ function LoginForm() {
       </AnimatePresence>
 
       <Button type="submit" size="lg" className="w-full" disabled={pending}>
-        {pending ? "Logging in..." : "Log in"}
+        {pending ? t("login.submitting") : t("login.submit")}
       </Button>
 
       <p className="text-center text-sm text-muted-foreground">
-        New to MeshMind?{" "}
+        {t("login.newUser")} {" "}
         <Link
           href="/signup"
           className="font-medium text-foreground underline-offset-4 hover:underline"
         >
-          Create an account
+          {t("login.createAccount")}
         </Link>
       </p>
     </form>

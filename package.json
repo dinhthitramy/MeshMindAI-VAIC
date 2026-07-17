@@ -24,6 +24,7 @@
     "framer-motion": "^12.42.2",
     "lucide-react": "^1.24.0",
     "next": "16.2.10",
+    "next-intl": "^4.13.2",
     "nodemailer": "^9.0.3",
     "otpauth": "^9.5.1",
     "pg": "^8.22.0",

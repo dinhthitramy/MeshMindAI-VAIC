@@ -1,0 +1,168 @@
+{
+  "Common": {
+    "skipToContent": "Skip to content",
+    "homeAria": "MeshMind home",
+    "language": {
+      "english": "English",
+      "vietnamese": "Vietnamese",
+      "currentSwitch": "Language: {language}. Switch to {nextLanguage}.",
+      "switchTo": "Switch to {language}",
+      "shortEnglish": "EN",
+      "shortVietnamese": "VI"
+    }
+  },
+  "Theme": {
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark",
+    "preference": "Theme preference",
+    "currentSwitch": "Theme: {theme}. Switch to {nextTheme}."
+  },
+  "Landing": {
+    "primaryNavigation": "Primary navigation",
+    "category1": "Category 01",
+    "category2": "Category 02",
+    "category3": "Category 03",
+    "categories": "Categories",
+    "account": "Account"
+  },
+  "Auth": {
+    "common": {
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "backToLogin": "Back to login",
+      "continue": "Continue",
+      "passwordMismatch": "Passwords do not match.",
+      "showField": "Show {field}",
+      "hideField": "Hide {field}"
+    },
+    "login": {
+      "metadataTitle": "Log in",
+      "title": "Welcome back",
+      "description": "Enter your details to continue to MeshMind.",
+      "forgotPassword": "Forgot password?",
+      "submitting": "Logging in...",
+      "submit": "Log in",
+      "newUser": "New to MeshMind?",
+      "createAccount": "Create an account"
+    },
+    "signup": {
+      "metadataTitle": "Sign up",
+      "title": "Create your account",
+      "description": "Complete the three short steps below to set up your profile.",
+      "steps": {
+        "account": "Account",
+        "about": "About you",
+        "security": "Security"
+      },
+      "stepTitles": {
+        "email": "Start with your email",
+        "about": "Tell us about you",
+        "password": "Choose a password"
+      },
+      "stepCount": "Step {current} of {total}",
+      "progress": "Signup progress",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Your full name",
+      "dateOfBirth": "Date of birth",
+      "birthMonth": "Birth month",
+      "birthYear": "Birth year",
+      "month": "Month",
+      "year": "Year",
+      "months": {
+        "1": "January",
+        "2": "February",
+        "3": "March",
+        "4": "April",
+        "5": "May",
+        "6": "June",
+        "7": "July",
+        "8": "August",
+        "9": "September",
+        "10": "October",
+        "11": "November",
+        "12": "December"
+      },
+      "confirmPassword": "Confirm password",
+      "passwordHint": "Use at least 12 characters.",
+      "back": "Back",
+      "submitting": "Creating account...",
+      "submit": "Create account",
+      "continue": "Continue",
+      "existingUser": "Already have an account?",
+      "login": "Log in"
+    },
+    "forgot": {
+      "metadataTitle": "Recover password",
+      "title": "Recover your password",
+      "description": "Enter your email and we’ll prepare the reset flow.",
+      "successTitle": "Check your inbox",
+      "submitting": "Sending...",
+      "submit": "Send reset link"
+    },
+    "reset": {
+      "metadataTitle": "Reset password",
+      "title": "Set a new password",
+      "description": "Choose and confirm the password you want to use next.",
+      "successTitle": "Password reset complete",
+      "continueToLogin": "Continue to login",
+      "newPassword": "New password",
+      "confirmNewPassword": "Confirm new password",
+      "submitting": "Resetting...",
+      "submit": "Reset password"
+    },
+    "superadmin": {
+      "metadataTitle": "Operations access",
+      "title": "Operations access",
+      "description": "This restricted sign-in requires the built-in credentials and a current authentication code.",
+      "authenticationCode": "Authentication code",
+      "operationsIdentifier": "Operations identifier",
+      "submitting": "Verifying...",
+      "verify": "Verify and continue"
+    },
+    "actions": {
+      "checkFields": "Check the highlighted fields and try again.",
+      "serviceUnavailable": "Authentication is temporarily unavailable. Please try again.",
+      "invalidCredentials": "Invalid email or password.",
+      "signupRateLimit": "Too many signup attempts. Please try again later.",
+      "accountCreationFailed": "Could not create an account with those details.",
+      "accountCreatedLoginUnavailable": "Your account was created, but automatic sign-in is unavailable. Try logging in again shortly.",
+      "loginRateLimit": "Too many login attempts. Please try again later.",
+      "tooManyAttemptsRestart": "Too many attempts. Start the sign-in process again later.",
+      "invalidAuthenticationCode": "Invalid or expired authentication code.",
+      "invalidSuperadminCredentials": "Invalid credentials.",
+      "tooManyAttempts": "Too many attempts. Please try again later.",
+      "recoverySent": "If that account exists, password reset instructions have been sent.",
+      "resetRateLimit": "Too many reset attempts. Please try again later.",
+      "invalidResetLink": "This password reset link is invalid or has expired.",
+      "resetSuccess": "Your password has been reset. You can now log in."
+    },
+    "validation": {
+      "passwordMin": "Password must be at least 12 characters.",
+      "passwordMax": "Password must be at most 128 characters.",
+      "passwordLong": "Password is too long.",
+      "emailInvalid": "Enter a valid email address.",
+      "fullNameInvalid": "Enter your full name.",
+      "birthYearInvalid": "Enter a valid birth year.",
+      "birthYearFuture": "Birth year cannot be in the future.",
+      "passwordMismatch": "Passwords do not match.",
+      "totpInvalid": "Enter the six-digit authentication code."
+    }
+  },
+  "Dashboard": {
+    "metadataTitle": "Dashboard",
+    "menuMetadataTitle": "Menu",
+    "homeHeading": "Dashboard home",
+    "menuHeading": "Menu",
+    "home": "Home",
+    "menu": "Menu",
+    "navigation": "Dashboard navigation",
+    "closeNavigation": "Close navigation",
+    "openNavigation": "Open navigation",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "logout": "Log out",
+    "logoutUser": "Log out {name}"
+  }
+}

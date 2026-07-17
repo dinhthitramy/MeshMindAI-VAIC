@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { AuthCard } from "../_components/auth-card";
 import { LoginForm } from "../_components/login-form";
 
-export const metadata: Metadata = {
-  title: "Log in",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Auth.login");
+  return { title: t("metadataTitle") };
+}
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const t = await getTranslations("Auth.login");
+
   return (
-    <AuthCard
-      title="Welcome back"
-      description="Enter your details to continue to MeshMind."
-    >
+    <AuthCard title={t("title")} description={t("description")}>
       <LoginForm />
     </AuthCard>
   );
