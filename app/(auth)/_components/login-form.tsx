@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { LogIn } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,11 +46,21 @@ function LoginForm() {
         }
       />
 
-      {state.message && (
-        <p role="alert" className="text-sm text-destructive">
-          {state.message}
-        </p>
-      )}
+      <AnimatePresence initial={false}>
+        {state.message && (
+          <motion.p
+            key={state.message}
+            role="alert"
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -2 }}
+            transition={{ duration: 0.14 }}
+            className="text-sm text-destructive"
+          >
+            {state.message}
+          </motion.p>
+        )}
+      </AnimatePresence>
 
       <Button type="submit" size="lg" className="w-full" disabled={pending}>
         {pending ? "Logging in..." : "Log in"}

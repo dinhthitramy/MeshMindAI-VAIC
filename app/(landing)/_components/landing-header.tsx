@@ -33,11 +33,11 @@ async function LandingHeader() {
 
         <div className="ml-auto flex items-center gap-2">
           <details className="group relative md:hidden">
-            <summary className="flex h-9 cursor-pointer list-none items-center rounded-full px-3 text-sm font-medium outline-none transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/30 [&::-webkit-details-marker]:hidden">
+            <summary className="flex h-9 cursor-pointer list-none items-center rounded-full px-3 text-sm font-medium outline-none transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/30 motion-reduce:transition-none [&::-webkit-details-marker]:hidden">
               Categories
               <ChevronDown
                 aria-hidden="true"
-                className="ml-1 size-4 transition-transform group-open:rotate-180"
+                className="ml-1 size-4 transition-transform group-open:rotate-180 motion-reduce:transition-none"
               />
             </summary>
             <div className="absolute right-0 top-[calc(100%+0.5rem)] z-50 grid min-w-44 gap-1 rounded-xl border bg-popover p-2 text-popover-foreground shadow-lg">
@@ -58,7 +58,7 @@ async function LandingHeader() {
 
           <Link
             href={viewer ? "/dashboard" : "/login"}
-            className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+            className={cn(buttonVariants({ variant: "default", size: "sm" }))}
           >
             <UserRound data-icon="inline-start" aria-hidden="true" />
             Account

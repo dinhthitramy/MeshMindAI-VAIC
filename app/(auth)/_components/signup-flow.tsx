@@ -9,7 +9,8 @@ import {
   type FormEvent,
 } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, LogIn, UserPlus } from "lucide-react";
+import { ArrowLeft, ArrowRight, UserPlus } from "lucide-react";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils";
 
 import { AuthCard } from "./auth-card";
 import { PasswordField } from "./password-field";
+import { PresencePanel } from "./presence-panel";
 import { signupAction, type AuthActionState } from "../actions";
 
 const steps = ["Account", "About you", "Security"];
@@ -58,8 +60,15 @@ const initialValues: SignupValues = {
 
 const initialActionState: AuthActionState = { status: "idle" };
 
+const stepVariants: Variants = {
+  enter: (direction: number) => ({ opacity: 0, x: direction * 12 }),
+  center: { opacity: 1, x: 0 },
+  exit: (direction: number) => ({ opacity: 0, x: direction * -8 }),
+};
+
 function SignupFlow() {
   const [step, setStep] = useState(0);
+  const [direction, setDirection] = useState(1);
   const [values, setValues] = useState(initialValues);
   const [passwordError, setPasswordError] = useState("");
   const [actionState, action, pending] = useActionState(
@@ -89,6 +98,7 @@ function SignupFlow() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     if (step < steps.length - 1) {
       event.preventDefault();
+      setDirection(1);
       setStep((current) => current + 1);
       return;
     }
@@ -101,6 +111,7 @@ function SignupFlow() {
 
   function goBack() {
     setPasswordError("");
+    setDirection(-1);
     setStep((current) => Math.max(0, current - 1));
   }
 
@@ -128,11 +139,15 @@ function SignupFlow() {
             <span
               key={stepLabel}
               aria-hidden="true"
-              className={cn(
-                "h-1 rounded-full transition-colors",
-                index <= step ? "bg-foreground" : "bg-muted",
-              )}
-            />
+              className="relative h-1 overflow-hidden rounded-full bg-muted"
+            >
+              <motion.span
+                className="absolute inset-0 origin-left rounded-full bg-foreground"
+                initial={false}
+                animate={{ scaleX: index <= step ? 1 : 0 }}
+                transition={{ duration: 0.18 }}
+              />
+            </span>
           ))}
         </div>
       </div>
@@ -154,203 +169,277 @@ function SignupFlow() {
           {stepTitles[step]}
         </h2>
 
-        {step === 0 && (
-          <div className="grid gap-2">
-            <Label htmlFor="signup-email">Email</Label>
-            <Input
-              id="signup-email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              placeholder="you@example.com"
-              value={values.email}
-              onChange={updateValue}
-              aria-invalid={Boolean(actionState.fieldErrors?.email)}
-              required
-              autoFocus
-            />
-            {actionState.fieldErrors?.email?.[0] && (
-              <p role="alert" className="text-sm text-destructive">
-                {actionState.fieldErrors.email[0]}
-              </p>
+        <AnimatePresence initial={false} mode="popLayout" custom={direction}>
+          <PresencePanel
+            key={step}
+            custom={direction}
+            variants={stepVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.18 }}
+            className="space-y-5"
+          >
+            {step === 0 && (
+              <div className="grid gap-2">
+                <Label htmlFor="signup-email">Email</Label>
+                <Input
+                  id="signup-email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  value={values.email}
+                  onChange={updateValue}
+                  aria-invalid={Boolean(actionState.fieldErrors?.email)}
+                  required
+                  autoFocus
+                />
+                <AnimatePresence initial={false}>
+                  {actionState.fieldErrors?.email?.[0] && (
+                    <motion.p
+                      key={actionState.fieldErrors.email[0]}
+                      role="alert"
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -2 }}
+                      transition={{ duration: 0.14 }}
+                      className="text-sm text-destructive"
+                    >
+                      {actionState.fieldErrors.email[0]}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </div>
             )}
-          </div>
-        )}
 
-        {step === 1 && (
-          <>
-            <div className="grid gap-2">
-              <Label htmlFor="signup-name">Full name</Label>
-              <Input
-                id="signup-name"
-                name="fullName"
-                autoComplete="name"
-                placeholder="Your full name"
-                value={values.fullName}
-                onChange={updateValue}
-                aria-invalid={Boolean(actionState.fieldErrors?.fullName)}
-                required
-              />
-              {actionState.fieldErrors?.fullName?.[0] && (
-                <p role="alert" className="text-sm text-destructive">
-                  {actionState.fieldErrors.fullName[0]}
-                </p>
-              )}
-            </div>
-            <fieldset className="grid gap-2">
-              <legend className="text-sm font-medium">Date of birth</legend>
-              <div className="grid grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] gap-3">
+            {step === 1 && (
+              <>
                 <div className="grid gap-2">
-                  <Label htmlFor="signup-birth-month" className="sr-only">
-                    Birth month
-                  </Label>
-                  <Select
-                    id="signup-birth-month"
-                    name="birthMonth"
-                    autoComplete="bday-month"
-                    value={values.birthMonth}
-                    onChange={updateValue}
-                    aria-invalid={Boolean(actionState.fieldErrors?.birthMonth)}
-                    required
-                  >
-                    <option value="" disabled>
-                      Month
-                    </option>
-                    {months.map((month, index) => (
-                      <option key={month} value={index + 1}>
-                        {month}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="signup-birth-year" className="sr-only">
-                    Birth year
-                  </Label>
+                  <Label htmlFor="signup-name">Full name</Label>
                   <Input
-                    id="signup-birth-year"
-                    name="birthYear"
-                    type="number"
-                    inputMode="numeric"
-                    autoComplete="bday-year"
-                    min={1}
-                    max={new Date().getFullYear()}
-                    placeholder="Year"
-                    value={values.birthYear}
+                    id="signup-name"
+                    name="fullName"
+                    autoComplete="name"
+                    placeholder="Your full name"
+                    value={values.fullName}
                     onChange={updateValue}
-                    aria-invalid={Boolean(actionState.fieldErrors?.birthYear)}
+                    aria-invalid={Boolean(actionState.fieldErrors?.fullName)}
                     required
                   />
+                  <AnimatePresence initial={false}>
+                    {actionState.fieldErrors?.fullName?.[0] && (
+                      <motion.p
+                        key={actionState.fieldErrors.fullName[0]}
+                        role="alert"
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -2 }}
+                        transition={{ duration: 0.14 }}
+                        className="text-sm text-destructive"
+                      >
+                        {actionState.fieldErrors.fullName[0]}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </div>
-            </fieldset>
-          </>
-        )}
+                <fieldset className="grid gap-2">
+                  <legend className="text-sm font-medium">Date of birth</legend>
+                  <div className="grid grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] gap-3">
+                    <div className="grid gap-2">
+                      <Label htmlFor="signup-birth-month" className="sr-only">
+                        Birth month
+                      </Label>
+                      <Select
+                        id="signup-birth-month"
+                        name="birthMonth"
+                        autoComplete="bday-month"
+                        value={values.birthMonth}
+                        onChange={updateValue}
+                        aria-invalid={Boolean(actionState.fieldErrors?.birthMonth)}
+                        required
+                      >
+                        <option value="" disabled>
+                          Month
+                        </option>
+                        {months.map((month, index) => (
+                          <option key={month} value={index + 1}>
+                            {month}
+                          </option>
+                        ))}
+                      </Select>
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="signup-birth-year" className="sr-only">
+                        Birth year
+                      </Label>
+                      <Input
+                        id="signup-birth-year"
+                        name="birthYear"
+                        type="number"
+                        inputMode="numeric"
+                        autoComplete="bday-year"
+                        min={1}
+                        max={new Date().getFullYear()}
+                        placeholder="Year"
+                        value={values.birthYear}
+                        onChange={updateValue}
+                        aria-invalid={Boolean(actionState.fieldErrors?.birthYear)}
+                        required
+                      />
+                    </div>
+                  </div>
+                </fieldset>
+              </>
+            )}
 
-        {step === 2 && (
-          <>
-            <PasswordField
-              id="signup-password"
-              name="password"
-              label="Password"
-              autoComplete="new-password"
-              minLength={12}
-              value={values.password}
-              onChange={updateValue}
-              aria-invalid={
-                passwordError || actionState.fieldErrors?.password ? true : undefined
-              }
-              aria-describedby={passwordError ? "signup-password-error" : undefined}
-              required
-            />
-            <PasswordField
-              id="signup-password-confirmation"
-              name="passwordConfirmation"
-              label="Confirm password"
-              autoComplete="new-password"
-              minLength={12}
-              value={values.passwordConfirmation}
-              onChange={updateValue}
-              aria-invalid={passwordError ? true : undefined}
-              aria-describedby={passwordError ? "signup-password-error" : undefined}
-              required
-            />
-            {(passwordError ||
-              actionState.fieldErrors?.password?.[0] ||
-              actionState.fieldErrors?.passwordConfirmation?.[0]) && (
-              <p
-                id="signup-password-error"
-                role="alert"
-                className="text-sm text-destructive"
-              >
-                {passwordError ||
-                  actionState.fieldErrors?.password?.[0] ||
-                  actionState.fieldErrors?.passwordConfirmation?.[0]}
-              </p>
+            {step === 2 && (
+              <>
+                <PasswordField
+                  id="signup-password"
+                  name="password"
+                  label="Password"
+                  autoComplete="new-password"
+                  minLength={12}
+                  value={values.password}
+                  onChange={updateValue}
+                  aria-invalid={
+                    passwordError || actionState.fieldErrors?.password ? true : undefined
+                  }
+                  aria-describedby={passwordError ? "signup-password-error" : undefined}
+                  required
+                />
+                <PasswordField
+                  id="signup-password-confirmation"
+                  name="passwordConfirmation"
+                  label="Confirm password"
+                  autoComplete="new-password"
+                  minLength={12}
+                  value={values.passwordConfirmation}
+                  onChange={updateValue}
+                  aria-invalid={passwordError ? true : undefined}
+                  aria-describedby={passwordError ? "signup-password-error" : undefined}
+                  required
+                />
+                <AnimatePresence initial={false}>
+                  {(passwordError ||
+                    actionState.fieldErrors?.password?.[0] ||
+                    actionState.fieldErrors?.passwordConfirmation?.[0]) && (
+                    <motion.p
+                      key={
+                        passwordError ||
+                        actionState.fieldErrors?.password?.[0] ||
+                        actionState.fieldErrors?.passwordConfirmation?.[0]
+                      }
+                      id="signup-password-error"
+                      role="alert"
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -2 }}
+                      transition={{ duration: 0.14 }}
+                      className="text-sm text-destructive"
+                    >
+                      {passwordError ||
+                        actionState.fieldErrors?.password?.[0] ||
+                        actionState.fieldErrors?.passwordConfirmation?.[0]}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+                <p className="text-xs leading-5 text-muted-foreground">
+                  Use at least 12 characters.
+                </p>
+              </>
             )}
-            <p className="text-xs leading-5 text-muted-foreground">
-              Use at least 12 characters.
-            </p>
-          </>
-        )}
+          </PresencePanel>
+        </AnimatePresence>
 
-        {actionState.message && (
-          <p
-            role={actionState.status === "error" ? "alert" : "status"}
-            className={cn(
-              "text-sm",
-              actionState.status === "error"
-                ? "text-destructive"
-                : "text-muted-foreground",
-            )}
-          >
-            {actionState.message}
-          </p>
-        )}
-        {actionState.status === "error" && actionState.fieldErrors && (
-          <ul className="space-y-1 text-sm text-destructive">
-            {Array.from(new Set(Object.values(actionState.fieldErrors).flat())).map(
-              (message) => (
-                <li key={message}>{message}</li>
-              ),
-            )}
-          </ul>
-        )}
+        <AnimatePresence initial={false}>
+          {actionState.message && (
+            <motion.p
+              key={`${actionState.status}:${actionState.message}`}
+              role={actionState.status === "error" ? "alert" : "status"}
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -2 }}
+              transition={{ duration: 0.14 }}
+              className={cn(
+                "text-sm",
+                actionState.status === "error"
+                  ? "text-destructive"
+                  : "text-muted-foreground",
+              )}
+            >
+              {actionState.message}
+            </motion.p>
+          )}
+        </AnimatePresence>
+        <AnimatePresence initial={false}>
+          {actionState.status === "error" && actionState.fieldErrors && (
+            <motion.ul
+              key="signup-field-errors"
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -2 }}
+              transition={{ duration: 0.14 }}
+              className="space-y-1 text-sm text-destructive"
+            >
+              {Array.from(new Set(Object.values(actionState.fieldErrors).flat())).map(
+                (message) => (
+                  <li key={message}>{message}</li>
+                ),
+              )}
+            </motion.ul>
+          )}
+        </AnimatePresence>
 
         <div className="flex gap-3 pt-1">
-          {step > 0 && (
-            <Button
-              type="button"
-              variant="secondary"
-              size="lg"
-              className="flex-1"
-              onClick={goBack}
-            >
-              <ArrowLeft data-icon="inline-start" aria-hidden="true" />
-              Back
-            </Button>
-          )}
-          <Button
-            type="submit"
-            size="lg"
-            className="flex-1"
-            disabled={pending}
-          >
-            {pending
-              ? "Creating account..."
-              : step === steps.length - 1
-                ? (
-              <>
-                <UserPlus data-icon="inline-start" aria-hidden="true" />
-                Create account
-              </>
-            ) : (
-              <>
-                Continue
-                <ArrowRight data-icon="inline-end" aria-hidden="true" />
-              </>
+          <AnimatePresence initial={false} mode="popLayout">
+            {step > 0 && (
+              <motion.div
+                key="signup-back"
+                layout
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -4 }}
+                transition={{ duration: 0.16 }}
+                className="flex-1"
+              >
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="lg"
+                  className="w-full"
+                  onClick={goBack}
+                >
+                  <ArrowLeft data-icon="inline-start" aria-hidden="true" />
+                  Back
+                </Button>
+              </motion.div>
             )}
-          </Button>
+          </AnimatePresence>
+          <motion.div layout transition={{ duration: 0.16 }} className="flex-1">
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={pending}
+            >
+              {pending
+                ? "Creating account..."
+                : step === steps.length - 1
+                  ? (
+                    <>
+                      <UserPlus data-icon="inline-start" aria-hidden="true" />
+                      Create account
+                    </>
+                  ) : (
+                    <>
+                      Continue
+                      <ArrowRight data-icon="inline-end" aria-hidden="true" />
+                    </>
+                  )}
+            </Button>
+          </motion.div>
         </div>
       </form>
 

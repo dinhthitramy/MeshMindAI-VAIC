@@ -2,6 +2,7 @@
 
 import { useId, type ComponentType, type SVGProps } from "react";
 import { Monitor, Moon, Sun } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
@@ -28,12 +29,46 @@ type ThemeSelectorProps = {
   compact?: boolean;
 };
 
+function ThemeIcon({
+  theme,
+  inline = false,
+}: {
+  theme: ThemePreference;
+  inline?: boolean;
+}) {
+  const Icon = themeOptions[theme].icon;
+
+  return (
+    <span
+      aria-hidden="true"
+      className="relative flex size-4 shrink-0 items-center justify-center"
+    >
+      <AnimatePresence initial={false} mode="popLayout">
+        <motion.span
+          key={theme}
+          initial={{ opacity: 0, rotate: -8 }}
+          animate={{ opacity: 1, rotate: 0 }}
+          exit={{ opacity: 0, rotate: 8 }}
+          transition={{ duration: 0.12 }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <Icon
+            data-icon={inline ? "inline-start" : undefined}
+            aria-hidden="true"
+            className={inline ? undefined : "size-4 text-muted-foreground"}
+            strokeWidth={1.8}
+          />
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
+
 function ThemeSelector({ className, compact = false }: ThemeSelectorProps) {
   const selectId = useId();
   const { theme, setTheme } = useTheme();
   const currentIndex = themePreferences.indexOf(theme);
   const nextTheme = themePreferences[(currentIndex + 1) % themePreferences.length];
-  const CurrentIcon = themeOptions[theme].icon;
 
   if (compact) {
     return (
@@ -46,22 +81,14 @@ function ThemeSelector({ className, compact = false }: ThemeSelectorProps) {
         onClick={() => setTheme(nextTheme)}
         className={className}
       >
-        <CurrentIcon
-          data-icon="inline-start"
-          aria-hidden="true"
-          strokeWidth={1.8}
-        />
+        <ThemeIcon theme={theme} inline />
       </Button>
     );
   }
 
   return (
     <div className={cn("flex w-32 items-center gap-2", className)}>
-      <CurrentIcon
-        aria-hidden="true"
-        className="size-4 shrink-0 text-muted-foreground"
-        strokeWidth={1.8}
-      />
+      <ThemeIcon theme={theme} />
       <label htmlFor={selectId} className="sr-only">
         Theme preference
       </label>
