@@ -32,6 +32,17 @@ export const loginSchema = z.object({
   password: z.string().min(1).max(256),
 });
 
+export const profileSchema = z.object({
+  email: z.string().trim().toLowerCase().email("Enter a valid email address."),
+  fullName: z.string().trim().min(2, "Enter your full name.").max(120),
+  birthMonth: z.coerce.number().int().min(1).max(12),
+  birthYear: z.coerce
+    .number()
+    .int()
+    .min(1900, "Enter a valid birth year.")
+    .max(new Date().getFullYear(), "Birth year cannot be in the future."),
+});
+
 export const forgotPasswordSchema = z.object({
   email: z.string().trim().toLowerCase().email(),
 });
@@ -74,3 +85,4 @@ export const roleAssignmentSchema = z.object({
 });
 
 export type SignupInput = z.infer<typeof signupSchema>;
+export type ProfileInput = z.infer<typeof profileSchema>;

@@ -162,7 +162,57 @@
     "openNavigation": "Open navigation",
     "expandSidebar": "Expand sidebar",
     "collapseSidebar": "Collapse sidebar",
+    "userMenu": "Account menu",
+    "openUserMenu": "Open the account menu for {name}",
+    "profile": "Personal information",
     "logout": "Log out",
     "logoutUser": "Log out {name}"
+  },
+  "Profile": {
+    "metadataTitle": "Personal information",
+    "title": "Personal information",
+    "description": "Keep your details current so MeshMind can personalize your experience.",
+    "summary": "These details identify your account and help tailor your experience to you.",
+    "form": {
+      "title": "Profile details",
+      "description": "Edit your account information below.",
+      "fullName": "Full name",
+      "fullNameHint": "The name shown across your account.",
+      "email": "Email",
+      "emailHint": "This is also the email you use to sign in.",
+      "dateOfBirth": "Date of birth",
+      "dateOfBirthHint": "MeshMind only stores your birth month and year.",
+      "birthMonth": "Birth month",
+      "birthYear": "Birth year",
+      "save": "Save changes",
+      "saving": "Saving..."
+    },
+    "months": {
+      "1": "January",
+      "2": "February",
+      "3": "March",
+      "4": "April",
+      "5": "May",
+      "6": "June",
+      "7": "July",
+      "8": "August",
+      "9": "September",
+      "10": "October",
+      "11": "November",
+      "12": "December"
+    },
+    "validation": {
+      "email": "Enter a valid email address.",
+      "fullName": "Enter a full name with at least 2 characters.",
+      "birthMonth": "Choose a valid birth month.",
+      "birthYear": "Enter a birth year between 1900 and the current year."
+    },
+    "actions": {
+      "saved": "Your personal information has been saved.",
+      "checkFields": "Check the highlighted fields and try again.",
+      "emailInUse": "This email is already used by another account.",
+      "failed": "We could not save your changes. Please try again.",
+      "unavailable": "This account does not have a personal profile to edit."
+    }
   }
 }

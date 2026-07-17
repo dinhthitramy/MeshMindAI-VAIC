@@ -162,7 +162,57 @@
     "openNavigation": "Mở điều hướng",
     "expandSidebar": "Mở rộng thanh bên",
     "collapseSidebar": "Thu gọn thanh bên",
+    "userMenu": "Menu tài khoản",
+    "openUserMenu": "Mở menu tài khoản của {name}",
+    "profile": "Thông tin cá nhân",
     "logout": "Đăng xuất",
     "logoutUser": "Đăng xuất {name}"
+  },
+  "Profile": {
+    "metadataTitle": "Thông tin cá nhân",
+    "title": "Thông tin cá nhân",
+    "description": "Cập nhật thông tin giúp MeshMind cá nhân hóa trải nghiệm của bạn.",
+    "summary": "Thông tin này được dùng để nhận diện tài khoản và điều chỉnh trải nghiệm phù hợp với bạn.",
+    "form": {
+      "title": "Chi tiết hồ sơ",
+      "description": "Chỉnh sửa thông tin tài khoản của bạn bên dưới.",
+      "fullName": "Họ và tên",
+      "fullNameHint": "Tên hiển thị trong tài khoản của bạn.",
+      "email": "Email",
+      "emailHint": "Đây cũng là email bạn dùng để đăng nhập.",
+      "dateOfBirth": "Ngày sinh",
+      "dateOfBirthHint": "MeshMind chỉ lưu tháng và năm sinh.",
+      "birthMonth": "Tháng sinh",
+      "birthYear": "Năm sinh",
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu..."
+    },
+    "months": {
+      "1": "Tháng 1",
+      "2": "Tháng 2",
+      "3": "Tháng 3",
+      "4": "Tháng 4",
+      "5": "Tháng 5",
+      "6": "Tháng 6",
+      "7": "Tháng 7",
+      "8": "Tháng 8",
+      "9": "Tháng 9",
+      "10": "Tháng 10",
+      "11": "Tháng 11",
+      "12": "Tháng 12"
+    },
+    "validation": {
+      "email": "Nhập địa chỉ email hợp lệ.",
+      "fullName": "Nhập họ và tên có ít nhất 2 ký tự.",
+      "birthMonth": "Chọn tháng sinh hợp lệ.",
+      "birthYear": "Nhập năm sinh từ 1900 đến năm hiện tại."
+    },
+    "actions": {
+      "saved": "Đã lưu thông tin cá nhân.",
+      "checkFields": "Kiểm tra các trường được đánh dấu rồi thử lại.",
+      "emailInUse": "Email này đã được sử dụng bởi một tài khoản khác.",
+      "failed": "Chưa thể lưu thay đổi. Vui lòng thử lại.",
+      "unavailable": "Tài khoản này không có hồ sơ cá nhân để chỉnh sửa."
+    }
   }
 }

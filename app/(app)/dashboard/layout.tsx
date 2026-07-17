@@ -22,7 +22,9 @@ export default async function DashboardLayout({
   return (
     <DashboardShell
       viewer={{
+        canEditProfile: viewer.actor.kind === "user",
         displayName: viewer.displayName,
+        email: viewer.email,
         roleLabel: viewer.roles.join(", "),
       }}
     >

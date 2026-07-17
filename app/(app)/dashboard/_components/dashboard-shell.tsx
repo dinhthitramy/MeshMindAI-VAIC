@@ -29,7 +29,17 @@ import {
 import { SkipLink } from "@/components/skip-link";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeSelector } from "@/components/theme-selector";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { logoutAction } from "@/app/(auth)/actions";
 
@@ -56,6 +66,15 @@ type SidebarNavigationLinkProps = {
   item: NavigationItem;
   onNavigate?: () => void;
 };
+
+function initialsFor(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(-2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+}
 
 function SidebarNavigationLink({
   collapsed,
@@ -199,7 +218,10 @@ function SidebarPanel({
           )}
         </div>
 
-        <nav aria-label={t("navigation")} className="flex-1 space-y-1 p-3">
+        <nav
+          aria-label={t("navigation")}
+          className="flex flex-1 flex-col gap-1 p-3"
+        >
           {navigationItems.map((item) => {
             const isActive = item.exact
               ? pathname === item.href
@@ -235,25 +257,27 @@ function SidebarPanel({
             }
           />
 
-          <form action={logoutAction}>
-            <button
-              type="submit"
-              title={collapsed ? t("logout") : undefined}
-              aria-label={
-                collapsed
-                  ? t("logoutUser", { name: viewer.displayName })
-                  : undefined
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <button
+                  type="button"
+                  title={collapsed ? t("userMenu") : undefined}
+                  aria-label={
+                    collapsed
+                      ? t("openUserMenu", { name: viewer.displayName })
+                      : undefined
+                  }
+                  className={cn(
+                    "flex min-h-11 w-full items-center rounded-lg border border-sidebar-border bg-sidebar px-3 text-left text-sm outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/30 motion-reduce:transition-none",
+                    collapsed ? "justify-center" : "gap-3",
+                  )}
+                />
               }
-              className={cn(
-                "flex min-h-11 w-full items-center rounded-lg border border-sidebar-border bg-sidebar px-3 text-left text-sm outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/30 motion-reduce:transition-none",
-                collapsed ? "justify-center" : "gap-3",
-              )}
             >
-              <UserRound
-                aria-hidden="true"
-                className="size-4.5 shrink-0"
-                strokeWidth={1.8}
-              />
+              <Avatar>
+                <AvatarFallback>{initialsFor(viewer.displayName)}</AvatarFallback>
+              </Avatar>
 
               <AnimatePresence initial={false} mode="popLayout">
                 {!collapsed && (
@@ -274,26 +298,51 @@ function SidebarPanel({
                   </motion.span>
                 )}
               </AnimatePresence>
+            </DropdownMenuTrigger>
 
-              <AnimatePresence initial={false} mode="popLayout">
-                {!collapsed && (
-                  <motion.span
-                    key="logout"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.12 }}
-                    className="flex"
+            <DropdownMenuContent
+              side="top"
+              align="start"
+              sideOffset={8}
+              className="w-64"
+            >
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>
+                  <span className="block truncate font-medium text-popover-foreground">
+                    {viewer.displayName}
+                  </span>
+                  <span className="mt-0.5 block truncate font-normal">
+                    {viewer.email ?? viewer.roleLabel}
+                  </span>
+                </DropdownMenuLabel>
+                {viewer.canEditProfile && (
+                  <DropdownMenuItem
+                    render={
+                      <Link
+                        href="/dashboard/profile"
+                        onNavigate={mobile ? onNavigate : undefined}
+                      />
+                    }
                   >
-                    <LogOut
-                      aria-hidden="true"
-                      className="size-4 shrink-0 text-sidebar-foreground/55"
-                    />
-                  </motion.span>
+                    <UserRound aria-hidden="true" />
+                    {t("profile")}
+                  </DropdownMenuItem>
                 )}
-              </AnimatePresence>
-            </button>
-          </form>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <form action={logoutAction}>
+                <DropdownMenuGroup>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    render={<button type="submit" className="w-full" />}
+                  >
+                    <LogOut aria-hidden="true" />
+                    {t("logout")}
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </form>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </aside>
     </LayoutGroup>
@@ -306,7 +355,9 @@ type DashboardShellProps = {
 };
 
 type DashboardViewer = {
+  canEditProfile: boolean;
   displayName: string;
+  email: string | null;
   roleLabel: string;
 };
 
