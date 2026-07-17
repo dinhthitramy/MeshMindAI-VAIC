@@ -11,13 +11,23 @@ docker compose up -d
 The host-run application can connect with these default URLs:
 
 ```text
-postgresql://meshmind:meshmind@localhost:5432/meshmind
+postgresql://meshmind:password@localhost:5432/meshmind
 redis://localhost:6379
 ```
 
 The database name, username, password, and published ports can be overridden with
 `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_PORT`, and
 `REDIS_PORT`.
+
+Apply the database migrations before starting the application:
+
+```bash
+npm run db:migrate
+```
+
+Configure `DATABASE_URL`, `REDIS_URL`, the authentication keys, and SMTP values
+listed in `.env.example`. Authentication keys must be independent random values.
+For local development they can be generated with `openssl rand -base64 32`.
 
 Then run the development server on the host:
 
@@ -33,9 +43,93 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Database
+
+The lazy PostgreSQL connection is returned by `getDb()` from `lib/db/index.ts`. The schema
+and generated SQL migrations are managed with Drizzle.
+
+```bash
+npm run db:generate # Generate a migration after changing the schema
+npm run db:migrate  # Apply pending migrations
+npm run db:studio   # Open Drizzle Studio
+```
+
+## Email
+
+SMTP configuration is listed in `.env.example`. The email service validates it
+when an email is first sent, so SMTP credentials are not required during builds.
+
+Use the service from server-side code only:
+
+```ts
+import { sendEmail } from "@/lib/email";
+
+await sendEmail({
+  to: "recipient@example.com",
+  subject: "Hello",
+  text: "Hello from MeshMind.",
+  html: "<p>Hello from MeshMind.</p>",
+});
+```
+
+`verifyEmailConnection()` can be used to check the SMTP connection without
+sending a message.
+
+## Redis
+
+Redis stores opaque sessions, authentication rate limits, short-lived MFA
+challenges, and replay-prevention state. PostgreSQL remains authoritative for
+accounts, password hashes, account status, password reset tokens, roles, and
+permissions.
+
+The application uses one lazy `node-redis` client per Node.js process. Redis
+errors fail authentication closed rather than falling back to process-local
+state. Production should use a dedicated managed Redis primary with TLS, ACL
+credentials, persistence, high availability, and a `noeviction` policy. Supply
+the provider URL through `REDIS_URL` using the `rediss://` scheme.
+
+Set `AUTH_TRUST_PROXY_HEADERS=true` only when the application is behind a trusted
+ingress that removes client-supplied forwarding headers. When it is false, IP
+rate-limit dimensions are deliberately disabled instead of putting every user in
+one global bucket; account and challenge limits remain active.
+
+Run Redis integration tests against the local Compose service:
+
+```bash
+npm run test:integration
+```
+
+## Deployment
+
+See [`DEPLOYMENT.md`](DEPLOYMENT.md) for the external PostgreSQL/Redis, systemd,
+and Nginx production setup.
+
+## Authentication
+
+Public signup always assigns the protected `USER` role and signs the new account
+in. Passwords use Argon2id. Sessions expire after 30 minutes of inactivity and
+after seven days absolutely. Password changes and role changes increment the
+account session version so old Redis sessions are rejected immediately.
+
+The built-in superadmin is a virtual identity and never has a PostgreSQL account
+or role row. Generate its password hash and TOTP secret without persisting them:
+
+```bash
+npm run auth:provision-superadmin -- meshmind-operations
+```
+
+Store the generated identifier, password hash, and TOTP secret in the deployment
+secret manager. The generated password is the login credential and should not be
+placed in application environment variables. Superadmin access is available at
+`/superadmin/login`, requires TOTP, has a shorter session, and has all permissions
+through the server-side actor type.
+
+RBAC permissions are enforced in the data-access layer and again by every
+privileged Server Action. The initial migration seeds only the `USER` role with
+`dashboard.access`; superadmin-protected backend actions can create future roles,
+assign existing permissions, and assign roles to accounts.
 
 ## Learn More
 
