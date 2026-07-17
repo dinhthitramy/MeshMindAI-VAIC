@@ -19,6 +19,12 @@ The database name, username, password, and published ports can be overridden wit
 `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_PORT`, and
 `REDIS_PORT`.
 
+Apply the database migrations before starting the application:
+
+```bash
+npm run db:migrate
+```
+
 Then run the development server on the host:
 
 ```bash
@@ -36,6 +42,38 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Database
+
+The PostgreSQL connection is exported as `db` from `lib/db/index.ts`. The schema
+and generated SQL migrations are managed with Drizzle.
+
+```bash
+npm run db:generate # Generate a migration after changing the schema
+npm run db:migrate  # Apply pending migrations
+npm run db:studio   # Open Drizzle Studio
+```
+
+## Email
+
+SMTP configuration is listed in `.env.example`. The email service validates it
+when an email is first sent, so SMTP credentials are not required during builds.
+
+Use the service from server-side code only:
+
+```ts
+import { sendEmail } from "@/lib/email";
+
+await sendEmail({
+  to: "recipient@example.com",
+  subject: "Hello",
+  text: "Hello from MeshMind.",
+  html: "<p>Hello from MeshMind.</p>",
+});
+```
+
+`verifyEmailConnection()` can be used to check the SMTP connection without
+sending a message.
 
 ## Learn More
 
