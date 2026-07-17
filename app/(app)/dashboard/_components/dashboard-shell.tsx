@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { SkipLink } from "@/components/skip-link";
+import { ThemeSelector } from "@/components/theme-selector";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -106,7 +107,15 @@ function SidebarPanel({
         })}
       </nav>
 
-      <div className="border-t border-sidebar-border p-3">
+      <div className="flex flex-col gap-2 border-t border-sidebar-border p-3">
+        <ThemeSelector
+          compact={collapsed}
+          className={
+            collapsed
+              ? "text-sidebar-foreground hover:bg-sidebar-accent"
+              : "w-full"
+          }
+        />
         <button
           type="button"
           disabled
@@ -191,6 +200,7 @@ function DashboardShell({ children }: DashboardShellProps) {
           >
             <MenuIcon />
           </Button>
+          <ThemeSelector compact className="ml-auto" />
         </header>
         <main
           id="dashboard-content"

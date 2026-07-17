@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import { ArrowLeft, Mail } from "lucide-react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,7 @@ function ForgotPasswordForm() {
           href="/login"
           className={cn(buttonVariants({ variant: "secondary", size: "lg" }), "w-full")}
         >
+          <ArrowLeft data-icon="inline-start" aria-hidden="true" />
           Back to login
         </Link>
       </div>
@@ -55,12 +57,17 @@ function ForgotPasswordForm() {
         />
       </div>
       <Button type="submit" size="lg" className="w-full">
+        <Mail data-icon="inline-start" aria-hidden="true" />
         Send reset link
       </Button>
       <Link
         href="/login"
         className="block text-center text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
       >
+        <ArrowLeft
+          aria-hidden="true"
+          className="mr-1 inline size-3.5 align-[-0.15em]"
+        />
         Back to login
       </Link>
     </form>

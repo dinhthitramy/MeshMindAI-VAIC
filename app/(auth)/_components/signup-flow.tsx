@@ -8,6 +8,7 @@ import {
   type FormEvent,
 } from "react";
 import Link from "next/link";
+import { ArrowLeft, ArrowRight, LogIn, UserPlus } from "lucide-react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -109,6 +110,7 @@ function SignupFlow() {
           href="/login"
           className={cn(buttonVariants({ size: "lg" }), "w-full")}
         >
+          <LogIn data-icon="inline-start" aria-hidden="true" />
           Continue to login
         </Link>
       </AuthCard>
@@ -281,11 +283,22 @@ function SignupFlow() {
               className="flex-1"
               onClick={goBack}
             >
+              <ArrowLeft data-icon="inline-start" aria-hidden="true" />
               Back
             </Button>
           )}
           <Button type="submit" size="lg" className="flex-1">
-            {step === steps.length - 1 ? "Create account" : "Continue"}
+            {step === steps.length - 1 ? (
+              <>
+                <UserPlus data-icon="inline-start" aria-hidden="true" />
+                Create account
+              </>
+            ) : (
+              <>
+                Continue
+                <ArrowRight data-icon="inline-end" aria-hidden="true" />
+              </>
+            )}
           </Button>
         </div>
       </form>

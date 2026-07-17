@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import { LogIn } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,6 +53,7 @@ function LoginForm() {
       />
 
       <Button type="submit" size="lg" className="w-full">
+        <LogIn data-icon="inline-start" aria-hidden="true" />
         Log in
       </Button>
 
