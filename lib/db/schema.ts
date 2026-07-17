@@ -160,6 +160,34 @@ export const auditEvents = pgTable(
   ],
 );
 
+export const oauthAccounts = pgTable(
+  "oauth_accounts",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    provider: text("provider").notNull(),
+    providerAccountId: text("provider_account_id").notNull(),
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    tokenExpiresAt: timestamp("token_expires_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("oauth_accounts_provider_account_unique").on(
+      table.provider,
+      table.providerAccountId,
+    ),
+    index("oauth_accounts_user_id_idx").on(table.userId),
+  ],
+);
+
 export function lower(column: AnyPgColumn): SQL {
   return sql`lower(${column})`;
 }

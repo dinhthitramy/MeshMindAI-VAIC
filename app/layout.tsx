@@ -44,7 +44,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: themeInitializationScript }}
         />
       </head>
-      <body className="min-h-dvh">
+      <body className="min-h-dvh" suppressHydrationWarning>
         <ThemeProvider>
           <MotionProvider>{children}</MotionProvider>
         </ThemeProvider>
