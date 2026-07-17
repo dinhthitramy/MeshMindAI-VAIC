@@ -2,7 +2,24 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+Start PostgreSQL and Redis:
+
+```bash
+docker compose up -d
+```
+
+The host-run application can connect with these default URLs:
+
+```text
+postgresql://meshmind:meshmind@localhost:5432/meshmind
+redis://localhost:6379
+```
+
+The database name, username, password, and published ports can be overridden with
+`POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_PORT`, and
+`REDIS_PORT`.
+
+Then run the development server on the host:
 
 ```bash
 npm run dev
