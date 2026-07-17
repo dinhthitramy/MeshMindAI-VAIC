@@ -1,0 +1,60 @@
+import Link from "next/link";
+
+import { LogoPlaceholder } from "@/components/logo-placeholder";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+const categories = ["Category 01", "Category 02", "Category 03"];
+
+function LandingHeader() {
+  return (
+    <header className="border-b border-border/80 bg-background/95">
+      <nav
+        aria-label="Primary navigation"
+        className="mx-auto flex h-16 w-full max-w-360 items-center gap-4 px-4 sm:px-6 lg:px-8"
+      >
+        <LogoPlaceholder />
+
+        <div className="hidden items-center gap-1 md:flex">
+          {categories.map((category) => (
+            <span
+              key={category}
+              aria-disabled="true"
+              className="rounded-md px-3 py-2 text-sm text-muted-foreground"
+            >
+              {category}
+            </span>
+          ))}
+        </div>
+
+        <div className="ml-auto flex items-center gap-2">
+          <details className="group relative md:hidden">
+            <summary className="flex h-9 cursor-pointer list-none items-center rounded-full px-3 text-sm font-medium outline-none transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/30 [&::-webkit-details-marker]:hidden">
+              Categories
+            </summary>
+            <div className="absolute right-0 top-[calc(100%+0.5rem)] z-50 grid min-w-44 gap-1 rounded-xl border bg-popover p-2 text-popover-foreground shadow-lg">
+              {categories.map((category) => (
+                <span
+                  key={category}
+                  aria-disabled="true"
+                  className="rounded-lg px-3 py-2 text-sm text-muted-foreground"
+                >
+                  {category}
+                </span>
+              ))}
+            </div>
+          </details>
+
+          <Link
+            href="/login"
+            className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+          >
+            Account
+          </Link>
+        </div>
+      </nav>
+    </header>
+  );
+}
+
+export { LandingHeader };
