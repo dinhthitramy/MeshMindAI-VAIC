@@ -101,6 +101,11 @@ Run Redis integration tests against the local Compose service:
 npm run test:integration
 ```
 
+## Deployment
+
+See [`DEPLOYMENT.md`](DEPLOYMENT.md) for the external PostgreSQL/Redis, systemd,
+and Nginx production setup.
+
 ## Authentication
 
 Public signup always assigns the protected `USER` role and signs the new account
