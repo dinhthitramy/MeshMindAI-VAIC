@@ -9,6 +9,22 @@ type LogoPlaceholderProps = {
   className?: string;
 };
 
+type LogoMarkProps = {
+  className?: string;
+};
+
+function LogoMark({ className }: LogoMarkProps) {
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        "size-7 rounded-md border border-dashed border-foreground/20",
+        className,
+      )}
+    />
+  );
+}
+
 function LogoPlaceholder({ className }: LogoPlaceholderProps) {
   const t = useTranslations("Common");
 
@@ -21,12 +37,9 @@ function LogoPlaceholder({ className }: LogoPlaceholderProps) {
         className,
       )}
     >
-      <span
-        aria-hidden="true"
-        className="size-7 rounded-md border border-dashed border-foreground/20"
-      />
+      <LogoMark />
     </Link>
   );
 }
 
-export { LogoPlaceholder };
+export { LogoMark, LogoPlaceholder };

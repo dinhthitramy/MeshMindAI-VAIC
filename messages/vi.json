@@ -11,6 +11,19 @@
       "shortVietnamese": "VI"
     }
   },
+  "Preloader": {
+    "loading": "Đang chuẩn bị MeshMind",
+    "progressLabel": "Tiến trình tải",
+    "percent": "{percent}%",
+    "messages": {
+      "semanticPathways": "Đang hiệu chỉnh các luồng ngữ nghĩa và sắp xếp không gian làm việc cho một phiên làm việc hiệu quả đến mức đáng ngờ.",
+      "opinionatedAlgorithms": "Đang thương lượng với vài thuật toán cực kỳ kiên định về cách mọi thứ nên được tổ chức.",
+      "filingCabinets": "Đang lập chỉ mục những tủ hồ sơ tưởng tượng, đối chiếu các nhãn và giả vờ rằng mọi thứ luôn ngăn nắp.",
+      "distributedThoughts": "Đang căn chỉnh các dòng suy nghĩ phân tán để mọi ý tưởng hữu ích đến đúng nơi vào gần như đúng thời điểm.",
+      "tinyGears": "Đang kiểm tra lần cuối từng bánh răng nhỏ, từng công tắc kín đáo và vài chi tiết không ai nhớ đã lắp vào.",
+      "knowledgeThreads": "Đang nối các sợi tri thức, tháo những nút thắt không cần thiết và dành chỗ cho điều bạn sắp khám phá."
+    }
+  },
   "Theme": {
     "system": "Hệ thống",
     "light": "Sáng",

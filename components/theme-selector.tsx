@@ -93,7 +93,7 @@ function ThemeSelector({ className, compact = false }: ThemeSelectorProps) {
   }
 
   return (
-    <div className={cn("flex w-32 items-center gap-2", className)}>
+    <div className={cn("flex w-auto items-center gap-2", className)}>
       <ThemeIcon theme={theme} />
       <label htmlFor={selectId} className="sr-only">
         {t("preference")}

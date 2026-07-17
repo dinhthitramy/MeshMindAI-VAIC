@@ -11,6 +11,19 @@
       "shortVietnamese": "VI"
     }
   },
+  "Preloader": {
+    "loading": "Preparing MeshMind",
+    "progressLabel": "Loading progress",
+    "percent": "{percent}%",
+    "messages": {
+      "semanticPathways": "Calibrating semantic pathways and arranging the workspace for a suspiciously productive session.",
+      "opinionatedAlgorithms": "Negotiating with several highly opinionated algorithms about how everything should be organized.",
+      "filingCabinets": "Indexing imaginary filing cabinets, reconciling their labels, and pretending they were always this orderly.",
+      "distributedThoughts": "Aligning distributed thoughts so every useful idea arrives in the right place at approximately the right time.",
+      "tinyGears": "Performing final checks on every tiny gear, discreet switch, and mysterious component nobody remembers installing.",
+      "knowledgeThreads": "Connecting threads of knowledge, loosening unnecessary knots, and making room for whatever you discover next."
+    }
+  },
   "Theme": {
     "system": "System",
     "light": "Light",
