@@ -46,15 +46,15 @@ export default async function RootLayout({
         geistMono.variable,
       )}
     >
+      {/* eslint-disable-next-line @next/next/no-sync-scripts */}
       <head>
-        <script
-          dangerouslySetInnerHTML={{ __html: themeInitializationScript }}
-        />
-        <script
-          dangerouslySetInnerHTML={{ __html: preloaderInitializationScript }}
-        />
+        {/* Inline init scripts run before React hydration — dev warning is expected and harmless */}
+        {/* biome-ignore lint: required for FOUC prevention */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitializationScript }} />
+        {/* biome-ignore lint: required for preloader */}
+        <script dangerouslySetInnerHTML={{ __html: preloaderInitializationScript }} />
       </head>
-      <body className="min-h-dvh">
+      <body className="min-h-dvh" suppressHydrationWarning>
         <NextIntlClientProvider>
           <ThemeProvider>
             <MotionProvider>
