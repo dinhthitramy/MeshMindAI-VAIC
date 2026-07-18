@@ -68,8 +68,23 @@ function SignupFlow() {
   const [direction, setDirection] = useState(1);
   const [values, setValues] = useState(initialValues);
   const [passwordError, setPasswordError] = useState("");
+
+  async function submitSignup(
+    previousState: AuthActionState,
+    formData: FormData,
+  ) {
+    const nextState = await signupAction(previousState, formData);
+
+    if (nextState.fieldErrors?.email?.length) {
+      setDirection(-1);
+      setStep(0);
+    }
+
+    return nextState;
+  }
+
   const [actionState, action, pending] = useActionState(
-    signupAction,
+    submitSignup,
     initialActionState,
   );
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
