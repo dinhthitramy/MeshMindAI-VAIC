@@ -769,7 +769,46 @@
   "StartingPoint": {
     "metadataTitle": "Starting Point",
     "title": "Starting Point",
-    "description": "Bring together your personality result, education, experience, and key milestones to understand where you are today."
+    "description": "Bring together your personality result, education, experience, and key milestones to understand where you are today.",
+    "cvImport": {
+      "title": "Import from your CV",
+      "description": "Upload your CV to identify education, certificates, achievements, activities, and work experience. Only information not already in your profile will be added.",
+      "badge": "AI-assisted",
+      "fileLabel": "Your CV",
+      "fileHint": "PDF only, up to 6 MB and 15 pages. The file must contain selectable text.",
+      "selectedFile": "Selected: {name}",
+      "privacy": "Your CV is processed only for this import and is not stored as a file. You can edit every imported item afterward.",
+      "submit": "Analyze and complete profile",
+      "processing": "Reading and organizing your CV...",
+      "successTitle": "Starting Point updated",
+      "errorTitle": "CV import unavailable",
+      "counts": {
+        "education": "{count, plural, one {# education record} other {# education records}}",
+        "transcriptEntries": "{count, plural, one {# course} other {# courses}}",
+        "certificates": "{count, plural, one {# certificate} other {# certificates}}",
+        "competitions": "{count, plural, one {# competition} other {# competitions}}",
+        "activities": "{count, plural, one {# activity} other {# activities}}",
+        "workExperiences": "{count, plural, one {# work experience} other {# work experiences}}",
+        "duplicates": "{count, plural, one {# duplicate or incompatible item skipped} other {# duplicate or incompatible items skipped}}"
+      },
+      "actions": {
+        "saved": "Added {count, plural, one {# item} other {# items}} from your CV. Review the information below.",
+        "noNewData": "There was no new information to add. Items already in your profile were left unchanged.",
+        "checkFile": "Choose a suitable CV file and try again.",
+        "analysisFailed": "We could not identify profile data in this CV. Check the file content and try again.",
+        "failed": "We could not save data from your CV right now. Please try again.",
+        "unavailable": "This account does not have a Starting Point profile to update."
+      },
+      "validation": {
+        "required": "Choose a PDF CV.",
+        "tooLarge": "The CV file must be 6 MB or smaller.",
+        "invalidType": "Only PDF files with a .pdf extension are accepted.",
+        "invalidContent": "The file content is not a valid PDF.",
+        "tooManyPages": "The CV can contain at most 15 pages.",
+        "noText": "Not enough text was found in the PDF. If this is a scan, export it again as a PDF with selectable text.",
+        "readFailed": "We could not read this PDF. The file may be damaged or password-protected."
+      }
+    }
   },
   "Profile": {
     "metadataTitle": "Personal information",

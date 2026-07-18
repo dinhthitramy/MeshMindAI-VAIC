@@ -19,6 +19,10 @@ export interface AIGenerateOptions {
   traceName?: string;
   userId?: string;
   langfusePromptName?: string;
+  /** Keep sensitive inputs such as CV text out of observability traces. */
+  disableTracing?: boolean;
+  /** Disable response logging when the response can contain personal data. */
+  logResponse?: boolean;
 }
 
 // FPT Cloud returns standard OpenAI format directly (no wrapper)
@@ -76,7 +80,11 @@ function buildMessages(systemPrompt: string, options: AIGenerateOptions): AIMess
   ];
 }
 
-async function callFPT(model: string, messages: AIMessage[]): Promise<FPTRawResponse> {
+async function callFPT(
+  model: string,
+  messages: AIMessage[],
+  logResponse = true,
+): Promise<FPTRawResponse> {
   const apiKey = process.env.FPT_AI_API_KEY;
   if (!apiKey) throw new AIServiceError("Missing FPT_AI_API_KEY");
 
@@ -94,7 +102,9 @@ async function callFPT(model: string, messages: AIMessage[]): Promise<FPTRawResp
 
     if (res.ok) {
       const json = await res.json();
-      console.log("[fpt] raw response:", JSON.stringify(json).slice(0, 500));
+      if (logResponse) {
+        console.log("[fpt] raw response:", JSON.stringify(json).slice(0, 500));
+      }
       return json as FPTRawResponse;
     }
 
@@ -121,7 +131,7 @@ export async function generateAIResponse(
   const systemPrompt = await resolveSystemPrompt(options);
   const messages = buildMessages(systemPrompt, options);
   const model = options.model ?? DEFAULT_MODEL;
-  const langfuse = getLangfuse();
+  const langfuse = options.disableTracing ? null : getLangfuse();
 
   const trace = langfuse?.trace({
     name: options.traceName ?? "ai-generate",
@@ -136,7 +146,11 @@ export async function generateAIResponse(
   });
 
   try {
-    const rawResponse = await callFPT(model, messages);
+    const rawResponse = await callFPT(
+      model,
+      messages,
+      options.logResponse ?? true,
+    );
 
     const text = rawResponse.choices?.[0]?.message?.content ?? "";
     const usage = rawResponse.usage ?? { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };
