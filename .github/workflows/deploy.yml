@@ -44,7 +44,7 @@ jobs:
             -o StrictHostKeyChecking=no \
             -o UserKnownHostsFile=/dev/null \
             "meshmindai@$DEPLOY_HOST" 'bash -se' <<'REMOTE'
-          set -Eeuo pipefail
+          set -Eeuxo pipefail
 
           cd /opt/meshmind-ai
           git pull --ff-only origin main

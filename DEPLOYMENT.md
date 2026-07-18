@@ -43,9 +43,9 @@ CA on the host, or configure `NODE_EXTRA_CA_CERTS`, when it uses a private CA.
 
 ## Secrets And Environment
 
-Keep production secrets outside version control in
-`/opt/meshmind-ai/production.env`, owned by root and readable by the `meshmindai`
-group. Generate three independent 32-byte HMAC keys with `openssl rand -base64 32`.
+Keep production secrets outside version control in `/opt/meshmind-ai/.env`, owned by
+root and readable by the `meshmindai` group. Generate three independent 32-byte HMAC
+keys with `openssl rand -base64 32`.
 
 The initial host setup provisions the built-in superadmin. Store its generated login
 password and time-based one-time password (TOTP) URI in the appropriate password
@@ -84,10 +84,9 @@ SMTP_FROM="MeshMind <no-reply@example.com>"
 
 Use the same environment when building and running the application. Values prefixed
 with `NEXT_PUBLIC_` are embedded during `npm run build`; server-only variables are
-read at runtime. The repository's `.env` symlink makes this file available to the
-build and migration commands, while `systemd.service` loads it at runtime. The
-server port and hostname are passed directly to `next start` because Next.js does
-not load `PORT` from an env file during server startup.
+read at runtime. Both the build and migration commands and `systemd.service` load
+`.env`. The server port and hostname are passed directly to `next start` because
+Next.js does not load `PORT` from an env file during server startup.
 
 Restrict the environment file after creating it:
 
@@ -111,6 +110,16 @@ sudo -u meshmindai -H sh -c 'cd /opt/meshmind-ai && npm run auth:provision-super
 The host must be able to pull the repository non-interactively. For a private
 repository, configure an SSH deploy key or another Git credential for the
 `meshmindai` user, and verify that the checkout's `origin` points to the repository.
+
+Create `/opt/meshmind-ai/.env` with the values above, then set its permissions:
+
+```bash
+sudo cp /opt/meshmind-ai/.env.example /opt/meshmind-ai/.env
+sudoedit /opt/meshmind-ai/.env
+sudo chown root:meshmindai /opt/meshmind-ai/.env
+sudo chmod 640 /opt/meshmind-ai/.env
+sudo -u meshmindai -H sh -c 'cd /opt/meshmind-ai && npm test && npm run build && npm run db:migrate'
+```
 
 The automated deployment repeats `git pull --ff-only origin main`, `npm ci`,
 `npm run build`, and `npm run db:migrate` after the `Tests` workflow succeeds on
@@ -158,12 +167,14 @@ forward-compatible with the currently running application. The workflow restarts
 ## Systemd
 
 The repository contains the unit at `systemd.service`. It runs from
-`/opt/meshmind-ai` as `meshmindai` and loads `/opt/meshmind-ai/production.env`.
+`/opt/meshmind-ai` as `meshmindai` and loads `/opt/meshmind-ai/.env`.
 Symlink it into systemd so updates to the tracked unit remain visible:
 
 ```bash
+test -f /opt/meshmind-ai/systemd.service
 sudo ln -sfn /opt/meshmind-ai/systemd.service /etc/systemd/system/meshmind-ai.service
 sudo systemctl daemon-reload
+sudo systemctl cat meshmind-ai.service
 sudo systemctl enable --now meshmind-ai.service
 sudo systemctl status meshmind-ai.service
 ```
@@ -178,9 +189,17 @@ for pending work to complete.
 
 ## Nginx
 
-Use `nginx.conf.example` as an HTTP-context site configuration, for example at
-`/etc/nginx/conf.d/meshmind-ai.conf`. Replace `app.example.com` and the certificate
-paths. Provision the certificate before enabling the HTTPS server block.
+Install `nginx.conf` as an HTTP-context site configuration at
+`/etc/nginx/conf.d/meshmind-ai.conf`. Replace the hostname and certificate paths
+before enabling the HTTPS server block:
+
+```bash
+sudo cp /opt/meshmind-ai/nginx.conf /etc/nginx/conf.d/meshmind-ai.conf
+sudoedit /etc/nginx/conf.d/meshmind-ai.conf
+```
+
+Confirm that `/etc/nginx/nginx.conf` includes `/etc/nginx/conf.d/*.conf` inside its
+`http` block. Provision the certificate before enabling the HTTPS server block.
 
 The example overwrites incoming forwarding headers before they reach the trusted
 application, preserves the public host and protocol for Server Actions, supports
@@ -196,6 +215,7 @@ Validate and reload Nginx:
 
 ```bash
 sudo nginx -t
+sudo nginx -T 2>&1 | grep -F '/etc/nginx/conf.d/meshmind-ai.conf'
 sudo systemctl reload nginx
 ```
 
