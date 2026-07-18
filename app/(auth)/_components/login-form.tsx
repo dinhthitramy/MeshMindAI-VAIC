@@ -91,20 +91,7 @@ function LoginForm() {
             </motion.p>
           )}
         </AnimatePresence>
-
-        <Button type="submit" size="lg" className="w-full" disabled={pending}>
-          {pending ? "Logging in..." : "Log in"}
-        </Button>
-
-        <p className="text-center text-sm text-muted-foreground">
-          New to MeshMind?{" "}
-          <Link
-            href="/signup"
-            className="font-medium text-foreground underline-offset-4 hover:underline">
-            {t("login.forgotPassword")}
-          </Link>
-        </p>
-
+        
         <AnimatePresence initial={false}>
           {state.message && (
             <motion.p
