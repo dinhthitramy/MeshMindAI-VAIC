@@ -100,7 +100,7 @@ function ResetPasswordForm({ token }: { token: string }) {
                 name="password"
                 label={t("reset.newPassword")}
                 autoComplete="new-password"
-                minLength={12}
+                minLength={8}
                 aria-invalid={error ? true : undefined}
                 aria-describedby={error ? "reset-password-error" : undefined}
                 required
@@ -111,7 +111,7 @@ function ResetPasswordForm({ token }: { token: string }) {
                 name="passwordConfirmation"
                 label={t("reset.confirmNewPassword")}
                 autoComplete="new-password"
-                minLength={12}
+                minLength={8}
                 aria-invalid={error ? true : undefined}
                 aria-describedby={error ? "reset-password-error" : undefined}
                 required

@@ -12,7 +12,7 @@ import {
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
-import { LogoMark } from "@/components/logo-placeholder";
+import { BrandMark } from "@/components/brand";
 import { preloaderTimeoutEvent } from "@/lib/preloader";
 
 const messageKeys = [
@@ -42,6 +42,7 @@ function AppPreloader({
   daySeed: string;
 }) {
   const t = useTranslations("Preloader");
+  const common = useTranslations("Common");
   const shouldReduceMotion = useReducedMotion();
   const contentRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(true);
@@ -254,8 +255,16 @@ function AppPreloader({
               transition={{ duration: shouldReduceMotion ? 0.08 : 0.18 }}
               className="w-full max-w-xl"
             >
-              <div className="flex justify-center">
-                <LogoMark className="size-24 rounded-3xl border-foreground/30" />
+              <div className="flex flex-col items-center gap-5 text-center">
+                <BrandMark className="h-24 w-44" />
+                <div>
+                  <p className="text-lg font-semibold tracking-tight">
+                    {common("brandName")}
+                  </p>
+                  <p className="mt-1 text-[0.6875rem] font-medium tracking-wide text-muted-foreground">
+                    {common("developedBy")}
+                  </p>
+                </div>
               </div>
 
               <div className="mt-14">

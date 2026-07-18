@@ -2,8 +2,8 @@ import Link from "next/link";
 import { ChevronDown, UserRound } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
+import { BrandLink } from "@/components/brand";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { LogoPlaceholder } from "@/components/logo-placeholder";
 import { ThemeSelector } from "@/components/theme-selector";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -22,7 +22,8 @@ async function LandingHeader() {
         aria-label={t("primaryNavigation")}
         className="mx-auto flex h-16 w-full max-w-360 items-center gap-4 px-4 sm:px-6 lg:px-8"
       >
-        <LogoPlaceholder />
+        <BrandLink compact className="sm:hidden" />
+        <BrandLink className="hidden sm:inline-flex" />
 
         <div className="hidden items-center gap-1 md:flex">
           {categories.map((category) => (
@@ -59,8 +60,7 @@ async function LandingHeader() {
           </details>
 
           <LanguageSwitcher compact />
-          <ThemeSelector compact className="sm:hidden" />
-          <ThemeSelector className="hidden sm:flex" />
+          <ThemeSelector />
 
           <Link
             href={viewer ? "/dashboard" : "/login"}

@@ -1,18 +1,16 @@
 "use client";
 
-import { useId, type ComponentType, type SVGProps } from "react";
+import type { ComponentType, SVGProps } from "react";
 import { Monitor, Moon, Sun } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
 import {
   themePreferences,
   type ThemePreference,
 } from "@/lib/theme";
-import { cn } from "@/lib/utils";
 
 type ThemeOption = {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
@@ -26,15 +24,12 @@ const themeOptions: Record<ThemePreference, ThemeOption> = {
 
 type ThemeSelectorProps = {
   className?: string;
-  compact?: boolean;
 };
 
 function ThemeIcon({
   theme,
-  inline = false,
 }: {
   theme: ThemePreference;
-  inline?: boolean;
 }) {
   const Icon = themeOptions[theme].icon;
 
@@ -53,9 +48,8 @@ function ThemeIcon({
           className="absolute inset-0 flex items-center justify-center"
         >
           <Icon
-            data-icon={inline ? "inline-start" : undefined}
             aria-hidden="true"
-            className={inline ? undefined : "size-4 text-muted-foreground"}
+            className="size-4"
             strokeWidth={1.8}
           />
         </motion.span>
@@ -64,8 +58,7 @@ function ThemeIcon({
   );
 }
 
-function ThemeSelector({ className, compact = false }: ThemeSelectorProps) {
-  const selectId = useId();
+function ThemeSelector({ className }: ThemeSelectorProps) {
   const t = useTranslations("Theme");
   const { theme, setTheme } = useTheme();
   const currentIndex = themePreferences.indexOf(theme);
@@ -73,44 +66,24 @@ function ThemeSelector({ className, compact = false }: ThemeSelectorProps) {
   const currentThemeLabel = t(theme);
   const nextThemeLabel = t(nextTheme);
 
-  if (compact) {
-    return (
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        title={currentThemeLabel}
-        aria-label={t("currentSwitch", {
-          theme: currentThemeLabel,
-          nextTheme: nextThemeLabel,
-        })}
-        onClick={() => setTheme(nextTheme)}
-        className={className}
-      >
-        <ThemeIcon theme={theme} inline />
-      </Button>
-    );
-  }
-
   return (
-    <div className={cn("flex w-auto items-center gap-2", className)}>
+    <Button
+      type="button"
+      variant="outline"
+      size="icon"
+      title={t("currentSwitch", {
+        theme: currentThemeLabel,
+        nextTheme: nextThemeLabel,
+      })}
+      aria-label={t("currentSwitch", {
+        theme: currentThemeLabel,
+        nextTheme: nextThemeLabel,
+      })}
+      onClick={() => setTheme(nextTheme)}
+      className={className}
+    >
       <ThemeIcon theme={theme} />
-      <label htmlFor={selectId} className="sr-only">
-        {t("preference")}
-      </label>
-      <Select
-        id={selectId}
-        value={theme}
-        onChange={(event) => setTheme(event.target.value as ThemePreference)}
-        className="h-8 min-w-0 flex-1"
-      >
-        {themePreferences.map((preference) => (
-          <option key={preference} value={preference}>
-            {t(preference)}
-          </option>
-        ))}
-      </Select>
-    </div>
+    </Button>
   );
 }
 

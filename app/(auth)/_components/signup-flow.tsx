@@ -29,19 +29,23 @@ const monthNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
 type SignupValues = {
   email: string;
   fullName: string;
+  birthDay: string;
   birthMonth: string;
   birthYear: string;
   password: string;
   passwordConfirmation: string;
+  dataConsent: boolean;
 };
 
 const initialValues: SignupValues = {
   email: "",
   fullName: "",
+  birthDay: "",
   birthMonth: "",
   birthYear: "",
   password: "",
   passwordConfirmation: "",
+  dataConsent: false,
 };
 
 const initialActionState: AuthActionState = { status: "idle" };
@@ -52,7 +56,11 @@ const stepVariants: Variants = {
   exit: (direction: number) => ({ opacity: 0, x: direction * -8 }),
 };
 
-function SignupFlow() {
+type SignupFlowProps = {
+  currentYear: number;
+};
+
+function SignupFlow({ currentYear }: SignupFlowProps) {
   const t = useTranslations("Auth");
   const steps = [
     t("signup.steps.account"),
@@ -100,7 +108,12 @@ function SignupFlow() {
   function updateValue(
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) {
-    const { name, value } = event.target;
+    const { name } = event.target;
+    const value =
+      event.target instanceof HTMLInputElement &&
+      event.target.type === "checkbox"
+        ? event.target.checked
+        : event.target.value;
     setValues((current) => ({ ...current, [name]: value }));
     if (name === "password" || name === "passwordConfirmation") {
       setPasswordError("");
@@ -172,6 +185,7 @@ function SignupFlow() {
           <>
             <input type="hidden" name="email" value={values.email} />
             <input type="hidden" name="fullName" value={values.fullName} />
+            <input type="hidden" name="birthDay" value={values.birthDay} />
             <input type="hidden" name="birthMonth" value={values.birthMonth} />
             <input type="hidden" name="birthYear" value={values.birthYear} />
           </>
@@ -203,7 +217,7 @@ function SignupFlow() {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  placeholder={t("common.emailPlaceholder")}
+                  placeholder="email@example.com"
                   value={values.email}
                   onChange={updateValue}
                   aria-invalid={Boolean(actionState.fieldErrors?.email)}
@@ -262,7 +276,31 @@ function SignupFlow() {
                   <legend className="text-sm font-medium">
                     {t("signup.dateOfBirth")}
                   </legend>
-                  <div className="grid grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] gap-3">
+                  <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)_minmax(0,0.8fr)]">
+                    <div className="grid gap-2">
+                      <Label htmlFor="signup-birth-year" className="sr-only">
+                        {t("signup.birthYear")}
+                      </Label>
+                      <Input
+                        id="signup-birth-year"
+                        name="birthYear"
+                        type="number"
+                        inputMode="numeric"
+                        autoComplete="bday-year"
+                        min={1900}
+                        max={currentYear}
+                        placeholder={t("signup.year")}
+                        value={values.birthYear}
+                        onChange={updateValue}
+                        aria-invalid={
+                          Boolean(
+                            actionState.fieldErrors?.birthYear ||
+                              actionState.fieldErrors?.birthDate,
+                          )
+                        }
+                        required
+                      />
+                    </div>
                     <div className="grid gap-2">
                       <Label htmlFor="signup-birth-month" className="sr-only">
                         {t("signup.birthMonth")}
@@ -273,7 +311,12 @@ function SignupFlow() {
                         autoComplete="bday-month"
                         value={values.birthMonth}
                         onChange={updateValue}
-                        aria-invalid={Boolean(actionState.fieldErrors?.birthMonth)}
+                        aria-invalid={
+                          Boolean(
+                            actionState.fieldErrors?.birthMonth ||
+                              actionState.fieldErrors?.birthDate,
+                          )
+                        }
                         required
                       >
                         <option value="" disabled>
@@ -287,25 +330,35 @@ function SignupFlow() {
                       </Select>
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="signup-birth-year" className="sr-only">
-                        {t("signup.birthYear")}
+                      <Label htmlFor="signup-birth-day" className="sr-only">
+                        {t("signup.birthDay")}
                       </Label>
                       <Input
-                        id="signup-birth-year"
-                        name="birthYear"
+                        id="signup-birth-day"
+                        name="birthDay"
                         type="number"
                         inputMode="numeric"
-                        autoComplete="bday-year"
+                        autoComplete="bday-day"
                         min={1}
-                        max={new Date().getFullYear()}
-                        placeholder={t("signup.year")}
-                        value={values.birthYear}
+                        max={31}
+                        placeholder={t("signup.day")}
+                        value={values.birthDay}
                         onChange={updateValue}
-                        aria-invalid={Boolean(actionState.fieldErrors?.birthYear)}
+                        aria-invalid={
+                          Boolean(
+                            actionState.fieldErrors?.birthDay ||
+                              actionState.fieldErrors?.birthDate,
+                          )
+                        }
                         required
                       />
                     </div>
                   </div>
+                  {actionState.fieldErrors?.birthDate?.[0] && (
+                    <p role="alert" className="text-sm text-destructive">
+                      {actionState.fieldErrors.birthDate[0]}
+                    </p>
+                  )}
                 </fieldset>
               </>
             )}
@@ -317,7 +370,7 @@ function SignupFlow() {
                   name="password"
                   label={t("common.password")}
                   autoComplete="new-password"
-                  minLength={12}
+                  minLength={8}
                   value={values.password}
                   onChange={updateValue}
                   aria-invalid={
@@ -331,7 +384,7 @@ function SignupFlow() {
                   name="passwordConfirmation"
                   label={t("signup.confirmPassword")}
                   autoComplete="new-password"
-                  minLength={12}
+                  minLength={8}
                   value={values.passwordConfirmation}
                   onChange={updateValue}
                   aria-invalid={passwordError ? true : undefined}
@@ -365,6 +418,41 @@ function SignupFlow() {
                 <p className="text-xs leading-5 text-muted-foreground">
                   {t("signup.passwordHint")}
                 </p>
+                <div className="flex items-start gap-3 rounded-lg border border-border/80 bg-muted/30 p-3">
+                  <input
+                    id="signup-data-consent"
+                    name="dataConsent"
+                    type="checkbox"
+                    value="true"
+                    checked={values.dataConsent}
+                    onChange={updateValue}
+                    required
+                    className="mt-1 size-4 shrink-0 accent-primary"
+                  />
+                  <label
+                    htmlFor="signup-data-consent"
+                    className="text-xs leading-5 text-muted-foreground"
+                  >
+                    {t.rich("signup.consent", {
+                      terms: (chunks) => (
+                        <Link
+                          href="/terms"
+                          className="font-medium text-foreground underline-offset-4 hover:underline"
+                        >
+                          {chunks}
+                        </Link>
+                      ),
+                      privacy: (chunks) => (
+                        <Link
+                          href="/privacy"
+                          className="font-medium text-foreground underline-offset-4 hover:underline"
+                        >
+                          {chunks}
+                        </Link>
+                      ),
+                    })}
+                  </label>
+                </div>
               </>
             )}
           </PresencePanel>

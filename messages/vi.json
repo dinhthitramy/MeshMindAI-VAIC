@@ -1,34 +1,36 @@
 {
   "Common": {
     "skipToContent": "Đi đến nội dung",
-    "homeAria": "Trang chủ MeshMind",
+    "homeAria": "Trang chủ CareerLens",
+    "brandName": "CareerLens",
+    "developedBy": "Phát triển bởi MeshMind-AI",
+    "legalNavigation": "Điều hướng pháp lý",
+    "termsOfService": "Điều khoản dịch vụ",
+    "privacyPolicy": "Chính sách bảo mật",
     "language": {
       "english": "Tiếng Anh",
       "vietnamese": "Tiếng Việt",
-      "currentSwitch": "Ngôn ngữ: {language}. Chuyển sang {nextLanguage}.",
-      "switchTo": "Chuyển sang {language}",
-      "shortEnglish": "EN",
-      "shortVietnamese": "VI"
+      "current": "Ngôn ngữ hiện tại: {language}",
+      "select": "Chọn ngôn ngữ"
     }
   },
   "Preloader": {
-    "loading": "Đang chuẩn bị MeshMind",
+    "loading": "Đang chuẩn bị CareerLens",
     "progressLabel": "Tiến trình tải",
     "percent": "{percent}%",
     "messages": {
-      "semanticPathways": "Đang hiệu chỉnh các luồng ngữ nghĩa và sắp xếp không gian làm việc cho một phiên làm việc hiệu quả đến mức đáng ngờ.",
-      "opinionatedAlgorithms": "Đang thương lượng với vài thuật toán cực kỳ kiên định về cách mọi thứ nên được tổ chức.",
-      "filingCabinets": "Đang lập chỉ mục những tủ hồ sơ tưởng tượng, đối chiếu các nhãn và giả vờ rằng mọi thứ luôn ngăn nắp.",
-      "distributedThoughts": "Đang căn chỉnh các dòng suy nghĩ phân tán để mọi ý tưởng hữu ích đến đúng nơi vào gần như đúng thời điểm.",
-      "tinyGears": "Đang kiểm tra lần cuối từng bánh răng nhỏ, từng công tắc kín đáo và vài chi tiết không ai nhớ đã lắp vào.",
-      "knowledgeThreads": "Đang nối các sợi tri thức, tháo những nút thắt không cần thiết và dành chỗ cho điều bạn sắp khám phá."
+      "semanticPathways": "Đang tải thêm RAM...",
+      "opinionatedAlgorithms": "Đang thương lượng với đám mây...",
+      "filingCabinets": "Đang gom các điểm ảnh đi lạc...",
+      "distributedThoughts": "Đang đánh thức hamster máy chủ...",
+      "tinyGears": "Đang tắt đi bật lại...",
+      "knowledgeThreads": "Đang uốn spline thần kinh..."
     }
   },
   "Theme": {
     "system": "Hệ thống",
     "light": "Sáng",
     "dark": "Tối",
-    "preference": "Tùy chọn giao diện",
     "currentSwitch": "Giao diện: {theme}. Chuyển sang chế độ {nextTheme}."
   },
   "Landing": {
@@ -42,7 +44,6 @@
   "Auth": {
     "common": {
       "email": "Email",
-      "emailPlaceholder": "ban@example.com",
       "password": "Mật khẩu",
       "backToLogin": "Quay lại đăng nhập",
       "continue": "Tiếp tục",
@@ -53,11 +54,11 @@
     "login": {
       "metadataTitle": "Đăng nhập",
       "title": "Chào mừng bạn trở lại",
-      "description": "Nhập thông tin của bạn để tiếp tục đến MeshMind.",
+      "description": "Nhập thông tin của bạn để tiếp tục đến CareerLens.",
       "forgotPassword": "Quên mật khẩu?",
       "submitting": "Đang đăng nhập...",
       "submit": "Đăng nhập",
-      "newUser": "Bạn mới sử dụng MeshMind?",
+      "newUser": "Bạn mới sử dụng CareerLens?",
       "createAccount": "Tạo tài khoản"
     },
     "signup": {
@@ -79,8 +80,10 @@
       "fullName": "Họ và tên",
       "fullNamePlaceholder": "Nhập họ và tên",
       "dateOfBirth": "Ngày sinh",
+      "birthDay": "Ngày",
       "birthMonth": "Tháng sinh",
       "birthYear": "Năm sinh",
+      "day": "Ngày",
       "month": "Tháng",
       "year": "Năm",
       "months": {
@@ -98,7 +101,8 @@
         "12": "Tháng 12"
       },
       "confirmPassword": "Xác nhận mật khẩu",
-      "passwordHint": "Sử dụng ít nhất 12 ký tự.",
+      "passwordHint": "Sử dụng ít nhất 8 ký tự.",
+      "consent": "Tôi đồng ý để CareerLens thu thập, lưu trữ và xử lý dữ liệu liên quan đến tài khoản của tôi, đồng thời chấp thuận <terms>Điều khoản dịch vụ</terms> và <privacy>Chính sách bảo mật</privacy>.",
       "back": "Quay lại",
       "submitting": "Đang tạo tài khoản...",
       "submit": "Tạo tài khoản",
@@ -153,13 +157,17 @@
       "resetSuccess": "Mật khẩu đã được đặt lại. Bạn có thể đăng nhập ngay bây giờ."
     },
     "validation": {
-      "passwordMin": "Mật khẩu phải có ít nhất 12 ký tự.",
+      "passwordMin": "Mật khẩu phải có ít nhất 8 ký tự.",
+      "dataConsent": "Bạn phải đồng ý cho phép thu thập và xử lý dữ liệu để tạo tài khoản.",
       "passwordMax": "Mật khẩu không được vượt quá 128 ký tự.",
       "passwordLong": "Mật khẩu quá dài.",
       "emailInvalid": "Nhập địa chỉ email hợp lệ.",
       "fullNameInvalid": "Nhập họ và tên của bạn.",
+      "birthDayInvalid": "Nhập ngày trong tháng hợp lệ.",
+      "birthMonthInvalid": "Chọn tháng sinh hợp lệ.",
       "birthYearInvalid": "Nhập năm sinh hợp lệ.",
-      "birthYearFuture": "Năm sinh không thể ở tương lai.",
+      "birthDateInvalid": "Nhập ngày sinh hợp lệ.",
+      "birthDateFuture": "Ngày sinh không thể ở tương lai.",
       "passwordMismatch": "Mật khẩu xác nhận không khớp.",
       "totpInvalid": "Nhập mã xác thực gồm sáu chữ số."
     }
@@ -176,7 +184,60 @@
     "openNavigation": "Mở điều hướng",
     "expandSidebar": "Mở rộng thanh bên",
     "collapseSidebar": "Thu gọn thanh bên",
+    "userMenu": "Menu tài khoản",
+    "openUserMenu": "Mở menu tài khoản của {name}",
+    "profile": "Thông tin cá nhân",
     "logout": "Đăng xuất",
     "logoutUser": "Đăng xuất {name}"
+  },
+  "Profile": {
+    "metadataTitle": "Thông tin cá nhân",
+    "title": "Thông tin cá nhân",
+    "description": "Cập nhật thông tin giúp CareerLens cá nhân hóa trải nghiệm của bạn.",
+    "summary": "Thông tin này được dùng để nhận diện tài khoản và điều chỉnh trải nghiệm phù hợp với bạn.",
+    "form": {
+      "title": "Chi tiết hồ sơ",
+      "description": "Chỉnh sửa thông tin tài khoản của bạn bên dưới.",
+      "fullName": "Họ và tên",
+      "fullNameHint": "Tên hiển thị trong tài khoản của bạn.",
+      "email": "Email",
+      "emailHint": "Đây cũng là email bạn dùng để đăng nhập.",
+      "dateOfBirth": "Ngày sinh",
+      "dateOfBirthHint": "Nhập đầy đủ ngày, tháng và năm sinh của bạn.",
+      "birthDay": "Ngày sinh",
+      "birthMonth": "Tháng sinh",
+      "birthYear": "Năm sinh",
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu..."
+    },
+    "months": {
+      "1": "Tháng 1",
+      "2": "Tháng 2",
+      "3": "Tháng 3",
+      "4": "Tháng 4",
+      "5": "Tháng 5",
+      "6": "Tháng 6",
+      "7": "Tháng 7",
+      "8": "Tháng 8",
+      "9": "Tháng 9",
+      "10": "Tháng 10",
+      "11": "Tháng 11",
+      "12": "Tháng 12"
+    },
+    "validation": {
+      "email": "Nhập địa chỉ email hợp lệ.",
+      "fullName": "Nhập họ và tên có ít nhất 2 ký tự.",
+      "birthDate": "Nhập ngày sinh hợp lệ và không ở tương lai.",
+      "birthDay": "Nhập ngày trong tháng hợp lệ.",
+      "birthMonth": "Chọn tháng sinh hợp lệ.",
+      "birthYear": "Nhập năm sinh từ 1900 đến năm hiện tại."
+    },
+    "actions": {
+      "saved": "Đã lưu thông tin cá nhân.",
+      "checkFields": "Kiểm tra các trường được đánh dấu rồi thử lại.",
+      "emailInUse": "Email này đã được sử dụng bởi một tài khoản khác.",
+      "failed": "Chưa thể lưu thay đổi. Vui lòng thử lại.",
+      "unavailable": "Tài khoản này không có hồ sơ cá nhân để chỉnh sửa."
+    }
   }
 }

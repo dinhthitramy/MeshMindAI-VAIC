@@ -9,5 +9,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function SignupPage() {
-  return <SignupFlow />;
+  return <SignupFlow currentYear={new Date().getUTCFullYear()} />;
 }

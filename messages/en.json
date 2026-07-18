@@ -1,34 +1,36 @@
 {
   "Common": {
     "skipToContent": "Skip to content",
-    "homeAria": "MeshMind home",
+    "homeAria": "CareerLens home",
+    "brandName": "CareerLens",
+    "developedBy": "Developed by MeshMind-AI",
+    "legalNavigation": "Legal navigation",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
     "language": {
       "english": "English",
       "vietnamese": "Vietnamese",
-      "currentSwitch": "Language: {language}. Switch to {nextLanguage}.",
-      "switchTo": "Switch to {language}",
-      "shortEnglish": "EN",
-      "shortVietnamese": "VI"
+      "current": "Current language: {language}",
+      "select": "Select language"
     }
   },
   "Preloader": {
-    "loading": "Preparing MeshMind",
+    "loading": "Preparing CareerLens",
     "progressLabel": "Loading progress",
     "percent": "{percent}%",
     "messages": {
-      "semanticPathways": "Calibrating semantic pathways and arranging the workspace for a suspiciously productive session.",
-      "opinionatedAlgorithms": "Negotiating with several highly opinionated algorithms about how everything should be organized.",
-      "filingCabinets": "Indexing imaginary filing cabinets, reconciling their labels, and pretending they were always this orderly.",
-      "distributedThoughts": "Aligning distributed thoughts so every useful idea arrives in the right place at approximately the right time.",
-      "tinyGears": "Performing final checks on every tiny gear, discreet switch, and mysterious component nobody remembers installing.",
-      "knowledgeThreads": "Connecting threads of knowledge, loosening unnecessary knots, and making room for whatever you discover next."
+      "semanticPathways": "Downloading more RAM...",
+      "opinionatedAlgorithms": "Negotiating with the cloud...",
+      "filingCabinets": "Herding stray pixels...",
+      "distributedThoughts": "Waking the server hamsters...",
+      "tinyGears": "Turning it off and on again...",
+      "knowledgeThreads": "Reticulating neural splines..."
     }
   },
   "Theme": {
     "system": "System",
     "light": "Light",
     "dark": "Dark",
-    "preference": "Theme preference",
     "currentSwitch": "Theme: {theme}. Switch to {nextTheme}."
   },
   "Landing": {
@@ -42,7 +44,6 @@
   "Auth": {
     "common": {
       "email": "Email",
-      "emailPlaceholder": "you@example.com",
       "password": "Password",
       "backToLogin": "Back to login",
       "continue": "Continue",
@@ -53,11 +54,11 @@
     "login": {
       "metadataTitle": "Log in",
       "title": "Welcome back",
-      "description": "Enter your details to continue to MeshMind.",
+      "description": "Enter your details to continue to CareerLens.",
       "forgotPassword": "Forgot password?",
       "submitting": "Logging in...",
       "submit": "Log in",
-      "newUser": "New to MeshMind?",
+      "newUser": "New to CareerLens?",
       "createAccount": "Create an account"
     },
     "signup": {
@@ -79,8 +80,10 @@
       "fullName": "Full name",
       "fullNamePlaceholder": "Your full name",
       "dateOfBirth": "Date of birth",
+      "birthDay": "Day of birth",
       "birthMonth": "Birth month",
       "birthYear": "Birth year",
+      "day": "Day",
       "month": "Month",
       "year": "Year",
       "months": {
@@ -98,7 +101,8 @@
         "12": "December"
       },
       "confirmPassword": "Confirm password",
-      "passwordHint": "Use at least 12 characters.",
+      "passwordHint": "Use at least 8 characters.",
+      "consent": "I consent to CareerLens collecting, storing, and processing data related to my account, and I agree to the <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
       "back": "Back",
       "submitting": "Creating account...",
       "submit": "Create account",
@@ -153,13 +157,17 @@
       "resetSuccess": "Your password has been reset. You can now log in."
     },
     "validation": {
-      "passwordMin": "Password must be at least 12 characters.",
+      "passwordMin": "Password must be at least 8 characters.",
+      "dataConsent": "You must consent to data collection and processing to create an account.",
       "passwordMax": "Password must be at most 128 characters.",
       "passwordLong": "Password is too long.",
       "emailInvalid": "Enter a valid email address.",
       "fullNameInvalid": "Enter your full name.",
+      "birthDayInvalid": "Enter a valid day of birth.",
+      "birthMonthInvalid": "Enter a valid birth month.",
       "birthYearInvalid": "Enter a valid birth year.",
-      "birthYearFuture": "Birth year cannot be in the future.",
+      "birthDateInvalid": "Enter a valid date of birth.",
+      "birthDateFuture": "Date of birth cannot be in the future.",
       "passwordMismatch": "Passwords do not match.",
       "totpInvalid": "Enter the six-digit authentication code."
     }
@@ -176,7 +184,60 @@
     "openNavigation": "Open navigation",
     "expandSidebar": "Expand sidebar",
     "collapseSidebar": "Collapse sidebar",
+    "userMenu": "Account menu",
+    "openUserMenu": "Open the account menu for {name}",
+    "profile": "Personal information",
     "logout": "Log out",
     "logoutUser": "Log out {name}"
+  },
+  "Profile": {
+    "metadataTitle": "Personal information",
+    "title": "Personal information",
+    "description": "Keep your details current so CareerLens can personalize your experience.",
+    "summary": "These details identify your account and help tailor your experience to you.",
+    "form": {
+      "title": "Profile details",
+      "description": "Edit your account information below.",
+      "fullName": "Full name",
+      "fullNameHint": "The name shown across your account.",
+      "email": "Email",
+      "emailHint": "This is also the email you use to sign in.",
+      "dateOfBirth": "Date of birth",
+      "dateOfBirthHint": "Enter your complete date of birth.",
+      "birthDay": "Day",
+      "birthMonth": "Birth month",
+      "birthYear": "Birth year",
+      "save": "Save changes",
+      "saving": "Saving..."
+    },
+    "months": {
+      "1": "January",
+      "2": "February",
+      "3": "March",
+      "4": "April",
+      "5": "May",
+      "6": "June",
+      "7": "July",
+      "8": "August",
+      "9": "September",
+      "10": "October",
+      "11": "November",
+      "12": "December"
+    },
+    "validation": {
+      "email": "Enter a valid email address.",
+      "fullName": "Enter a full name with at least 2 characters.",
+      "birthDate": "Enter a valid date of birth that is not in the future.",
+      "birthDay": "Enter a valid day of birth.",
+      "birthMonth": "Choose a valid birth month.",
+      "birthYear": "Enter a birth year between 1900 and the current year."
+    },
+    "actions": {
+      "saved": "Your personal information has been saved.",
+      "checkFields": "Check the highlighted fields and try again.",
+      "emailInUse": "This email is already used by another account.",
+      "failed": "We could not save your changes. Please try again.",
+      "unavailable": "This account does not have a personal profile to edit."
+    }
   }
 }

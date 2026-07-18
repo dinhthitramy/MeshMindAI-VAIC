@@ -5,23 +5,23 @@ and Redis are external services and are not started with Docker Compose in produ
 
 ## Prerequisites
 
-- Node.js 20.9 or newer; use an active LTS release.
-- npm, Git, Nginx 1.25.1 or newer, and systemd.
+- Node.js 24 and npm.
+- Git, Nginx 1.25.1 or newer, and systemd.
 - A PostgreSQL database reachable from the application host.
 - A Redis 6.2 or newer primary reachable from the application host.
 - A DNS record for the application host and a trusted TLS certificate.
 
-Only ports 80 and 443 should be publicly reachable. Restrict PostgreSQL and Redis
-to private networks or provider allowlists, and bind the Next.js process to
-`127.0.0.1`.
+Only ports 80 and 443 should serve application traffic. SSH must also be reachable
+from GitHub-hosted runners for deployment. Restrict PostgreSQL and Redis to private
+networks or provider allowlists, and bind the Next.js process to `127.0.0.1`.
 
 ## External Services
 
 Create the PostgreSQL database and credentials before deployment. The account used
 by `npm run db:migrate` must be allowed to create tables, indexes, and Drizzle's
-migration metadata. For stricter deployments, use a separate migration account and
-a least-privilege runtime account. Inject the migration account's `DATABASE_URL`
-only for the migration command; do not add it to the systemd environment file.
+migration metadata. The included workflow uses the `DATABASE_URL` from
+`.env` for migrations and runtime access. For stricter deployments, adapt
+the migration step to export a separate account's URL only for that command.
 
 Redis stores sessions, authentication challenges, replay-prevention state, and rate
 limits. Configure TLS, ACL credentials, persistence, high availability, and a
@@ -43,19 +43,14 @@ CA on the host, or configure `NODE_EXTRA_CA_CERTS`, when it uses a private CA.
 
 ## Secrets And Environment
 
-Keep production secrets outside version control in `/etc/meshmind-ai.env`, owned by
-root and readable by the application group. Generate three independent 32-byte HMAC
+Keep production secrets outside version control in `/opt/meshmind-ai/.env`, owned by
+root and readable by the `meshmindai` group. Generate three independent 32-byte HMAC
 keys with `openssl rand -base64 32`.
 
-Provision the built-in superadmin once before creating the environment file:
-
-```bash
-npm run auth:provision-superadmin -- meshmind-operations
-```
-
-Store the generated login password and TOTP URI in the appropriate password manager.
-Set only the generated identifier, password hash, and TOTP secret in the application
-environment. Never set the plaintext `SUPERADMIN_PASSWORD` there.
+The initial host setup provisions the built-in superadmin. Store its generated login
+password and time-based one-time password (TOTP) URI in the appropriate password
+manager. Set only the generated identifier, password hash, and TOTP secret in the
+application environment. Never set the plaintext `SUPERADMIN_PASSWORD` there.
 
 ```env
 NODE_ENV=production
@@ -89,114 +84,122 @@ SMTP_FROM="MeshMind <no-reply@example.com>"
 
 Use the same environment when building and running the application. Values prefixed
 with `NEXT_PUBLIC_` are embedded during `npm run build`; server-only variables are
-read at runtime. The server port and hostname are passed directly to `next start`
-because Next.js does not load `PORT` from an env file during server startup.
+read at runtime. Both the build and migration commands and `systemd.service` load
+`.env`. The server port and hostname are passed directly to `next start` because
+Next.js does not load `PORT` from an env file during server startup.
 
 Restrict the environment file after creating it:
 
 ```bash
-sudo chown root:meshmind /etc/meshmind-ai.env
-sudo chmod 640 /etc/meshmind-ai.env
+sudo chown root:meshmindai /opt/meshmind-ai/.env
+sudo chmod 640 /opt/meshmind-ai/.env
 ```
 
-## Build A Release
+## Initial Host Setup
 
-Never run `npm ci` or `npm run build` inside the directory used by the running
-process. Keep each release immutable so a failed deployment cannot replace live
-chunks, dependencies, or static assets:
-
-```text
-/srv/meshmind-ai/
-|-- current -> releases/20260717180000
-`-- releases/
-    `-- 20260717180000/
-```
-
-Create the release directories with ownership assigned to the application user:
+The deployment workflow updates an existing checkout in place. Create the checkout
+as the deployment user:
 
 ```bash
-sudo install -d -o meshmind -g meshmind /srv/meshmind-ai \
-  /srv/meshmind-ai/releases
+sudo install -d -o meshmindai -g meshmindai /opt/meshmind-ai
+sudo -u meshmindai -H git clone --branch main https://github.com/your-org/meshmind-ai.git /opt/meshmind-ai
+sudo -u meshmindai -H sh -c 'cd /opt/meshmind-ai && npm ci'
+sudo -u meshmindai -H sh -c 'cd /opt/meshmind-ai && npm run auth:provision-superadmin -- meshmind-operations'
 ```
 
-For each release, use a new directory and run this block as that user:
+The host must be able to pull the repository non-interactively. For a private
+repository, configure an SSH deploy key or another Git credential for the
+`meshmindai` user, and verify that the checkout's `origin` points to the repository.
+
+Create `/opt/meshmind-ai/.env` with the values above, then set its permissions:
 
 ```bash
-release_id="$(date -u +%Y%m%d%H%M%S)"
-release_dir="/srv/meshmind-ai/releases/$release_id"
-repository_url="https://github.com/your-org/meshmind-ai.git"
-release_ref="v0.1.0"
-
-git clone --branch "$release_ref" --depth 1 "$repository_url" "$release_dir"
-ln -s /etc/meshmind-ai.env "$release_dir/.env"
-cd "$release_dir"
-
-npm ci --include=dev
-npm test
-npm run build
-npm run db:migrate
-npm prune --omit=dev
+sudo cp /opt/meshmind-ai/.env.example /opt/meshmind-ai/.env
+sudoedit /opt/meshmind-ai/.env
+sudo chown root:meshmindai /opt/meshmind-ai/.env
+sudo chmod 640 /opt/meshmind-ai/.env
+sudo -u meshmindai -H sh -c 'cd /opt/meshmind-ai && npm test && npm run build && npm run db:migrate'
 ```
 
-`npm run db:migrate` applies the versioned SQL files in `drizzle/`. Run it once for
-each release before restarting the web process. Keep migrations forward-compatible
-with the currently running application when doing zero-downtime deployments.
+The automated deployment repeats `git pull --ff-only origin main`, `npm ci`,
+`npm run build`, and `npm run db:migrate` after the `Tests` workflow succeeds on
+`main`. It does not start an inactive service; start the service during initial
+setup as described below.
 
-After every command succeeds, atomically activate the release:
+## GitHub Actions Deployment
+
+Add these secrets to the repository or its `production` environment:
+
+- `DEPLOY_HOST`: the SSH hostname or address.
+- `DEPLOY_SSH_PRIVATE_KEY`: the private key whose public key is authorized for
+  `meshmindai`.
+
+The workflow does not use a known-hosts secret. SSH host-key checking is disabled,
+so use a deployment-only key restricted to this host and account.
+
+Install the public key on the host:
 
 ```bash
-ln -s "$release_dir" "/srv/meshmind-ai/current.$release_id"
-mv -Tf "/srv/meshmind-ai/current.$release_id" /srv/meshmind-ai/current
+sudo install -d -m 700 -o meshmindai -g meshmindai /home/meshmindai/.ssh
+sudo touch /home/meshmindai/.ssh/authorized_keys
+sudo chown meshmindai:meshmindai /home/meshmindai/.ssh/authorized_keys
+sudo chmod 600 /home/meshmindai/.ssh/authorized_keys
+sudo tee -a /home/meshmindai/.ssh/authorized_keys < deploy-key.pub >/dev/null
 ```
 
-Keep at least the previous complete release for rollback.
+Grant only the systemd commands used by the workflow. Create the sudoers file with
+`visudo` and verify the path from `command -v systemctl` on the host:
+
+```bash
+sudo visudo -f /etc/sudoers.d/meshmind-ai-deploy
+```
+
+```sudoers
+meshmindai ALL=(root) NOPASSWD: \
+    /usr/bin/systemctl is-active --quiet meshmind-ai.service, \
+    /usr/bin/systemctl restart meshmind-ai.service
+```
+
+`npm run db:migrate` applies the versioned SQL files in `drizzle/`. Keep migrations
+forward-compatible with the currently running application. The workflow restarts
+`meshmind-ai.service` only when it is already active.
 
 ## Systemd
 
-Create `/etc/systemd/system/meshmind-ai.service` with the following unit. Adjust the
-user, group, Node/npm path, and working directory for the host:
-
-```ini
-[Unit]
-Description=MeshMind AI web application
-After=network-online.target
-Wants=network-online.target
-
-[Service]
-Type=simple
-User=meshmind
-Group=meshmind
-WorkingDirectory=/srv/meshmind-ai/current
-EnvironmentFile=/etc/meshmind-ai.env
-ExecStart=/usr/bin/npm run start -- --hostname 127.0.0.1 --port 3000 --keepAliveTimeout 70000
-Restart=on-failure
-RestartSec=5
-KillSignal=SIGTERM
-TimeoutStopSec=30
-NoNewPrivileges=true
-PrivateTmp=true
-UMask=0027
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Enable and start the service:
+The repository contains the unit at `systemd.service`. It runs from
+`/opt/meshmind-ai` as `meshmindai` and loads `/opt/meshmind-ai/.env`.
+Symlink it into systemd so updates to the tracked unit remain visible:
 
 ```bash
+test -f /opt/meshmind-ai/systemd.service
+sudo ln -sfn /opt/meshmind-ai/systemd.service /etc/systemd/system/meshmind-ai.service
 sudo systemctl daemon-reload
-sudo systemctl enable --now meshmind-ai
-sudo systemctl status meshmind-ai
+sudo systemctl cat meshmind-ai.service
+sudo systemctl enable --now meshmind-ai.service
+sudo systemctl status meshmind-ai.service
 ```
 
-Next.js handles `SIGTERM` gracefully and finishes in-flight requests. The 30-second
-stop timeout leaves room for pending work to complete.
+Run `sudo systemctl daemon-reload` whenever `systemd.service` changes. The symlink
+lets a repository update change systemd configuration, so review unit changes before
+reloading systemd or rebooting the host. A root-owned copy provides a stronger
+privilege boundary if automatic unit updates are unnecessary.
+
+Next.js handles `SIGTERM` gracefully. The unit's 30-second stop timeout leaves room
+for pending work to complete.
 
 ## Nginx
 
-Use `nginx.conf.example` as an HTTP-context site configuration, for example at
-`/etc/nginx/conf.d/meshmind-ai.conf`. Replace `app.example.com` and the certificate
-paths. Provision the certificate before enabling the HTTPS server block.
+Install `nginx.conf` as an HTTP-context site configuration at
+`/etc/nginx/conf.d/meshmind-ai.conf`. Replace the hostname and certificate paths
+before enabling the HTTPS server block:
+
+```bash
+sudo cp /opt/meshmind-ai/nginx.conf /etc/nginx/conf.d/meshmind-ai.conf
+sudoedit /etc/nginx/conf.d/meshmind-ai.conf
+```
+
+Confirm that `/etc/nginx/nginx.conf` includes `/etc/nginx/conf.d/*.conf` inside its
+`http` block. Provision the certificate before enabling the HTTPS server block.
 
 The example overwrites incoming forwarding headers before they reach the trusted
 application, preserves the public host and protocol for Server Actions, supports
@@ -212,6 +215,7 @@ Validate and reload Nginx:
 
 ```bash
 sudo nginx -t
+sudo nginx -T 2>&1 | grep -F '/etc/nginx/conf.d/meshmind-ai.conf'
 sudo systemctl reload nginx
 ```
 
@@ -229,22 +233,23 @@ Also verify signup, login, logout, password recovery, superadmin TOTP, database 
 session persistence, rate limiting, outbound email, TLS renewal, and PostgreSQL
 restoration before accepting production traffic.
 
-## Release Updates
+## Updates And Rollback
 
-For each release, repeat [Build A Release](#build-a-release) with the new immutable
-Git tag, atomically activate it, then restart the service:
+Push changes to `main` after the tests pass. The deployment workflow pulls the new
+commit and performs the build, migration, and conditional service restart. A manual
+deployment can also be started from the Actions tab with `workflow_dispatch`.
 
 ```bash
-sudo systemctl restart meshmind-ai
-sudo systemctl status meshmind-ai
+cd /opt/meshmind-ai
+git log --oneline -5
+sudo systemctl status meshmind-ai.service
 ```
 
-Do not update the active release directory in place.
-
-Application rollback means atomically pointing `/srv/meshmind-ai/current` to the
-previous complete release and restarting the service. Database migrations are not
-automatically rolled back; prefer additive migrations and perform destructive cleanup
-only after older application versions are retired.
+This deployment updates the active checkout in place. It has no automatic application
+rollback. To roll back application code, revert the bad commit on `main` and deploy
+again. Database migrations are not automatically rolled back; prefer additive
+migrations and perform destructive cleanup only after older application versions are
+retired.
 
 For multiple Next.js instances, use the same build and Server Action encryption key
 on every instance, add a shared Next.js cache implementation, and coordinate cache

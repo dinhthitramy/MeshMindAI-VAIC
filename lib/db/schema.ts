@@ -3,13 +3,13 @@ import {
   type AnyPgColumn,
   boolean,
   check,
+  date,
   index,
   integer,
   jsonb,
   pgEnum,
   pgTable,
   primaryKey,
-  smallint,
   text,
   timestamp,
   uniqueIndex,
@@ -30,8 +30,7 @@ export const users = pgTable(
     fullName: text("full_name").notNull(),
     email: text("email").notNull(),
     passwordHash: text("password_hash").notNull(),
-    birthYear: smallint("birth_year").notNull(),
-    birthMonth: smallint("birth_month").notNull(),
+    birthDate: date("birth_date", { mode: "string" }).notNull(),
     status: userStatus("status").default("ACTIVE").notNull(),
     sessionVersion: integer("session_version").default(1).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -44,10 +43,9 @@ export const users = pgTable(
   (table) => [
     uniqueIndex("users_email_unique").on(lower(table.email)),
     check("users_session_version_positive", sql`${table.sessionVersion} > 0`),
-    check("users_birth_year_positive", sql`${table.birthYear} > 0`),
     check(
-      "users_birth_month_valid",
-      sql`${table.birthMonth} between 1 and 12`,
+      "users_birth_date_valid",
+      sql`${table.birthDate} between date '1900-01-01' and current_date`,
     ),
   ],
 );
@@ -157,6 +155,34 @@ export const auditEvents = pgTable(
     index("audit_events_actor_idx").on(table.actorKind, table.actorSubject),
     index("audit_events_action_idx").on(table.action),
     index("audit_events_created_at_idx").on(table.createdAt),
+  ],
+);
+
+export const oauthAccounts = pgTable(
+  "oauth_accounts",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    provider: text("provider").notNull(),
+    providerAccountId: text("provider_account_id").notNull(),
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    tokenExpiresAt: timestamp("token_expires_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("oauth_accounts_provider_account_unique").on(
+      table.provider,
+      table.providerAccountId,
+    ),
+    index("oauth_accounts_user_id_idx").on(table.userId),
   ],
 );
 

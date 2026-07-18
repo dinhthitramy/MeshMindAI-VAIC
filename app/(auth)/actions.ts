@@ -1,5 +1,8 @@
 "use server";
 
+import { randomBytes } from "node:crypto";
+
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { and, eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
@@ -82,13 +85,17 @@ async function invalidFields(
 ): Promise<AuthActionState> {
   const t = await getTranslations("Auth");
   const localizedMessages: Record<string, string> = {
-    "Password must be at least 12 characters.": t("validation.passwordMin"),
+    "Password must be at least 8 characters.": t("validation.passwordMin"),
     "Password must be at most 128 characters.": t("validation.passwordMax"),
     "Password is too long.": t("validation.passwordLong"),
+    "Consent is required.": t("validation.dataConsent"),
     "Enter a valid email address.": t("validation.emailInvalid"),
     "Enter your full name.": t("validation.fullNameInvalid"),
+    "Enter a valid day of birth.": t("validation.birthDayInvalid"),
+    "Enter a valid birth month.": t("validation.birthMonthInvalid"),
     "Enter a valid birth year.": t("validation.birthYearInvalid"),
-    "Birth year cannot be in the future.": t("validation.birthYearFuture"),
+    "Enter a valid date of birth.": t("validation.birthDateInvalid"),
+    "Date of birth cannot be in the future.": t("validation.birthDateFuture"),
     "Passwords do not match.": t("validation.passwordMismatch"),
     "Enter the six-digit authentication code.": t("validation.totpInvalid"),
   };
@@ -159,10 +166,12 @@ export async function signupAction(
     valuesFrom(formData, [
       "email",
       "fullName",
+      "birthDay",
       "birthMonth",
       "birthYear",
       "password",
       "passwordConfirmation",
+      "dataConsent",
     ]),
   );
 
@@ -199,8 +208,7 @@ export async function signupAction(
           fullName: parsed.data.fullName,
           email: parsed.data.email,
           passwordHash,
-          birthMonth: parsed.data.birthMonth,
-          birthYear: parsed.data.birthYear,
+          birthDate: parsed.data.birthDate,
         })
         .returning({ id: users.id, sessionVersion: users.sessionVersion });
 
@@ -224,6 +232,7 @@ export async function signupAction(
       action: "account.created",
       targetType: "user",
       targetId: user.id,
+      metadata: { dataConsent: true },
     });
   } catch (error) {
     if (isUniqueEmailError(error)) {
@@ -447,6 +456,28 @@ export async function superadminLoginAction(
     console.error("Superadmin login failed", error);
     return serviceUnavailable();
   }
+}
+
+export async function initiateGoogleOAuthAction() {
+  const state = randomBytes(16).toString("hex");
+  const cookieStore = await cookies();
+  cookieStore.set("oauth_state", state, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 10,
+    path: "/",
+  });
+
+  const params = new URLSearchParams({
+    client_id: process.env.GOOGLE_CLIENT_ID!,
+    redirect_uri: process.env.GOOGLE_REDIRECT_URI!,
+    response_type: "code",
+    scope: "openid email profile",
+    state,
+  });
+
+  redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params}`);
 }
 
 export async function logoutAction() {
