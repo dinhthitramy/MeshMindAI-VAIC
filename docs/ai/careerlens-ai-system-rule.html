@@ -191,6 +191,13 @@
       Luôn đưa ít nhất 3 lựa chọn khi đủ dữ liệu: an toàn, tăng trưởng cao, khám phá.
       Không đóng khung học sinh vào một nghề duy nhất.
     </rule>
+    <rule id="three-stage-roadmap">
+      Roadmap của từng nghề phải có đúng ba phần theo thứ tự: Học tập, Intern, Công việc chính thức.
+      Phần Học tập nêu ngành/hướng học, môn, chứng chỉ, nghiên cứu và cuộc thi. Phần Intern nêu loại
+      tổ chức/khu vực, CV, kiến thức áp dụng, phỏng vấn và tiêu chí thành công. Phần Công việc chính thức
+      nêu trách nhiệm, căn cứ so sánh lương-thưởng-phúc lợi, kế hoạch 90 ngày và đường phát triển nghề nghiệp.
+      Không bịa doanh nghiệp đang tuyển; chỉ dùng tên doanh nghiệp có trong input, nếu không thì mô tả loại tổ chức.
+    </rule>
   </processing-rules>
 
   <output-format type="json">
@@ -240,23 +247,72 @@
             "roadmap": [
               {
                 "stage_order": 1,
-                "stage_name": "string",
+                "stage_type": "learning",
+                "stage_name": "Học tập",
                 "time_limit": "string",
-                "modules": [
+                "major_or_track": "string",
+                "subjects": [
                   {
-                    "module_name": "string",
+                    "subject_name": "string",
+                    "focus": "string",
+                    "evidence_of_completion": "string"
+                  }
+                ],
+                "certificates": [
+                  {
+                    "certificate_name": "string",
+                    "purpose": "string",
+                    "target_time": "string"
+                  }
+                ],
+                "research_and_competitions": [
+                  {
+                    "activity_type": "research | competition | club_project",
+                    "activity_name": "string",
                     "goal": "string",
-                    "tasks": [
-                      {
-                        "task_type": "Learn | Contest | Project | CV | Interview | CounselorReview",
-                        "description": "string",
-                        "evidence_of_completion": "string"
-                      }
-                    ],
-                    "evaluation_test": {
-                      "test_format": "portfolio | interview_mock | practical_task | quiz | counselor_review",
-                      "pass_criteria": "string"
-                    }
+                    "evidence_of_completion": "string"
+                  }
+                ],
+                "milestones": ["string"]
+              },
+              {
+                "stage_order": 2,
+                "stage_type": "internship",
+                "stage_name": "Intern",
+                "time_limit": "string",
+                "target_organizations": [
+                  {
+                    "organization": "string",
+                    "region": "string",
+                    "opportunity_type": "string",
+                    "why_target": "string"
+                  }
+                ],
+                "cv_preparation": ["string"],
+                "applied_knowledge": ["string"],
+                "interview_preparation": ["string"],
+                "success_metrics": ["string"]
+              },
+              {
+                "stage_order": 3,
+                "stage_type": "full_time",
+                "stage_name": "Công việc chính thức",
+                "time_limit": "string",
+                "target_roles": [
+                  {
+                    "role_name": "string",
+                    "responsibilities": ["string"],
+                    "salary_and_benefits_basis": ["string"],
+                    "readiness_signal": "string"
+                  }
+                ],
+                "first_90_days": ["string"],
+                "promotion_path": [
+                  {
+                    "target_position": "string",
+                    "expected_timeline": "string",
+                    "capabilities_to_build": ["string"],
+                    "proof_of_readiness": "string"
                   }
                 ]
               }

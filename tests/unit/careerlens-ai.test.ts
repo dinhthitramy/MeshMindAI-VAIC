@@ -191,6 +191,14 @@ describe("CareerLens AI", () => {
       expect.stringContaining("khám phá"),
     ]);
     expect(firstOutput.recommendations[2].path_category).not.toBe("university");
+    expect(firstOutput.recommendations[0].roadmap.map((stage) => stage.stage_type)).toEqual([
+      "learning",
+      "internship",
+      "full_time",
+    ]);
+    expect(firstOutput.recommendations[0].roadmap[0].subjects.length).toBeGreaterThanOrEqual(2);
+    expect(firstOutput.recommendations[0].roadmap[1].cv_preparation.length).toBeGreaterThanOrEqual(2);
+    expect(firstOutput.recommendations[0].roadmap[2].promotion_path.length).toBeGreaterThanOrEqual(1);
   });
 
   it("reuses stored abilities when generating a switch-major mock path", async () => {

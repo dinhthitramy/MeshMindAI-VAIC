@@ -43,6 +43,19 @@ function cleanText(value: string) {
   return value.replace(/[–—]/g, "-");
 }
 
+function DetailList({ items }: { items: string[] }) {
+  return (
+    <ul className="mt-3 flex flex-col gap-2 text-sm leading-6 text-muted-foreground">
+      {items.map((item) => (
+        <li key={item} className="flex items-start gap-2">
+          <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-primary" />
+          {cleanText(item)}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 type CareerPlanResultsProps = {
   output: CareerGuidanceOutput;
   successMessage?: string;
@@ -225,25 +238,159 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
                         </span>
                       </AccordionTrigger>
                       <AccordionContent>
-                        <div className="flex flex-col gap-5">
-                          {stage.modules.map((module) => (
-                            <div key={module.module_name}>
-                              <p className="font-medium">{cleanText(module.module_name)}</p>
-                              <p className="mt-1 leading-6 text-muted-foreground">{cleanText(module.goal)}</p>
-                              <ul className="mt-3 flex flex-col gap-2 text-muted-foreground">
-                                {module.tasks.map((task) => (
-                                  <li key={`${task.task_type}-${task.description}`}>
-                                    <span className="font-medium text-foreground">{task.task_type}: </span>
-                                    {cleanText(task.description)}
-                                  </li>
-                                ))}
-                              </ul>
-                              <p className="mt-3 text-sm text-muted-foreground">
-                                Tiêu chí hoàn thành: {cleanText(module.evaluation_test.pass_criteria)}
+                        {stage.stage_type === "learning" ? (
+                          <div className="flex flex-col gap-6">
+                            <div className="rounded-xl bg-muted/60 p-4">
+                              <p className="text-sm font-medium">Ngành hoặc hướng chuyên sâu</p>
+                              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                                {cleanText(stage.major_or_track)}
                               </p>
                             </div>
-                          ))}
-                        </div>
+
+                            <div>
+                              <p className="font-medium">Môn và nội dung cần học</p>
+                              <div className="mt-3 grid gap-3 md:grid-cols-2">
+                                {stage.subjects.map((subject) => (
+                                  <div key={subject.subject_name} className="rounded-xl border p-4">
+                                    <p className="font-medium">{cleanText(subject.subject_name)}</p>
+                                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                                      {cleanText(subject.focus)}
+                                    </p>
+                                    <p className="mt-3 text-xs leading-5 text-muted-foreground">
+                                      Bằng chứng: {cleanText(subject.evidence_of_completion)}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {stage.certificates.length > 0 ? (
+                              <div>
+                                <p className="font-medium">Chứng chỉ nên cân nhắc</p>
+                                <div className="mt-3 grid gap-3 md:grid-cols-2">
+                                  {stage.certificates.map((certificate) => (
+                                    <div key={certificate.certificate_name} className="rounded-xl bg-muted/60 p-4">
+                                      <p className="font-medium">{cleanText(certificate.certificate_name)}</p>
+                                      <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                                        {cleanText(certificate.purpose)}
+                                      </p>
+                                      <p className="mt-2 text-xs text-muted-foreground">
+                                        Thời điểm: {cleanText(certificate.target_time)}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ) : null}
+
+                            <div>
+                              <p className="font-medium">Nghiên cứu khoa học, cuộc thi và dự án CLB</p>
+                              <div className="mt-3 flex flex-col gap-3">
+                                {stage.research_and_competitions.map((activity) => (
+                                  <div key={`${activity.activity_type}-${activity.activity_name}`} className="rounded-xl border p-4">
+                                    <p className="font-medium">{cleanText(activity.activity_name)}</p>
+                                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                                      {cleanText(activity.goal)}
+                                    </p>
+                                    <p className="mt-2 text-xs leading-5 text-muted-foreground">
+                                      Bằng chứng: {cleanText(activity.evidence_of_completion)}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div>
+                              <p className="font-medium">Mốc hoàn thành</p>
+                              <DetailList items={stage.milestones} />
+                            </div>
+                          </div>
+                        ) : stage.stage_type === "internship" ? (
+                          <div className="flex flex-col gap-6">
+                            <div>
+                              <p className="font-medium">Nên tìm cơ hội ở đâu</p>
+                              <div className="mt-3 grid gap-3 md:grid-cols-2">
+                                {stage.target_organizations.map((target) => (
+                                  <div key={`${target.organization}-${target.region}`} className="rounded-xl border p-4">
+                                    <p className="font-medium">{cleanText(target.organization)}</p>
+                                    <p className="mt-1 text-sm text-primary">{cleanText(target.region)}</p>
+                                    <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                                      {cleanText(target.opportunity_type)}. {cleanText(target.why_target)}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="grid gap-5 md:grid-cols-2">
+                              <div className="rounded-xl bg-muted/60 p-4">
+                                <p className="font-medium">Chuẩn bị CV và portfolio</p>
+                                <DetailList items={stage.cv_preparation} />
+                              </div>
+                              <div className="rounded-xl bg-muted/60 p-4">
+                                <p className="font-medium">Kiến thức cần áp dụng</p>
+                                <DetailList items={stage.applied_knowledge} />
+                              </div>
+                              <div className="rounded-xl bg-muted/60 p-4">
+                                <p className="font-medium">Chuẩn bị vòng phỏng vấn</p>
+                                <DetailList items={stage.interview_preparation} />
+                              </div>
+                              <div className="rounded-xl bg-muted/60 p-4">
+                                <p className="font-medium">Kết quả cần đạt sau kỳ intern</p>
+                                <DetailList items={stage.success_metrics} />
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col gap-6">
+                            <div>
+                              <p className="font-medium">Công việc và cách đánh giá offer</p>
+                              <div className="mt-3 flex flex-col gap-4">
+                                {stage.target_roles.map((role) => (
+                                  <div key={role.role_name} className="rounded-xl border p-4">
+                                    <p className="font-medium">{cleanText(role.role_name)}</p>
+                                    <div className="mt-4 grid gap-5 md:grid-cols-2">
+                                      <div>
+                                        <p className="text-sm font-medium">Trách nhiệm chính</p>
+                                        <DetailList items={role.responsibilities} />
+                                      </div>
+                                      <div>
+                                        <p className="text-sm font-medium">Lương, thưởng và phúc lợi</p>
+                                        <DetailList items={role.salary_and_benefits_basis} />
+                                      </div>
+                                    </div>
+                                    <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                                      Tín hiệu sẵn sàng: {cleanText(role.readiness_signal)}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="rounded-xl bg-muted/60 p-4">
+                              <p className="font-medium">Kế hoạch 90 ngày đầu</p>
+                              <DetailList items={stage.first_90_days} />
+                            </div>
+
+                            <div>
+                              <p className="font-medium">Đường phát triển lên vị trí cao hơn</p>
+                              <div className="mt-3 grid gap-3 md:grid-cols-2">
+                                {stage.promotion_path.map((step) => (
+                                  <div key={step.target_position} className="rounded-xl border p-4">
+                                    <p className="font-medium">{cleanText(step.target_position)}</p>
+                                    <p className="mt-1 text-sm text-primary">
+                                      {cleanText(step.expected_timeline)}
+                                    </p>
+                                    <DetailList items={step.capabilities_to_build} />
+                                    <p className="mt-3 text-xs leading-5 text-muted-foreground">
+                                      Bằng chứng sẵn sàng: {cleanText(step.proof_of_readiness)}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </AccordionContent>
                     </AccordionItem>
                   ))}

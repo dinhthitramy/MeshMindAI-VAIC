@@ -2,13 +2,14 @@ import "server-only";
 
 import { z } from "zod";
 
-import { CAREERLENS_MARKET_SEED } from "./market-seed";
+import { selectCareerLensMarketSignals } from "./market-seed";
 import type { CareerGuidanceInput } from "./schemas";
+import { VIETNAM_PROVINCES } from "./vietnam-provinces";
 
 export const careerLensFormSchema = z.object({
   educationLevel: z.enum(["THPT", "college", "university", "graduate", "other"]),
-  currentRegion: z.string().trim().min(2).max(120),
-  targetRegion: z.string().trim().min(2).max(120),
+  currentRegion: z.enum(VIETNAM_PROVINCES),
+  targetRegion: z.enum(VIETNAM_PROVINCES),
   languages: z.string().trim().min(2).max(300),
   strongSubject: z.string().trim().min(1).max(120),
   subjectScore: z.coerce.number().min(0).max(10),
@@ -117,7 +118,16 @@ export function buildCareerGuidanceInput(
         student_decisions: [],
       },
     },
-    labor_market_signals: CAREERLENS_MARKET_SEED,
+    labor_market_signals: selectCareerLensMarketSignals({
+      currentRegion: values.currentRegion,
+      targetRegions: [values.targetRegion],
+      keywords: [
+        values.strongSubject,
+        values.interests,
+        values.targetCareer,
+        values.question,
+      ],
+    }),
     user_request: {
       intent: values.intent,
       question: values.question,

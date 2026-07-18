@@ -20,8 +20,8 @@ function createValidFormData() {
   const formData = new FormData();
   const values = {
     educationLevel: "THPT",
-    currentRegion: "TP. Hồ Chí Minh",
-    targetRegion: "TP. Hồ Chí Minh",
+    currentRegion: "Thành phố Hồ Chí Minh",
+    targetRegion: "Thành phố Hồ Chí Minh",
     languages: "Tiếng Việt, English",
     strongSubject: "Toán",
     subjectScore: "8.5",
@@ -64,7 +64,9 @@ describe("CareerLens form integration", () => {
       "kinh doanh",
     ]);
     expect(input.student_profile.preferences.learning_style).toEqual(["project_based"]);
-    expect(input.labor_market_signals.postings.length).toBeGreaterThanOrEqual(3);
+    expect(input.labor_market_signals.postings).toHaveLength(20);
+    expect(new Set(input.labor_market_signals.postings.map((posting) => posting.industry))).toHaveLength(20);
+    expect(input.labor_market_signals.postings.every((posting) => posting.region === "Thành phố Hồ Chí Minh")).toBe(true);
     expect(input.user_request.target_career_or_major).toBe("Data Analyst");
   });
 
@@ -80,6 +82,16 @@ describe("CareerLens form integration", () => {
     }
   });
 
+  it("accepts only the official 34 province and city values", () => {
+    const validValues = Object.fromEntries(createValidFormData());
+    const validResult = careerLensFormSchema.safeParse(validValues);
+    expect(validResult.success).toBe(true);
+
+    validValues.currentRegion = "Tỉnh không tồn tại";
+    const invalidResult = careerLensFormSchema.safeParse(validValues);
+    expect(invalidResult.success).toBe(false);
+  });
+
   it("returns a generated plan through the authenticated Server Action", async () => {
     vi.stubEnv("FPT_AI_API_KEY", "");
 
@@ -91,5 +103,10 @@ describe("CareerLens form integration", () => {
     expect(state.status).toBe("success");
     expect(state.output?.recommendations).toHaveLength(3);
     expect(state.output?.recommendations[0].path_title).toContain("Data Analyst");
+    expect(state.output?.recommendations[0].roadmap.map((stage) => stage.stage_type)).toEqual([
+      "learning",
+      "internship",
+      "full_time",
+    ]);
   });
 });

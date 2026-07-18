@@ -200,33 +200,95 @@ const skillGapSchema = z.object({
   why_needed: nonEmptyText,
 });
 
-const roadmapTaskSchema = z.object({
-  task_type: z.enum(["Learn", "Contest", "Project", "CV", "Interview", "CounselorReview"]),
-  description: nonEmptyText,
-  evidence_of_completion: nonEmptyText,
-});
-
-const roadmapModuleSchema = z.object({
-  module_name: nonEmptyText,
-  goal: nonEmptyText,
-  tasks: z.array(roadmapTaskSchema).min(1).max(20),
-  evaluation_test: z.object({
-    test_format: z.enum([
-      "portfolio",
-      "interview_mock",
-      "practical_task",
-      "quiz",
-      "counselor_review",
-    ]),
-    pass_criteria: nonEmptyText,
-  }),
-});
-
-const roadmapStageSchema = z.object({
-  stage_order: z.number().int().positive(),
+const learningStageSchema = z.object({
+  stage_order: z.literal(1),
+  stage_type: z.literal("learning"),
   stage_name: nonEmptyText,
   time_limit: nonEmptyText,
-  modules: z.array(roadmapModuleSchema).min(1).max(20),
+  major_or_track: nonEmptyText,
+  subjects: z
+    .array(
+      z.object({
+        subject_name: nonEmptyText,
+        focus: nonEmptyText,
+        evidence_of_completion: nonEmptyText,
+      }),
+    )
+    .min(2)
+    .max(12),
+  certificates: z
+    .array(
+      z.object({
+        certificate_name: nonEmptyText,
+        purpose: nonEmptyText,
+        target_time: nonEmptyText,
+      }),
+    )
+    .max(8),
+  research_and_competitions: z
+    .array(
+      z.object({
+        activity_type: z.enum(["research", "competition", "club_project"]),
+        activity_name: nonEmptyText,
+        goal: nonEmptyText,
+        evidence_of_completion: nonEmptyText,
+      }),
+    )
+    .min(1)
+    .max(8),
+  milestones: z.array(nonEmptyText).min(1).max(12),
+});
+
+const internshipStageSchema = z.object({
+  stage_order: z.literal(2),
+  stage_type: z.literal("internship"),
+  stage_name: nonEmptyText,
+  time_limit: nonEmptyText,
+  target_organizations: z
+    .array(
+      z.object({
+        organization: nonEmptyText,
+        region: nonEmptyText,
+        opportunity_type: nonEmptyText,
+        why_target: nonEmptyText,
+      }),
+    )
+    .min(1)
+    .max(8),
+  cv_preparation: z.array(nonEmptyText).min(2).max(12),
+  applied_knowledge: z.array(nonEmptyText).min(2).max(12),
+  interview_preparation: z.array(nonEmptyText).min(2).max(12),
+  success_metrics: z.array(nonEmptyText).min(1).max(10),
+});
+
+const fullTimeStageSchema = z.object({
+  stage_order: z.literal(3),
+  stage_type: z.literal("full_time"),
+  stage_name: nonEmptyText,
+  time_limit: nonEmptyText,
+  target_roles: z
+    .array(
+      z.object({
+        role_name: nonEmptyText,
+        responsibilities: z.array(nonEmptyText).min(1).max(10),
+        salary_and_benefits_basis: z.array(nonEmptyText).min(1).max(10),
+        readiness_signal: nonEmptyText,
+      }),
+    )
+    .min(1)
+    .max(5),
+  first_90_days: z.array(nonEmptyText).min(2).max(12),
+  promotion_path: z
+    .array(
+      z.object({
+        target_position: nonEmptyText,
+        expected_timeline: nonEmptyText,
+        capabilities_to_build: z.array(nonEmptyText).min(1).max(10),
+        proof_of_readiness: nonEmptyText,
+      }),
+    )
+    .min(1)
+    .max(6),
 });
 
 const relatedJobSchema = z.object({
@@ -253,7 +315,7 @@ export const careerRecommendationSchema = z.object({
   market_evidence: z.array(nonEmptyText).max(100),
   matched_profile_signals: z.array(nonEmptyText).max(100),
   skill_gaps: z.array(skillGapSchema).max(100),
-  roadmap: z.array(roadmapStageSchema).min(1).max(20),
+  roadmap: z.tuple([learningStageSchema, internshipStageSchema, fullTimeStageSchema]),
   related_jobs: z.array(relatedJobSchema).max(100),
   autonomy_note: nonEmptyText,
 });

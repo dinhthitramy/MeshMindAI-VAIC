@@ -3,7 +3,11 @@ import type { Metadata } from "next";
 import { AVAILABLE_MODELS } from "@/lib/ai";
 import { requirePermission } from "@/lib/auth/dal";
 import { PERMISSIONS } from "@/lib/auth/permissions";
-import { CAREERLENS_MARKET_SEED } from "@/lib/careerlens/market-seed";
+import {
+  CAREERLENS_MARKET_SEED,
+  MARKET_INDUSTRY_COUNT,
+  MARKET_ROLE_COUNT_PER_REGION,
+} from "@/lib/careerlens/market-seed";
 
 import { CareerWorkspace } from "./_components/career-workspace";
 
@@ -41,6 +45,8 @@ export default async function CareerLensPage() {
         marketOverview={{
           postingCount: CAREERLENS_MARKET_SEED.postings.length,
           regionCount,
+          roleCountPerRegion: MARKET_ROLE_COUNT_PER_REGION,
+          industryCount: MARKET_INDUSTRY_COUNT,
           sourceDate,
         }}
       />

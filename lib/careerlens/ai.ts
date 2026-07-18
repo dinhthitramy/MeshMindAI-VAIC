@@ -58,25 +58,68 @@ const OUTPUT_CONTRACT = {
       roadmap: [
         {
           stage_order: 1,
-          stage_name: "string",
+          stage_type: "learning",
+          stage_name: "Học tập",
           time_limit: "string",
-          modules: [
+          major_or_track: "string",
+          subjects: [
             {
-              module_name: "string",
+              subject_name: "string",
+              focus: "string",
+              evidence_of_completion: "string",
+            },
+          ],
+          certificates: [
+            { certificate_name: "string", purpose: "string", target_time: "string" },
+          ],
+          research_and_competitions: [
+            {
+              activity_type: "research | competition | club_project",
+              activity_name: "string",
               goal: "string",
-              tasks: [
-                {
-                  task_type:
-                    "Learn | Contest | Project | CV | Interview | CounselorReview",
-                  description: "string",
-                  evidence_of_completion: "string",
-                },
-              ],
-              evaluation_test: {
-                test_format:
-                  "portfolio | interview_mock | practical_task | quiz | counselor_review",
-                pass_criteria: "string",
-              },
+              evidence_of_completion: "string",
+            },
+          ],
+          milestones: ["string"],
+        },
+        {
+          stage_order: 2,
+          stage_type: "internship",
+          stage_name: "Intern",
+          time_limit: "string",
+          target_organizations: [
+            {
+              organization: "string",
+              region: "string",
+              opportunity_type: "string",
+              why_target: "string",
+            },
+          ],
+          cv_preparation: ["string"],
+          applied_knowledge: ["string"],
+          interview_preparation: ["string"],
+          success_metrics: ["string"],
+        },
+        {
+          stage_order: 3,
+          stage_type: "full_time",
+          stage_name: "Công việc chính thức",
+          time_limit: "string",
+          target_roles: [
+            {
+              role_name: "string",
+              responsibilities: ["string"],
+              salary_and_benefits_basis: ["string"],
+              readiness_signal: "string",
+            },
+          ],
+          first_90_days: ["string"],
+          promotion_path: [
+            {
+              target_position: "string",
+              expected_timeline: "string",
+              capabilities_to_build: ["string"],
+              proof_of_readiness: "string",
             },
           ],
         },
@@ -119,6 +162,7 @@ export function buildCareerGuidanceUserPrompt(input: CareerGuidanceInput): strin
     "Hãy tạo kết quả hướng nghiệp từ dữ liệu đã được xác thực dưới đây.",
     "Trả đúng JSON contract, không thêm markdown hoặc giải thích ngoài JSON.",
     "Nếu dữ liệu đủ, recommendations phải có đúng 3 phần tử theo thứ tự: an toàn, tăng trưởng cao, khám phá.",
+    "Mỗi recommendation phải có đúng ba roadmap stage theo thứ tự: Học tập, Intern, Công việc chính thức; điền đầy đủ chi tiết riêng cho nghề đó.",
     "",
     "<output_contract>",
     JSON.stringify(OUTPUT_CONTRACT, null, 2),
@@ -183,81 +227,135 @@ function mapPathCategory(
   return "self_learning";
 }
 
-function createRoadmap(pathTitle: string, skill: string): CareerRecommendation["roadmap"] {
+function createRoadmap({
+  pathTitle,
+  skill,
+  region,
+  industry,
+  salaryBand,
+}: {
+  pathTitle: string;
+  skill: string;
+  region: string;
+  industry: string;
+  salaryBand: string;
+}): CareerRecommendation["roadmap"] {
   return [
     {
       stage_order: 1,
-      stage_name: "Định hướng và nền tảng",
-      time_limit: "4 tuần",
-      modules: [
+      stage_type: "learning",
+      stage_name: "Học tập",
+      time_limit: "6-18 tháng, điều chỉnh theo bậc học hiện tại",
+      major_or_track: `Ưu tiên ngành hoặc hướng chuyên sâu có nền tảng cho ${pathTitle}; đối chiếu chương trình đào tạo với yêu cầu ${skill} trước khi đăng ký.`,
+      subjects: [
         {
-          module_name: `Khám phá ${pathTitle}`,
-          goal: `Hiểu công việc thực tế và nền tảng ${skill}.`,
-          tasks: [
-            {
-              task_type: "Learn",
-              description: `Hoàn thành một tài liệu nhập môn về ${skill}.`,
-              evidence_of_completion: "Ghi chú học tập và bài tự đánh giá một trang.",
-            },
-            {
-              task_type: "CounselorReview",
-              description: "Trao đổi về mức phù hợp, ràng buộc và phương án thay thế.",
-              evidence_of_completion: "Biên bản phản hồi hoặc quyết định bước tiếp theo.",
-            },
-          ],
-          evaluation_test: {
-            test_format: "counselor_review",
-            pass_criteria: "Giải thích được công việc, yêu cầu đầu vào và lý do muốn tiếp tục thử.",
-          },
+          subject_name: `${skill} nền tảng`,
+          focus: `Hiểu khái niệm cốt lõi và dùng ${skill} để giải một bài toán gần với ${pathTitle}.`,
+          evidence_of_completion: "Một bài thực hành có file nguồn, kết quả và phần giải thích quyết định.",
         },
+        {
+          subject_name: "Tư duy giải quyết vấn đề và giao tiếp chuyên môn",
+          focus: `Phân tích yêu cầu, trình bày phương án và nhận phản biện trong bối cảnh ${industry}.`,
+          evidence_of_completion: "Một báo cáo ngắn và bài thuyết trình được giáo viên, mentor hoặc bạn học phản biện.",
+        },
+      ],
+      certificates: [
+        {
+          certificate_name: `Chứng chỉ thực hành ${skill} phù hợp với role mục tiêu`,
+          purpose: "Bổ sung cấu trúc học và bằng chứng kỹ năng; chỉ chọn sau khi kiểm tra mô tả tuyển dụng thực tế.",
+          target_time: "Sau khi hoàn thành kiến thức nền, trước kỳ ứng tuyển intern 2-4 tháng.",
+        },
+      ],
+      research_and_competitions: [
+        {
+          activity_type: "research",
+          activity_name: `Đề tài nghiên cứu nhỏ ứng dụng ${skill}`,
+          goal: `Dùng dữ liệu hoặc quan sát thực tế để trả lời một vấn đề thuộc ${industry}.`,
+          evidence_of_completion: "Poster, báo cáo phương pháp, kết quả và giới hạn của nghiên cứu.",
+        },
+        {
+          activity_type: "competition",
+          activity_name: `Cuộc thi hoặc hackathon có đề bài gần với ${pathTitle}`,
+          goal: "Luyện làm việc nhóm, xử lý deadline và nhận phản hồi từ người chấm.",
+          evidence_of_completion: "Sản phẩm dự thi, nhật ký vai trò cá nhân và bài học sau cuộc thi.",
+        },
+      ],
+      milestones: [
+        `Tự giải thích được công việc hằng ngày của ${pathTitle} và ba kỹ năng đầu vào.`,
+        `Có ít nhất hai sản phẩm thực hành, trong đó một sản phẩm dùng ${skill}.`,
+        "Được giáo viên, counselor hoặc mentor review portfolio trước khi ứng tuyển intern.",
       ],
     },
     {
       stage_order: 2,
-      stage_name: "Thực hành có bằng chứng",
-      time_limit: "8 tuần",
-      modules: [
+      stage_type: "internship",
+      stage_name: "Intern",
+      time_limit: "3-6 tháng chuẩn bị và 2-6 tháng thực tập",
+      target_organizations: [
         {
-          module_name: `Dự án nhỏ về ${skill}`,
-          goal: "Kiểm chứng sở thích và tạo bằng chứng năng lực ban đầu.",
-          tasks: [
-            {
-              task_type: "Project",
-              description: `Hoàn thành một dự án nhỏ dùng ${skill} để giải quyết vấn đề thực tế.`,
-              evidence_of_completion: "Sản phẩm, nhật ký quá trình và phần tự đánh giá.",
-            },
-          ],
-          evaluation_test: {
-            test_format: "portfolio",
-            pass_criteria: "Có sản phẩm chạy được và mô tả rõ vai trò, quyết định, bài học.",
-          },
+          organization: `Doanh nghiệp hoặc đơn vị ${industry} có đội ngũ liên quan đến ${pathTitle}`,
+          region,
+          opportunity_type: "Internship, trainee hoặc dự án cộng tác có mentor",
+          why_target: "Có môi trường dùng kỹ năng mục tiêu và đầu việc đủ rõ để tạo bằng chứng năng lực.",
         },
+      ],
+      cv_preparation: [
+        `Viết tiêu đề CV bám đúng role ${pathTitle}; đưa ${skill} và các từ khóa thật sự đã thực hành lên đầu.`,
+        "Mỗi dự án trình bày theo cấu trúc vấn đề - hành động cá nhân - kết quả đo được - bài học.",
+        "Gắn portfolio hoặc sản phẩm; nhờ mentor review cả nội dung lẫn lỗi trình bày trước khi gửi.",
+      ],
+      applied_knowledge: [
+        `Áp dụng ${skill} vào một đầu việc có dữ liệu đầu vào, tiêu chí chất lượng và deadline rõ ràng.`,
+        "Ghi lại giả định, quyết định, phản hồi và tác động để chuyển thành case study sau kỳ thực tập.",
+      ],
+      interview_preparation: [
+        `Luyện giải thích một project dùng ${skill} trong 3 phút, sau đó trả lời sâu về lựa chọn và lỗi đã gặp.`,
+        `Chuẩn bị câu hỏi tình huống và bài thực hành gần với nhiệm vụ của ${pathTitle}.`,
+        "Tập phỏng vấn thử, nhận phản hồi về cấu trúc trả lời, giao tiếp và phần kiến thức còn thiếu.",
+      ],
+      success_metrics: [
+        "Có CV và portfolio được ít nhất một người có kinh nghiệm review.",
+        "Hoàn thành tối thiểu một đầu việc có thể mô tả bằng kết quả hoặc chỉ số chất lượng.",
+        "Nhận phản hồi cuối kỳ về chuyên môn, phối hợp và mức sẵn sàng cho fresher.",
       ],
     },
     {
       stage_order: 3,
-      stage_name: "Hồ sơ và cơ hội đầu tiên",
-      time_limit: "4 tuần",
-      modules: [
+      stage_type: "full_time",
+      stage_name: "Công việc chính thức",
+      time_limit: "0-5 năm đầu sự nghiệp",
+      target_roles: [
         {
-          module_name: "Portfolio, CV và phỏng vấn",
-          goal: "Sẵn sàng xin internship, apprenticeship hoặc dự án cộng tác.",
-          tasks: [
-            {
-              task_type: "CV",
-              description: "Đưa dự án và kỹ năng đã kiểm chứng vào CV/portfolio.",
-              evidence_of_completion: "Một CV và portfolio đã được người có kinh nghiệm review.",
-            },
-            {
-              task_type: "Interview",
-              description: "Thực hiện một buổi phỏng vấn thử theo role mục tiêu.",
-              evidence_of_completion: "Bản ghi phản hồi và ba điểm cần cải thiện.",
-            },
+          role_name: pathTitle,
+          responsibilities: [
+            `Thực hiện các đầu việc cốt lõi của ${pathTitle} dưới tiêu chuẩn chất lượng của đội ngũ.`,
+            "Phối hợp với các bên liên quan, báo cáo tiến độ và chủ động xử lý rủi ro trong phạm vi phụ trách.",
           ],
-          evaluation_test: {
-            test_format: "interview_mock",
-            pass_criteria: "Trình bày rõ dự án, kỹ năng chuyển đổi được và kế hoạch bù skill gap.",
-          },
+          salary_and_benefits_basis: [
+            `Dải tham khảo từ dữ liệu đầu vào: ${salaryBand}; cần kiểm tra lại theo thời điểm, vùng và cấp độ.`,
+            `So sánh lương cứng, thưởng theo hiệu suất, bảo hiểm, đào tạo, mentor, thời gian làm việc và cơ hội thăng tiến.`,
+            `Đánh giá offer theo phạm vi trách nhiệm, mức thành thạo ${skill}, kinh nghiệm và chất lượng portfolio.`,
+          ],
+          readiness_signal: "Tự hoàn thành đầu việc fresher có review, giải thích được quyết định và sửa lỗi dựa trên phản hồi.",
+        },
+      ],
+      first_90_days: [
+        "30 ngày đầu: hiểu sản phẩm, quy trình, tiêu chuẩn chất lượng và thống nhất kỳ vọng với quản lý.",
+        `60 ngày: tự nhận một đầu việc có dùng ${skill}, cập nhật tiến độ và xin phản hồi sớm.`,
+        "90 ngày: hoàn thành một kết quả đo được, tổng kết khoảng trống kỹ năng và chốt kế hoạch phát triển 6 tháng.",
+      ],
+      promotion_path: [
+        {
+          target_position: `Chuyên viên vững nghề trong hướng ${pathTitle}`,
+          expected_timeline: "Khoảng 1-3 năm, phụ thuộc hiệu quả thực tế và tiêu chuẩn từng tổ chức.",
+          capabilities_to_build: [`Năng lực chuyên sâu về ${skill}`, "Quản lý chất lượng", "Giao tiếp với stakeholder"],
+          proof_of_readiness: "Sở hữu nhiều kết quả đo được, xử lý đầu việc ít giám sát và hỗ trợ đồng đội ở phạm vi nhỏ.",
+        },
+        {
+          target_position: "Senior, lead chuyên môn hoặc quản lý nhóm",
+          expected_timeline: "Khoảng 3-5+ năm; không mặc định chỉ có một hướng thăng tiến.",
+          capabilities_to_build: ["Thiết kế giải pháp", "Ra quyết định dựa trên dữ liệu", "Mentoring", "Lập kế hoạch nguồn lực"],
+          proof_of_readiness: "Dẫn dắt được dự án có tác động, phát triển người khác và chịu trách nhiệm về kết quả của phạm vi lớn hơn.",
         },
       ],
     },
@@ -339,7 +437,15 @@ function createMockCareerGuidance(input: CareerGuidanceInput): CareerGuidanceOut
           why_needed: `Cần kiểm chứng mức độ thành thạo ${skill.skill_name} qua bài thực hành hoặc project.`,
         }),
       ),
-      roadmap: createRoadmap(title, firstSkill),
+      roadmap: createRoadmap({
+        pathTitle: title,
+        skill: firstSkill,
+        region: posting?.region ?? profile.target_regions[0] ?? profile.current_region,
+        industry: posting?.industry ?? "lĩnh vực mục tiêu",
+        salaryBand: posting
+          ? formatSalary(posting.avg_salary.min, posting.avg_salary.max)
+          : "Chưa có dữ liệu lương trực tiếp",
+      }),
       related_jobs: posting
         ? [
             {

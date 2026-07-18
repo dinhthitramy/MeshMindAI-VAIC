@@ -44,10 +44,10 @@ import {
   type CareerLensActionState,
 } from "../actions";
 import { CareerPlanResults } from "./career-plan-results";
+import { InterestProfileFields } from "./interest-profile-fields";
+import { ProvinceCombobox } from "./province-combobox";
 
 const initialState: CareerLensActionState = { status: "idle" };
-
-const regions = ["TP. Hồ Chí Minh", "Hà Nội", "Đà Nẵng"] as const;
 
 const intentOptions = [
   { value: "initial_guidance", label: "Khám phá hướng nghề ban đầu" },
@@ -103,6 +103,8 @@ type CareerWorkspaceProps = {
   marketOverview: {
     postingCount: number;
     regionCount: number;
+    roleCountPerRegion: number;
+    industryCount: number;
     sourceDate: string;
   };
 };
@@ -178,33 +180,22 @@ export function CareerWorkspace({ models, marketOverview }: CareerWorkspaceProps
 
                     <Field data-invalid={Boolean(fieldError("currentRegion")) || undefined}>
                       <FieldLabel htmlFor="careerlens-current-region">Khu vực hiện tại</FieldLabel>
-                      <Select
+                      <ProvinceCombobox
                         id="careerlens-current-region"
                         name="currentRegion"
-                        defaultValue="TP. Hồ Chí Minh"
-                        aria-invalid={Boolean(fieldError("currentRegion")) || undefined}
-                        required
-                      >
-                        {regions.map((region) => (
-                          <option key={region} value={region}>{region}</option>
-                        ))}
-                      </Select>
+                        invalid={Boolean(fieldError("currentRegion"))}
+                      />
+                      <FieldDescription>Danh mục 34 tỉnh/thành hiện hành.</FieldDescription>
                       <FieldError>{fieldError("currentRegion")}</FieldError>
                     </Field>
 
                     <Field data-invalid={Boolean(fieldError("targetRegion")) || undefined}>
                       <FieldLabel htmlFor="careerlens-target-region">Khu vực muốn học hoặc làm</FieldLabel>
-                      <Select
+                      <ProvinceCombobox
                         id="careerlens-target-region"
                         name="targetRegion"
-                        defaultValue="TP. Hồ Chí Minh"
-                        aria-invalid={Boolean(fieldError("targetRegion")) || undefined}
-                        required
-                      >
-                        {regions.map((region) => (
-                          <option key={region} value={region}>{region}</option>
-                        ))}
-                      </Select>
+                        invalid={Boolean(fieldError("targetRegion"))}
+                      />
                       <FieldError>{fieldError("targetRegion")}</FieldError>
                     </Field>
                   </FieldGroup>
@@ -218,49 +209,11 @@ export function CareerWorkspace({ models, marketOverview }: CareerWorkspaceProps
                     Hãy dùng trải nghiệm thật, không cần viết theo cách của hồ sơ xin việc.
                   </FieldDescription>
                   <FieldGroup>
-                    <FieldGroup className="grid gap-5 md:grid-cols-[minmax(0,1fr)_9rem]">
-                      <Field data-invalid={Boolean(fieldError("strongSubject")) || undefined}>
-                        <FieldLabel htmlFor="careerlens-subject">Môn hoặc kỹ năng nổi bật</FieldLabel>
-                        <Input
-                          id="careerlens-subject"
-                          name="strongSubject"
-                          placeholder="Ví dụ: Toán, viết nội dung, sửa điện"
-                          aria-invalid={Boolean(fieldError("strongSubject")) || undefined}
-                          required
-                        />
-                        <FieldError>{fieldError("strongSubject")}</FieldError>
-                      </Field>
-
-                      <Field data-invalid={Boolean(fieldError("subjectScore")) || undefined}>
-                        <FieldLabel htmlFor="careerlens-score">Điểm tự đánh giá</FieldLabel>
-                        <Input
-                          id="careerlens-score"
-                          name="subjectScore"
-                          type="number"
-                          inputMode="decimal"
-                          min="0"
-                          max="10"
-                          step="0.1"
-                          defaultValue="8"
-                          aria-invalid={Boolean(fieldError("subjectScore")) || undefined}
-                          required
-                        />
-                        <FieldError>{fieldError("subjectScore")}</FieldError>
-                      </Field>
-                    </FieldGroup>
-
-                    <Field data-invalid={Boolean(fieldError("interests")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-interests">Sở thích và chủ đề quan tâm</FieldLabel>
-                      <Input
-                        id="careerlens-interests"
-                        name="interests"
-                        placeholder="Công nghệ, bóng đá, thiết kế, kinh doanh"
-                        aria-invalid={Boolean(fieldError("interests")) || undefined}
-                        required
-                      />
-                      <FieldDescription>Nhập 2-5 mục, phân tách bằng dấu phẩy.</FieldDescription>
-                      <FieldError>{fieldError("interests")}</FieldError>
-                    </Field>
+                    <InterestProfileFields
+                      subjectError={fieldError("strongSubject")}
+                      scoreError={fieldError("subjectScore")}
+                      interestsError={fieldError("interests")}
+                    />
 
                     <Field data-invalid={Boolean(fieldError("activity")) || undefined}>
                       <FieldLabel htmlFor="careerlens-activity">Hoạt động hoặc dự án em từng làm</FieldLabel>
@@ -475,12 +428,26 @@ export function CareerWorkspace({ models, marketOverview }: CareerWorkspaceProps
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-5">
               <div>
-                <p className="font-mono text-3xl font-semibold">{marketOverview.postingCount}</p>
+                <p className="font-mono text-3xl font-semibold">
+                  {new Intl.NumberFormat("vi-VN").format(marketOverview.postingCount)}
+                </p>
                 <p className="mt-1 text-sm text-muted-foreground">job postings</p>
               </div>
               <div>
                 <p className="font-mono text-3xl font-semibold">{marketOverview.regionCount}</p>
-                <p className="mt-1 text-sm text-muted-foreground">khu vực</p>
+                <p className="mt-1 text-sm text-muted-foreground">tỉnh/thành</p>
+              </div>
+              <div>
+                <p className="font-mono text-3xl font-semibold">
+                  {marketOverview.roleCountPerRegion}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">nghề mỗi tỉnh</p>
+              </div>
+              <div>
+                <p className="font-mono text-3xl font-semibold">
+                  {marketOverview.industryCount}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">nhóm ngành</p>
               </div>
               <div className="col-span-2 flex items-center gap-2 text-sm text-muted-foreground">
                 <FileSearch aria-hidden="true" className="size-4" strokeWidth={1.8} />
