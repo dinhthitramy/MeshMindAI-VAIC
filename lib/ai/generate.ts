@@ -1,6 +1,6 @@
 import "server-only";
 
-import { DEFAULT_MODEL } from "./client";
+import { DEFAULT_MODEL, resolveAIModel } from "./client";
 import { AIServiceError } from "./errors";
 import { getLangfuse } from "./langfuse";
 
@@ -105,7 +105,24 @@ async function callFPT(
       if (logResponse) {
         console.log("[fpt] raw response:", JSON.stringify(json).slice(0, 500));
       }
-      return json as FPTRawResponse;
+      if (!json || typeof json !== "object" || Array.isArray(json)) {
+        throw new AIServiceError("FPT API returned an invalid response shape");
+      }
+
+      const response = json as FPTRawResponse;
+      if (response.model && response.model !== model) {
+        if (attempt < MAX_RETRIES) {
+          console.warn("[fpt] unexpected response model; retrying", {
+            requestedModel: model,
+            responseModel: response.model,
+          });
+          continue;
+        }
+        throw new AIServiceError(
+          `FPT API returned model ${response.model} instead of ${model}`,
+        );
+      }
+      return response;
     }
 
     if ([429, 500, 503].includes(res.status) && attempt < MAX_RETRIES) {
@@ -130,7 +147,7 @@ export async function generateAIResponse(
 ): Promise<AIGenerateResult> {
   const systemPrompt = await resolveSystemPrompt(options);
   const messages = buildMessages(systemPrompt, options);
-  const model = options.model ?? DEFAULT_MODEL;
+  const requestedModel = resolveAIModel(options.model);
   const langfuse = options.disableTracing ? null : getLangfuse();
 
   const trace = langfuse?.trace({
@@ -139,18 +156,44 @@ export async function generateAIResponse(
     input: { messages },
   });
 
-  const generation = trace?.generation({
+  let activeModel = requestedModel;
+  let generation = trace?.generation({
     name: "fpt-generate",
-    model,
+    model: activeModel,
     input: messages,
   });
 
   try {
-    const rawResponse = await callFPT(
-      model,
-      messages,
-      options.logResponse ?? true,
-    );
+    let rawResponse: FPTRawResponse;
+    try {
+      rawResponse = await callFPT(
+        activeModel,
+        messages,
+        options.logResponse ?? true,
+      );
+    } catch (primaryError) {
+      if (activeModel === DEFAULT_MODEL) throw primaryError;
+
+      generation?.end({
+        level: "ERROR",
+        statusMessage: String(primaryError),
+      });
+      console.warn("[ai] selected model failed; retrying with default", {
+        selectedModel: activeModel,
+        fallbackModel: DEFAULT_MODEL,
+      });
+      activeModel = DEFAULT_MODEL;
+      generation = trace?.generation({
+        name: "fpt-generate-fallback",
+        model: activeModel,
+        input: messages,
+      });
+      rawResponse = await callFPT(
+        activeModel,
+        messages,
+        options.logResponse ?? true,
+      );
+    }
 
     const text = rawResponse.choices?.[0]?.message?.content ?? "";
     const usage = rawResponse.usage ?? { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };

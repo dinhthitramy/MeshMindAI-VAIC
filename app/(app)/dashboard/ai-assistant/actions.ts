@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { requireViewer } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db";
 import { chatSessions, chatMessages, type ChatSession, type ChatMessage } from "@/lib/db/schema";
-import { AVAILABLE_MODELS } from "@/lib/ai";
+import { AVAILABLE_MODELS, resolveAIModel } from "@/lib/ai";
 
 export async function getAvailableModelsAction() {
   return AVAILABLE_MODELS;
@@ -31,9 +31,14 @@ export async function createSessionAction(model: string): Promise<ChatSession> {
   const t = await getTranslations("Assistant");
 
   const db = getDb();
+  const resolvedModel = resolveAIModel(model);
   const [session] = await db
     .insert(chatSessions)
-    .values({ userId: viewer.actor.userId, title: t("newChat"), model })
+    .values({
+      userId: viewer.actor.userId,
+      title: t("newChat"),
+      model: resolvedModel,
+    })
     .returning();
 
   return session;

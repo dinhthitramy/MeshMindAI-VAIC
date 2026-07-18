@@ -2,7 +2,7 @@ import "server-only";
 
 import { eq } from "drizzle-orm";
 
-import { DEFAULT_MODEL } from "@/lib/ai";
+import { resolveAIModel } from "@/lib/ai";
 import { getDb } from "@/lib/db";
 import { userPreferences } from "@/lib/db/schema";
 
@@ -26,8 +26,7 @@ export async function getCareerPreferences(
     .limit(1);
 
   return {
-    preferredCareerModel:
-      preference?.preferredCareerModel ?? DEFAULT_MODEL,
+    preferredCareerModel: resolveAIModel(preference?.preferredCareerModel),
     reuseLatestRoadmapData: preference?.reuseLatestRoadmapData ?? true,
     roadmapDataResetAt:
       preference?.roadmapDataResetAt?.toISOString() ?? null,

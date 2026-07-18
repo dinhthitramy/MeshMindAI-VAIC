@@ -691,6 +691,11 @@
       "roadmapTitle": "Practice roadmap",
       "roadmapDiagramDescription": "Select each stage in the diagram to review its goals, tasks, and completion evidence.",
       "roadmapClickHint": "Select to view stage details",
+      "stages": {
+        "learning": "Learning",
+        "internship": "Internship",
+        "full_time": "Full-time employment"
+      },
       "relatedJobsTitle": "Related jobs",
       "followUpTitle": "Questions for the next session",
       "followUpDescription": "Answer these to narrow the skill gap and cost.",

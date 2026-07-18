@@ -691,6 +691,11 @@
       "roadmapTitle": "Roadmap thực hành",
       "roadmapDiagramDescription": "Bấm vào từng chặng trên sơ đồ để xem mục tiêu, công việc và bằng chứng cần hoàn thành.",
       "roadmapClickHint": "Bấm để xem chi tiết chặng này",
+      "stages": {
+        "learning": "Học tập",
+        "internship": "Thực tập",
+        "full_time": "Công việc chính thức"
+      },
       "relatedJobsTitle": "Việc làm liên quan",
       "followUpTitle": "Câu hỏi cho lần tư vấn tiếp theo",
       "followUpDescription": "Trả lời thêm các câu này để thu hẹp skill gap và chi phí.",
