@@ -104,8 +104,7 @@ async function handleCallback(code: string): Promise<string> {
           fullName: googleUser.name,
           email: googleUser.email.toLowerCase(),
           passwordHash: "oauth:google",
-          birthYear: 1970,
-          birthMonth: 1,
+          birthDate: "1970-01-01",
         })
         .returning({ id: users.id });
 
