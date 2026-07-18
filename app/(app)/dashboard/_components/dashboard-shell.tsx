@@ -24,6 +24,8 @@ import {
   LogOut,
   UserRound,
   X,
+  Bot,
+  ShieldCheck,
 } from "lucide-react";
 
 import { BrandLink } from "@/components/brand";
@@ -167,7 +169,10 @@ function SidebarPanel({
   const t = useTranslations("Dashboard");
   const navigationItems: NavigationItem[] = [
     { href: "/dashboard", label: t("home"), icon: House, exact: true },
-    { href: "/dashboard/menu", label: t("menu"), icon: MenuIcon, exact: false },
+    { href: "/dashboard/ai-assistant", label: "AI Assistant", icon: Bot, exact: false },
+    ...(viewer.isAdmin
+      ? [{ href: "/dashboard/admin", label: "Admin", icon: ShieldCheck, exact: false }]
+      : []),
   ];
 
   return (
@@ -359,6 +364,7 @@ type DashboardViewer = {
   displayName: string;
   email: string | null;
   roleLabel: string;
+  isAdmin: boolean;
 };
 
 function DashboardShell({ children, viewer }: DashboardShellProps) {

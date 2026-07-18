@@ -26,6 +26,7 @@ export default async function DashboardLayout({
         displayName: viewer.displayName,
         email: viewer.email,
         roleLabel: viewer.roles.join(", "),
+        isAdmin: viewer.roles.includes("ADMIN"),
       }}
     >
       {children}
