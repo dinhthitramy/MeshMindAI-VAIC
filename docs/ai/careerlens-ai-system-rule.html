@@ -187,6 +187,14 @@
       Khi tìm việc liên quan, trả về danh sách job/role phù hợp, skill match, skill gap,
       vùng, salary band, yêu cầu học vấn, bước chuẩn bị.
     </rule>
+    <rule id="live-job-search">
+      Không lưu job listing đang tuyển trong JSON roadmap. Trường related_jobs phải là [].
+      Việc làm hiện có phải được tìm mới theo vị trí từ nền tảng thật khi user bấm nút trong UI.
+    </rule>
+    <rule id="reference-documents">
+      Mỗi recommendation phải có link web trực tiếp tới tài liệu học, trang chứng chỉ, tài liệu chính thức,
+      hoặc course page liên quan. Không trả keyword tìm kiếm hoặc URL trang kết quả tìm kiếm.
+    </rule>
     <rule id="expand-options">
       Luôn đưa ít nhất 3 lựa chọn khi đủ dữ liệu: an toàn, tăng trưởng cao, khám phá.
       Không đóng khung học sinh vào một nghề duy nhất.
@@ -235,6 +243,12 @@
             "fit_score": 0,
             "fit_explanation": "string",
             "market_evidence": ["string"],
+            "reference_documents": [
+              {
+                "title": "string",
+                "url": "https://example.com/document"
+              }
+            ],
             "matched_profile_signals": ["string"],
             "skill_gaps": [
               {
@@ -317,16 +331,7 @@
                 ]
               }
             ],
-            "related_jobs": [
-              {
-                "job_title": "string",
-                "region": "string",
-                "salary_band": "string",
-                "required_skills": ["string"],
-                "education_requirement": "string",
-                "why_relevant": "string"
-              }
-            ],
+            "related_jobs": [],
             "autonomy_note": "string"
           }
         ],

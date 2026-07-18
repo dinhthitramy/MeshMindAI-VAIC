@@ -6,22 +6,25 @@ import { selectCareerLensMarketSignals } from "./market-seed";
 import type {
   CareerGuidanceInput,
   CareerStartingPointSnapshot,
+  LaborMarketSignals,
 } from "./schemas";
 import { VIETNAM_PROVINCES } from "./vietnam-provinces";
 
-export const careerLensFormSchema = z.object({
+function provinceSchema(provinces: readonly string[]) {
+  return z.preprocess(
+    (value) => (value == null ? "" : value),
+    z.string().trim().max(200).refine((value) => value === "" || provinces.includes(value)),
+  );
+}
+
+export function createCareerLensFormSchema(provinces: readonly string[] = VIETNAM_PROVINCES) {
+  return z.object({
   educationLevel: z.preprocess(
     (value) => (value === "" || value == null ? null : value),
     z.enum(["THPT", "college", "university", "graduate", "other"]).nullable(),
   ),
-  currentRegion: z.preprocess(
-    (value) => (value == null ? "" : value),
-    z.union([z.literal(""), z.enum(VIETNAM_PROVINCES)]),
-  ),
-  targetRegion: z.preprocess(
-    (value) => (value == null ? "" : value),
-    z.union([z.literal(""), z.enum(VIETNAM_PROVINCES)]),
-  ),
+  currentRegion: provinceSchema(provinces),
+  targetRegion: provinceSchema(provinces),
   languages: z.preprocess(
     (value) => (value == null ? "" : value),
     z.string().trim().max(300),
@@ -98,11 +101,14 @@ export const careerLensFormSchema = z.object({
   ),
   consent: z.string().refine((value) => value === "on" || value === "true"),
 });
+}
 
+export const careerLensFormSchema = createCareerLensFormSchema();
 export type CareerLensFormValues = z.infer<typeof careerLensFormSchema>;
-export const careerLensStoredFormSchema = careerLensFormSchema.omit({
-  consent: true,
-});
+export function createCareerLensStoredFormSchema(provinces: readonly string[] = VIETNAM_PROVINCES) {
+  return createCareerLensFormSchema(provinces).omit({ consent: true });
+}
+export const careerLensStoredFormSchema = createCareerLensStoredFormSchema();
 export type CareerLensStoredFormValues = z.infer<
   typeof careerLensStoredFormSchema
 >;
@@ -235,6 +241,7 @@ export function buildCareerGuidanceInput(
   profileId: string,
   preferredOutputLanguage: "vi" | "en" = "vi",
   startingPoint: CareerStartingPointSnapshot | null = null,
+  marketSeed?: LaborMarketSignals,
 ): CareerGuidanceInput {
   const interests = splitList(values.interests, 12);
   const profileSkills = startingPoint
@@ -323,6 +330,7 @@ export function buildCareerGuidanceInput(
         ]) ?? []),
         ...profileSkills,
       ],
+      marketSeed,
     }),
     user_request: {
       intent: values.intent ?? "initial_guidance",

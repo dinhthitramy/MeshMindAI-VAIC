@@ -3,6 +3,21 @@ import { z } from "zod";
 const nonEmptyText = z.string().trim().min(1).max(2_000);
 const optionalText = z.string().trim().max(2_000).nullable();
 const confidenceSchema = z.enum(["low", "medium", "high"]);
+const referenceDocumentSchema = z.object({
+  title: nonEmptyText,
+  url: z.url().max(2_000),
+});
+
+const roadmapActivityTypeSchema = z.preprocess((value) => {
+  if (typeof value !== "string") return value;
+
+  const normalized = value.trim().toLowerCase().replace(/[\s-]+/g, "_");
+  if (normalized.includes("research")) return "research";
+  if (normalized.includes("competition") || normalized.includes("contest") || normalized.includes("hackathon")) return "competition";
+  if (normalized === "club_project" || normalized.includes("club") || normalized.includes("project")) return "club_project";
+
+  return value;
+}, z.enum(["research", "competition", "club_project"]));
 
 export const careerStartingPointSnapshotSchema = z.object({
   personality: z
@@ -318,7 +333,7 @@ const learningStageSchema = z.object({
   research_and_competitions: z
     .array(
       z.object({
-        activity_type: z.enum(["research", "competition", "club_project"]),
+        activity_type: roadmapActivityTypeSchema,
         activity_name: nonEmptyText,
         goal: nonEmptyText,
         evidence_of_completion: nonEmptyText,
@@ -403,6 +418,7 @@ export const careerRecommendationSchema = z.object({
   fit_score: z.number().min(0).max(100),
   fit_explanation: nonEmptyText,
   market_evidence: z.array(nonEmptyText).max(100),
+  reference_documents: z.array(referenceDocumentSchema).max(8).default([]),
   matched_profile_signals: z.array(nonEmptyText).max(100),
   skill_gaps: z.array(skillGapSchema).max(100),
   roadmap: z.tuple([learningStageSchema, internshipStageSchema, fullTimeStageSchema]),

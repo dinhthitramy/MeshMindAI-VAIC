@@ -13,15 +13,18 @@ import {
   ArrowLeft,
   ArrowRight,
   BriefcaseBusiness,
+  BookOpenCheck,
   Check,
   CircleAlert,
   Database,
+  ExternalLink,
   FileSearch,
   LockKeyhole,
   Pencil,
   Plus,
   Route,
   Sparkles,
+  SquareCheckBig,
 } from "lucide-react";
 
 import {
@@ -30,6 +33,17 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -63,19 +77,30 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Progress,
+  ProgressLabel,
+  ProgressValue,
+} from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import type { CareerLensStoredFormValues } from "@/lib/careerlens/form";
 import type {
   CareerRoadmapSummary,
+  FollowedCareerRoadmapSummary,
   SavedCareerRoadmap,
 } from "@/lib/careerlens/roadmaps";
 import type {
+  CareerRecommendation,
   CareerGuidanceOutput,
   CareerStartingPointSnapshot,
 } from "@/lib/careerlens/schemas";
 
 import {
+  followCareerRoadmapAction,
   generateCareerPlanAction,
+  stopFollowingCareerRoadmapAction,
+  toggleCareerRoadmapTaskAction,
   type CareerLensActionState,
 } from "../actions";
 import { CareerPlanResults } from "./career-plan-results";
@@ -130,6 +155,82 @@ const fieldStep: Record<string, number> = {
   question: 4,
 };
 
+function recommendationTasks(recommendation: CareerRecommendation): FollowTask[] {
+  return recommendation.roadmap.flatMap((stage) => {
+    const prefix = `${stage.stage_order}-${stage.stage_type}`;
+    if (stage.stage_type === "learning") {
+      return [
+        ...stage.subjects.map((subject, index) => ({
+          id: `${prefix}-subject-${index}`,
+          stage: stage.stage_name,
+          title: subject.subject_name,
+          detail: subject.evidence_of_completion,
+        })),
+        ...stage.certificates.map((certificate, index) => ({
+          id: `${prefix}-certificate-${index}`,
+          stage: stage.stage_name,
+          title: certificate.certificate_name,
+          detail: certificate.target_time,
+        })),
+        ...stage.research_and_competitions.map((activity, index) => ({
+          id: `${prefix}-activity-${index}`,
+          stage: stage.stage_name,
+          title: activity.activity_name,
+          detail: activity.evidence_of_completion,
+        })),
+        ...stage.milestones.map((milestone, index) => ({
+          id: `${prefix}-milestone-${index}`,
+          stage: stage.stage_name,
+          title: milestone,
+          detail: stage.time_limit,
+        })),
+      ];
+    }
+
+    if (stage.stage_type === "internship") {
+      return [
+        ...stage.cv_preparation.map((task, index) => ({
+          id: `${prefix}-cv-${index}`,
+          stage: stage.stage_name,
+          title: task,
+          detail: stage.time_limit,
+        })),
+        ...stage.applied_knowledge.map((task, index) => ({
+          id: `${prefix}-apply-${index}`,
+          stage: stage.stage_name,
+          title: task,
+          detail: stage.success_metrics[0] ?? stage.time_limit,
+        })),
+        ...stage.interview_preparation.map((task, index) => ({
+          id: `${prefix}-interview-${index}`,
+          stage: stage.stage_name,
+          title: task,
+          detail: stage.time_limit,
+        })),
+      ];
+    }
+
+    return [
+      ...stage.first_90_days.map((task, index) => ({
+        id: `${prefix}-first90-${index}`,
+        stage: stage.stage_name,
+        title: task,
+        detail: stage.time_limit,
+      })),
+      ...stage.promotion_path.map((step, index) => ({
+        id: `${prefix}-promotion-${index}`,
+        stage: stage.stage_name,
+        title: step.target_position,
+        detail: step.proof_of_readiness,
+      })),
+    ];
+  });
+}
+
+function recommendationResources(recommendation: CareerRecommendation) {
+  return recommendation.reference_documents.slice(0, 8);
+}
+
 type GeneratedPlan = {
   formValues: CareerLensStoredFormValues;
   id: string;
@@ -137,7 +238,18 @@ type GeneratedPlan = {
   selectedRecommendationIndex: number;
 };
 
+type ActivePlan = {
+  location: string;
+  id: string;
+  title: string;
+  output: CareerGuidanceOutput;
+  selectedRecommendationIndex: number;
+  updatedAt: string;
+};
+
 type CareerWorkspaceProps = {
+  followedRoadmap: SavedCareerRoadmap | null;
+  followedRoadmapHistory: FollowedCareerRoadmapSummary[];
   marketOverview: {
     postingCount: number;
     regionCount: number;
@@ -146,16 +258,25 @@ type CareerWorkspaceProps = {
     sourceDate: string;
   };
   newRoadmapDefaults: CareerLensStoredFormValues | null;
+  provinces: string[];
   reuseLatestRoadmapData: boolean;
   savedRoadmap: SavedCareerRoadmap | null;
   savedRoadmaps: CareerRoadmapSummary[];
   startingPoint: CareerStartingPointSnapshot;
 };
 
+type FollowTask = {
+  id: string;
+  stage: string;
+  title: string;
+  detail: string;
+};
+
 type RoadmapWizardProps = {
   defaults: CareerLensStoredFormValues | null;
   marketOverview: CareerWorkspaceProps["marketOverview"];
   mode: "new" | "edit";
+  provinces: string[];
   roadmapId?: string;
   startingPoint: CareerStartingPointSnapshot;
   onCancel?: () => void;
@@ -191,6 +312,7 @@ function RoadmapWizard({
   defaults,
   marketOverview,
   mode,
+  provinces,
   roadmapId,
   startingPoint,
   onCancel,
@@ -425,6 +547,7 @@ function RoadmapWizard({
                   <Field data-invalid={Boolean(fieldError("currentRegion")) || undefined}>
                     <FieldLabel htmlFor="careerlens-current-region">{t("form.currentRegion")}</FieldLabel>
                     <ProvinceCombobox
+                      provinces={provinces}
                       id="careerlens-current-region"
                       name="currentRegion"
                       defaultValue={defaults?.currentRegion || undefined}
@@ -436,6 +559,7 @@ function RoadmapWizard({
                   <Field data-invalid={Boolean(fieldError("targetRegion")) || undefined}>
                     <FieldLabel htmlFor="careerlens-target-region">{t("form.targetRegion")}</FieldLabel>
                     <ProvinceCombobox
+                      provinces={provinces}
                       id="careerlens-target-region"
                       name="targetRegion"
                       defaultValue={defaults?.targetRegion || undefined}
@@ -719,9 +843,269 @@ function RoadmapWizard({
   );
 }
 
+function FollowRoadmapDialog({
+  disabled,
+  hasActiveRoadmap,
+  roadmapId,
+}: {
+  disabled: boolean;
+  hasActiveRoadmap: boolean;
+  roadmapId: string;
+}) {
+  const t = useTranslations("Roadmap.follow");
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger render={<Button disabled={disabled} />}>
+        <Route data-icon="inline-start" />
+        {disabled ? t("following") : t("start")}
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t("confirmTitle")}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {hasActiveRoadmap ? t("confirmReplace") : t("confirmDescription")}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+          <form action={followCareerRoadmapAction}>
+            <input type="hidden" name="roadmapId" value={roadmapId} />
+            <AlertDialogAction type="submit">{t("confirmAction")}</AlertDialogAction>
+          </form>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function StopFollowingDialog() {
+  const t = useTranslations("Roadmap.follow");
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger render={<Button variant="outline" />}>
+        {t("stop")}
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t("stopTitle")}</AlertDialogTitle>
+          <AlertDialogDescription>{t("stopDescription")}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+          <form action={stopFollowingCareerRoadmapAction}>
+            <AlertDialogAction type="submit" variant="destructive">
+              {t("stopAction")}
+            </AlertDialogAction>
+          </form>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function FollowCurrentRoadmapCard({
+  activePlan,
+  hasActiveRoadmap,
+  isFollowingThisRoadmap,
+}: {
+  activePlan: ActivePlan;
+  hasActiveRoadmap: boolean;
+  isFollowingThisRoadmap: boolean;
+}) {
+  const t = useTranslations("Roadmap.follow");
+
+  return (
+    <Alert className="sm:pr-52">
+      <Route aria-hidden="true" />
+      <AlertTitle>
+        {isFollowingThisRoadmap ? t("alreadyTitle") : t("cardTitle")}
+      </AlertTitle>
+      <AlertDescription>
+        {isFollowingThisRoadmap ? t("alreadyDescription") : t("cardDescription")}
+      </AlertDescription>
+      <AlertAction className="static col-start-2 mt-3 sm:absolute sm:mt-0">
+        <FollowRoadmapDialog
+          disabled={isFollowingThisRoadmap}
+          hasActiveRoadmap={hasActiveRoadmap}
+          roadmapId={activePlan.id}
+        />
+      </AlertAction>
+    </Alert>
+  );
+}
+
+function FollowedRoadmapPanel({
+  followedRoadmap,
+  history,
+}: {
+  followedRoadmap: SavedCareerRoadmap | null;
+  history: FollowedCareerRoadmapSummary[];
+}) {
+  const format = useFormatter();
+  const t = useTranslations("Roadmap.follow");
+  const recommendation = followedRoadmap
+    ? followedRoadmap.guidanceOutput.recommendations[followedRoadmap.selectedRecommendationIndex] ??
+      followedRoadmap.guidanceOutput.recommendations[0]
+    : null;
+  const tasks = recommendation ? recommendationTasks(recommendation) : [];
+  const done = new Set(followedRoadmap?.followProgress ?? []);
+  const completedCount = tasks.filter((task) => done.has(task.id)).length;
+  const progress =
+    tasks.length === 0 ? 0 : Math.round((completedCount / tasks.length) * 100);
+  const resources = recommendation ? recommendationResources(recommendation) : [];
+
+  return (
+    <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
+      <div className="flex flex-col gap-6">
+        {followedRoadmap && recommendation ? (
+          <>
+            <Card>
+              <CardHeader className="gap-4">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div>
+                    <Badge>{t("activeBadge")}</Badge>
+                    <CardTitle className="mt-3 text-2xl">{recommendation.path_title}</CardTitle>
+                    <CardDescription className="mt-2">
+                      {t("startedAt", {
+                        date: followedRoadmap.followedAt
+                          ? format.dateTime(new Date(followedRoadmap.followedAt), {
+                              dateStyle: "medium",
+                            })
+                          : t("unknownDate"),
+                      })}
+                    </CardDescription>
+                  </div>
+                  <StopFollowingDialog />
+                </div>
+                <Progress value={progress}>
+                  <ProgressLabel>{t("progress")}</ProgressLabel>
+                  <ProgressValue>{() => `${progress}%`}</ProgressValue>
+                </Progress>
+              </CardHeader>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("tasksTitle")}</CardTitle>
+                <CardDescription>{t("tasksDescription")}</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-3">
+                {tasks.map((task) => {
+                  const completed = done.has(task.id);
+
+                  return (
+                    <article key={task.id} className="grid gap-3 rounded-xl border p-4 sm:grid-cols-[1fr_auto] sm:items-start">
+                      <div className="min-w-0">
+                        <p className="text-xs font-medium text-muted-foreground">{task.stage}</p>
+                        <h3 className="mt-1 font-medium">{task.title}</h3>
+                        <p className="mt-2 text-sm leading-6 text-muted-foreground">{task.detail}</p>
+                      </div>
+                      <form action={toggleCareerRoadmapTaskAction}>
+                        <input type="hidden" name="roadmapId" value={followedRoadmap.id} />
+                        <input type="hidden" name="taskId" value={task.id} />
+                        <input type="hidden" name="done" value={completed ? "false" : "true"} />
+                        <Button type="submit" variant={completed ? "secondary" : "outline"} size="sm">
+                          <SquareCheckBig data-icon="inline-start" />
+                          {completed ? t("done") : t("markDone")}
+                        </Button>
+                      </form>
+                    </article>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          </>
+        ) : (
+          <Card>
+            <CardHeader>
+              <Badge variant="secondary">{t("emptyBadge")}</Badge>
+              <CardTitle>{t("emptyTitle")}</CardTitle>
+              <CardDescription>{t("emptyDescription")}</CardDescription>
+            </CardHeader>
+          </Card>
+        )}
+      </div>
+
+      <aside className="flex flex-col gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpenCheck aria-hidden="true" className="size-4" />
+              {t("resourcesTitle")}
+            </CardTitle>
+            <CardDescription>{t("resourcesDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            {resources.length > 0 ? (
+              resources.map((resource) => (
+                <a
+                  key={resource.url}
+                  href={resource.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={buttonVariants({ variant: "outline", size: "sm" })}
+                >
+                  <ExternalLink data-icon="inline-start" />
+                  {resource.title}
+                </a>
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground">{t("noResources")}</p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("historyTitle")}</CardTitle>
+            <CardDescription>{t("historyDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            {history.length > 0 ? (
+              history.map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/dashboard/careerlens?roadmap=${item.id}`}
+                  className="rounded-xl border p-4 text-sm hover:bg-muted/60"
+                >
+                  <span className="font-medium">{item.title}</span>
+                  <span className="mt-2 block text-xs text-muted-foreground">
+                    {item.isFollowing
+                      ? t("historyActive")
+                      : item.stoppedFollowingAt
+                        ? t("historyStopped", {
+                            date: format.dateTime(new Date(item.stoppedFollowingAt), {
+                              dateStyle: "medium",
+                            }),
+                          })
+                        : t("historyStarted", {
+                            date: item.followedAt
+                              ? format.dateTime(new Date(item.followedAt), {
+                                  dateStyle: "medium",
+                                })
+                              : t("unknownDate"),
+                          })}
+                  </span>
+                </Link>
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground">{t("noHistory")}</p>
+            )}
+          </CardContent>
+        </Card>
+      </aside>
+    </div>
+  );
+}
+
 export function CareerWorkspace({
+  followedRoadmap,
+  followedRoadmapHistory,
   marketOverview,
   newRoadmapDefaults,
+  provinces,
   reuseLatestRoadmapData,
   savedRoadmap,
   savedRoadmaps,
@@ -743,9 +1127,10 @@ export function CareerWorkspace({
     });
   }, []);
 
-  const activePlan = generatedPlan
+  const activePlan: ActivePlan | null = generatedPlan
     ? {
         id: generatedPlan.id,
+        location: generatedPlan.formValues.targetRegion || generatedPlan.formValues.currentRegion,
         title:
           generatedPlan.output.recommendations[
             generatedPlan.selectedRecommendationIndex
@@ -757,12 +1142,16 @@ export function CareerWorkspace({
     : savedRoadmap
       ? {
           id: savedRoadmap.id,
+          location: savedRoadmap.formValues.targetRegion || savedRoadmap.formValues.currentRegion,
           title: savedRoadmap.title,
           output: savedRoadmap.guidanceOutput,
           selectedRecommendationIndex: savedRoadmap.selectedRecommendationIndex,
           updatedAt: savedRoadmap.updatedAt,
         }
       : null;
+  const isFollowingActivePlan = Boolean(
+    activePlan && followedRoadmap?.id === activePlan.id,
+  );
 
   if (mode === "new" || mode === "edit") {
     return (
@@ -783,6 +1172,7 @@ export function CareerWorkspace({
         }
         startingPoint={startingPoint}
         marketOverview={marketOverview}
+        provinces={provinces}
         onCancel={activePlan ? () => setMode("view") : undefined}
         onSaved={handleSaved}
       />
@@ -796,6 +1186,7 @@ export function CareerWorkspace({
         defaults={newRoadmapDefaults}
         startingPoint={startingPoint}
         marketOverview={marketOverview}
+        provinces={provinces}
         onSaved={handleSaved}
       />
     );
@@ -832,68 +1223,94 @@ export function CareerWorkspace({
         </CardHeader>
       </Card>
 
-      {savedRoadmaps.length > 1 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("saved.listTitle")}</CardTitle>
-            <CardDescription>{t("saved.listDescription")}</CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-3 md:grid-cols-2">
-            {savedRoadmaps.map((roadmap) => {
-              const selected = roadmap.id === activePlan.id;
+      <Tabs defaultValue="roadmap" className="gap-6">
+        <TabsList
+          aria-label={t("tabs.label")}
+          className="w-full justify-start overflow-x-auto sm:w-fit"
+        >
+          <TabsTrigger value="roadmap">{t("tabs.roadmap")}</TabsTrigger>
+          <TabsTrigger value="following">{t("tabs.following")}</TabsTrigger>
+        </TabsList>
 
-              return (
-                <Link
-                  key={roadmap.id}
-                  href={`/dashboard/careerlens?roadmap=${roadmap.id}`}
-                  aria-current={selected ? "page" : undefined}
-                  className={buttonVariants({
-                    variant: selected ? "secondary" : "outline",
-                    className:
-                      "h-auto min-w-0 items-start justify-between gap-4 whitespace-normal px-4 py-3 text-left",
-                  })}
-                >
-                  <span className="min-w-0">
-                    <span className="line-clamp-2 block font-medium">
-                      {roadmap.title}
-                    </span>
-                    <span className="mt-1 block text-xs font-normal text-muted-foreground">
-                      {format.dateTime(new Date(roadmap.updatedAt), {
-                        dateStyle: "medium",
-                        timeStyle: "short",
+        <TabsContent value="roadmap" className="flex flex-col gap-10">
+          {savedRoadmaps.length > 1 ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("saved.listTitle")}</CardTitle>
+                <CardDescription>{t("saved.listDescription")}</CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-3 md:grid-cols-2">
+                {savedRoadmaps.map((roadmap) => {
+                  const selected = roadmap.id === activePlan.id;
+
+                  return (
+                    <Link
+                      key={roadmap.id}
+                      href={`/dashboard/careerlens?roadmap=${roadmap.id}`}
+                      aria-current={selected ? "page" : undefined}
+                      className={buttonVariants({
+                        variant: selected ? "secondary" : "outline",
+                        className:
+                          "h-auto min-w-0 items-start justify-between gap-4 whitespace-normal px-4 py-3 text-left",
                       })}
-                    </span>
-                  </span>
-                  {selected ? (
-                    <Badge variant="secondary">{t("saved.current")}</Badge>
-                  ) : null}
-                </Link>
-              );
-            })}
-          </CardContent>
-        </Card>
-      ) : null}
+                    >
+                      <span className="min-w-0">
+                        <span className="line-clamp-2 block font-medium">
+                          {roadmap.title}
+                        </span>
+                        <span className="mt-1 block text-xs font-normal text-muted-foreground">
+                          {format.dateTime(new Date(roadmap.updatedAt), {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })}
+                        </span>
+                      </span>
+                      {selected ? (
+                        <Badge variant="secondary">{t("saved.current")}</Badge>
+                      ) : null}
+                    </Link>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          ) : null}
 
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <BriefcaseBusiness aria-hidden="true" />
-            <div>
-              <CardTitle>{t("startingPoint.title")}</CardTitle>
-              <CardDescription>{t("startingPoint.description")}</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <StartingPointSummary snapshot={startingPoint} />
-        </CardContent>
-      </Card>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <BriefcaseBusiness aria-hidden="true" />
+                <div>
+                  <CardTitle>{t("startingPoint.title")}</CardTitle>
+                  <CardDescription>{t("startingPoint.description")}</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <StartingPointSummary snapshot={startingPoint} />
+            </CardContent>
+          </Card>
 
-      <CareerPlanResults
-        output={activePlan.output}
-        roadmapId={activePlan.id}
-        selectedRecommendationIndex={activePlan.selectedRecommendationIndex}
-      />
+          <CareerPlanResults
+            location={activePlan.location}
+            output={activePlan.output}
+            roadmapId={activePlan.id}
+            selectedRecommendationIndex={activePlan.selectedRecommendationIndex}
+          />
+
+          <FollowCurrentRoadmapCard
+            activePlan={activePlan}
+            hasActiveRoadmap={Boolean(followedRoadmap)}
+            isFollowingThisRoadmap={isFollowingActivePlan}
+          />
+        </TabsContent>
+
+        <TabsContent value="following">
+          <FollowedRoadmapPanel
+            followedRoadmap={followedRoadmap}
+            history={followedRoadmapHistory}
+          />
+        </TabsContent>
+      </Tabs>
 
       <Alert className="sm:pr-52">
         <Route aria-hidden="true" />

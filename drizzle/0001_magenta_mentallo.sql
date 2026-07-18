@@ -25,6 +25,10 @@ CREATE TABLE "journey_imports" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+ALTER TABLE "career_roadmaps" ADD COLUMN "is_following" boolean DEFAULT false NOT NULL;--> statement-breakpoint
+ALTER TABLE "career_roadmaps" ADD COLUMN "follow_progress" jsonb DEFAULT '[]'::jsonb NOT NULL;--> statement-breakpoint
+ALTER TABLE "career_roadmaps" ADD COLUMN "followed_at" timestamp with time zone;--> statement-breakpoint
+ALTER TABLE "career_roadmaps" ADD COLUMN "stopped_following_at" timestamp with time zone;--> statement-breakpoint
 ALTER TABLE "journey_entries" ADD CONSTRAINT "journey_entries_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "journey_entries" ADD CONSTRAINT "journey_entries_import_id_journey_imports_id_fk" FOREIGN KEY ("import_id") REFERENCES "public"."journey_imports"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "journey_imports" ADD CONSTRAINT "journey_imports_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -32,4 +36,5 @@ ALTER TABLE "journey_imports" ADD CONSTRAINT "journey_imports_roadmap_id_career_
 CREATE INDEX "journey_entries_user_date_idx" ON "journey_entries" USING btree ("user_id","target_date");--> statement-breakpoint
 CREATE INDEX "journey_entries_import_idx" ON "journey_entries" USING btree ("import_id");--> statement-breakpoint
 CREATE INDEX "journey_imports_user_created_idx" ON "journey_imports" USING btree ("user_id","created_at");--> statement-breakpoint
-CREATE INDEX "journey_imports_roadmap_idx" ON "journey_imports" USING btree ("roadmap_id");
+CREATE INDEX "journey_imports_roadmap_idx" ON "journey_imports" USING btree ("roadmap_id");--> statement-breakpoint
+CREATE INDEX "career_roadmaps_user_following_idx" ON "career_roadmaps" USING btree ("user_id","is_following");

@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { LaborMarketSignals } from "./schemas";
-import { VIETNAM_PROVINCES } from "./vietnam-provinces";
+import { getVietnamProvinceNames, VIETNAM_PROVINCES } from "./vietnam-provinces";
 
 type Posting = LaborMarketSignals["postings"][number];
 type EducationRequirement = Posting["education_requirement"];
@@ -291,8 +291,8 @@ function roundSalary(value: number): number {
   return Math.round(value / 250_000) * 250_000;
 }
 
-function createPostings(): Posting[] {
-  return VIETNAM_PROVINCES.flatMap((region, regionIndex) =>
+function createPostings(regions: readonly string[]): Posting[] {
+  return regions.flatMap((region, regionIndex) =>
     CAREER_FAMILIES.flatMap((family, familyIndex) =>
       family.roles.map((jobTitle, roleIndex) => {
         const factor = salaryFactor(region) * (1 + (roleIndex % 4) * 0.025);
@@ -330,8 +330,8 @@ function createPostings(): Posting[] {
   );
 }
 
-function createTrendSummary(): LaborMarketSignals["trend_summary"] {
-  return VIETNAM_PROVINCES.flatMap((region, regionIndex) =>
+function createTrendSummary(regions: readonly string[]): LaborMarketSignals["trend_summary"] {
+  return regions.flatMap((region, regionIndex) =>
     Array.from({ length: 5 }, (_, trendIndex) => {
       const family = CAREER_FAMILIES[(regionIndex * 3 + trendIndex * 4) % CAREER_FAMILIES.length];
       return {
@@ -351,11 +351,19 @@ function createTrendSummary(): LaborMarketSignals["trend_summary"] {
  * tỉnh/thành. Đây không phải tin tuyển dụng thật và cần được thay bằng nguồn
  * thị trường đã kiểm chứng khi vận hành production.
  */
-export const CAREERLENS_MARKET_SEED = {
-  source_timestamp: SOURCE_TIMESTAMP,
-  postings: createPostings(),
-  trend_summary: createTrendSummary(),
-} satisfies LaborMarketSignals;
+export function createCareerLensMarketSeed(regions: readonly string[]): LaborMarketSignals {
+  return {
+    source_timestamp: SOURCE_TIMESTAMP,
+    postings: createPostings(regions),
+    trend_summary: createTrendSummary(regions),
+  };
+}
+
+export const CAREERLENS_MARKET_SEED = createCareerLensMarketSeed(VIETNAM_PROVINCES);
+
+export async function getCareerLensMarketSeed(): Promise<LaborMarketSignals> {
+  return createCareerLensMarketSeed(await getVietnamProvinceNames());
+}
 
 function normalizeSearchText(value: string): string {
   return value
@@ -390,14 +398,16 @@ export function selectCareerLensMarketSignals({
   currentRegion,
   targetRegions,
   keywords,
+  marketSeed = CAREERLENS_MARKET_SEED,
 }: {
   currentRegion: string;
   targetRegions: string[];
   keywords: string[];
+  marketSeed?: LaborMarketSignals;
 }): LaborMarketSignals {
   const regions = [...new Set([...targetRegions, currentRegion].filter(Boolean))];
   const selectedPostings = regions.flatMap((region) => {
-    const regionPostings = CAREERLENS_MARKET_SEED.postings.filter(
+    const regionPostings = marketSeed.postings.filter(
       (posting) => posting.region === region,
     );
     const byIndustry = new Map<string, Posting[]>();
@@ -424,10 +434,10 @@ export function selectCareerLensMarketSignals({
   });
 
   return {
-    source_timestamp: CAREERLENS_MARKET_SEED.source_timestamp,
+    source_timestamp: marketSeed.source_timestamp,
     postings: selectedPostings,
     trend_summary: regions.flatMap((region) =>
-      CAREERLENS_MARKET_SEED.trend_summary.filter((trend) => trend.region === region),
+      marketSeed.trend_summary.filter((trend) => trend.region === region),
     ),
   };
 }

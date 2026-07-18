@@ -29,7 +29,7 @@
       <item>Market data seed: job postings mẫu, skills, salary, region, posted_at, shortage flags.</item>
       <item>AI recommendation service: nhận profile + labor signals, sinh 3 lộ trình explainable.</item>
       <item>Switch-major flow: user chọn đổi ngành/chuyên ngành, AI dùng memory cũ để sinh lộ trình mới.</item>
-      <item>Related jobs view: role liên quan, salary band, region, skill match, skill gap.</item>
+      <item>Live related jobs view: button tìm job mới theo vị trí form, lấy job post thật từ nền tảng tuyển dụng, có link trực tiếp, không lưu DB.</item>
       <item>Ethics guardrail: consent gate, bias exclusion, autonomy note, multi-path choices.</item>
       <item>Counselor note placeholder: counselor có thể xem lộ trình khi user cho phép, chưa cần realtime collaboration.</item>
     </must-have>
@@ -95,7 +95,7 @@
       <item>Client form edits interests, sports, activities, preferences, target regions.</item>
       <item>Button: "Tạo lộ trình". Button: "Đổi chuyên ngành".</item>
       <item>Render 3 recommendation cards: safe path, growth path, exploration path.</item>
-      <item>Each card shows why-fit, market evidence, skill gap, roadmap stages, related jobs.</item>
+      <item>Each card shows why-fit, market evidence, skill gap, roadmap stages, and on-demand live related jobs.</item>
     </route>
     <route path="/dashboard/careerlens/actions.ts">
       <item>Server Actions: saveProfile, generateRecommendation, saveStudentDecision.</item>

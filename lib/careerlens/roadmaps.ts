@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, isNotNull } from "drizzle-orm";
 import { z } from "zod";
 
 import { getDb } from "@/lib/db";
@@ -24,6 +24,10 @@ export type SavedCareerRoadmap = {
   guidanceInput: CareerGuidanceInput;
   guidanceOutput: CareerGuidanceOutput;
   selectedRecommendationIndex: number;
+  isFollowing: boolean;
+  followProgress: string[];
+  followedAt: string | null;
+  stoppedFollowingAt: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -31,6 +35,11 @@ export type SavedCareerRoadmap = {
 export type CareerRoadmapSummary = Pick<
   SavedCareerRoadmap,
   "id" | "title" | "updatedAt"
+>;
+
+export type FollowedCareerRoadmapSummary = Pick<
+  SavedCareerRoadmap,
+  "id" | "title" | "followedAt" | "stoppedFollowingAt" | "isFollowing"
 >;
 
 function parseRoadmap(
@@ -50,6 +59,10 @@ function parseRoadmap(
     guidanceInput: careerGuidanceInputSchema.parse(row.guidanceInput),
     guidanceOutput,
     selectedRecommendationIndex,
+    isFollowing: row.isFollowing,
+    followProgress: Array.isArray(row.followProgress) ? row.followProgress : [],
+    followedAt: row.followedAt?.toISOString() ?? null,
+    stoppedFollowingAt: row.stoppedFollowingAt?.toISOString() ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
@@ -120,6 +133,44 @@ export async function getCareerRoadmapSummaries(
     ...row,
     updatedAt: row.updatedAt.toISOString(),
   }));
+}
+
+export async function getFollowedCareerRoadmap(
+  userId: string,
+): Promise<SavedCareerRoadmap | null> {
+  const [row] = await getDb()
+    .select()
+    .from(careerRoadmaps)
+    .where(and(eq(careerRoadmaps.userId, userId), eq(careerRoadmaps.isFollowing, true)))
+    .orderBy(desc(careerRoadmaps.followedAt))
+    .limit(1);
+
+  return row ? parseRoadmap(row) : null;
+}
+
+export async function getFollowedCareerRoadmapHistory(
+  userId: string,
+): Promise<FollowedCareerRoadmapSummary[]> {
+  const rows = await getDb()
+    .select({
+      id: careerRoadmaps.id,
+      title: careerRoadmaps.title,
+      isFollowing: careerRoadmaps.isFollowing,
+      followedAt: careerRoadmaps.followedAt,
+      stoppedFollowingAt: careerRoadmaps.stoppedFollowingAt,
+    })
+    .from(careerRoadmaps)
+    .where(and(eq(careerRoadmaps.userId, userId), isNotNull(careerRoadmaps.followedAt)))
+    .orderBy(desc(careerRoadmaps.followedAt))
+    .limit(20);
+
+  return rows.map((row) => ({
+      id: row.id,
+      title: row.title,
+      isFollowing: row.isFollowing,
+      followedAt: row.followedAt?.toISOString() ?? null,
+      stoppedFollowingAt: row.stoppedFollowingAt?.toISOString() ?? null,
+    }));
 }
 
 export async function saveCareerRoadmap({
@@ -210,6 +261,91 @@ export async function selectCareerRoadmapRecommendation({
         eq(careerRoadmaps.userId, userId),
       ),
     )
+    .returning({ id: careerRoadmaps.id });
+
+  return Boolean(updated);
+}
+
+export async function followCareerRoadmap({
+  roadmapId,
+  userId,
+}: {
+  roadmapId: string;
+  userId: string;
+}) {
+  const db = getDb();
+  const [target] = await db
+    .select({ id: careerRoadmaps.id })
+    .from(careerRoadmaps)
+    .where(and(eq(careerRoadmaps.id, roadmapId), eq(careerRoadmaps.userId, userId)))
+    .limit(1);
+
+  if (!target) return false;
+
+  const now = new Date();
+  await db
+    .update(careerRoadmaps)
+    .set({ isFollowing: false, stoppedFollowingAt: now, updatedAt: now })
+    .where(and(eq(careerRoadmaps.userId, userId), eq(careerRoadmaps.isFollowing, true)));
+
+  const [updated] = await db
+    .update(careerRoadmaps)
+    .set({
+      isFollowing: true,
+      followProgress: [],
+      followedAt: now,
+      stoppedFollowingAt: null,
+      updatedAt: now,
+    })
+    .where(and(eq(careerRoadmaps.id, roadmapId), eq(careerRoadmaps.userId, userId)))
+    .returning({ id: careerRoadmaps.id });
+
+  return Boolean(updated);
+}
+
+export async function stopFollowingCareerRoadmap(userId: string) {
+  const [updated] = await getDb()
+    .update(careerRoadmaps)
+    .set({ isFollowing: false, stoppedFollowingAt: new Date(), updatedAt: new Date() })
+    .where(and(eq(careerRoadmaps.userId, userId), eq(careerRoadmaps.isFollowing, true)))
+    .returning({ id: careerRoadmaps.id });
+
+  return Boolean(updated);
+}
+
+export async function setCareerRoadmapTaskDone({
+  roadmapId,
+  userId,
+  taskId,
+  done,
+}: {
+  roadmapId: string;
+  userId: string;
+  taskId: string;
+  done: boolean;
+}) {
+  const [row] = await getDb()
+    .select({ followProgress: careerRoadmaps.followProgress })
+    .from(careerRoadmaps)
+    .where(
+      and(
+        eq(careerRoadmaps.id, roadmapId),
+        eq(careerRoadmaps.userId, userId),
+        eq(careerRoadmaps.isFollowing, true),
+      ),
+    )
+    .limit(1);
+
+  if (!row) return false;
+  const current = Array.isArray(row.followProgress) ? row.followProgress : [];
+  const next = done
+    ? [...new Set([...current, taskId])]
+    : current.filter((id) => id !== taskId);
+
+  const [updated] = await getDb()
+    .update(careerRoadmaps)
+    .set({ followProgress: next, updatedAt: new Date() })
+    .where(and(eq(careerRoadmaps.id, roadmapId), eq(careerRoadmaps.userId, userId)))
     .returning({ id: careerRoadmaps.id });
 
   return Boolean(updated);

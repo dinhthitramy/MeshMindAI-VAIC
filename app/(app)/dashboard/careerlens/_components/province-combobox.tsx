@@ -11,19 +11,17 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
-import {
-  VIETNAM_PROVINCES,
-  type VietnamProvince,
-} from "@/lib/careerlens/vietnam-provinces";
 
 type ProvinceComboboxProps = {
+  provinces: string[];
   id: string;
   name: string;
-  defaultValue?: VietnamProvince;
+  defaultValue?: string;
   invalid?: boolean;
 };
 
 export function ProvinceCombobox({
+  provinces,
   id,
   name,
   defaultValue,
@@ -35,7 +33,7 @@ export function ProvinceCombobox({
   return (
     <>
       <Combobox
-        items={[...VIETNAM_PROVINCES]}
+        items={provinces}
         value={value}
         onValueChange={setValue}
         autoHighlight

@@ -69,6 +69,7 @@ const OUTPUT_CONTRACT = {
       fit_score: 0,
       fit_explanation: "string",
       market_evidence: ["string"],
+      reference_documents: [{ title: "string", url: "https://example.com/document" }],
       matched_profile_signals: ["string"],
       skill_gaps: [
         {
@@ -147,16 +148,7 @@ const OUTPUT_CONTRACT = {
           ],
         },
       ],
-      related_jobs: [
-        {
-          job_title: "string",
-          region: "string",
-          salary_band: "string",
-          required_skills: ["string"],
-          education_requirement: "string",
-          why_relevant: "string",
-        },
-      ],
+      related_jobs: [],
       autonomy_note: "string",
     },
   ],
@@ -187,6 +179,8 @@ export function buildCareerGuidanceUserPrompt(input: CareerGuidanceInput): strin
     "Nếu dữ liệu đủ, recommendations phải có đúng 3 phần tử theo thứ tự: an toàn, tăng trưởng cao, khám phá.",
     "Dùng đầy đủ student_profile.starting_point khi tổng hợp tính cách, học vấn, bảng điểm, nghiên cứu, chứng chỉ, cuộc thi, hoạt động và kinh nghiệm làm việc; không tự suy diễn dữ liệu còn thiếu.",
     "Mỗi recommendation phải có đúng ba roadmap stage theo thứ tự: Học tập, Intern, Công việc chính thức; điền đầy đủ chi tiết riêng cho nghề đó.",
+    "Mỗi recommendation phải có reference_documents là link web trực tiếp đến tài liệu học/chứng chỉ/nghiên cứu liên quan. Không trả keyword tìm kiếm hoặc URL trang search.",
+    "Không lưu live job listing trong roadmap JSON. related_jobs phải là [] vì việc làm được tìm mới theo vị trí khi user bấm nút trong UI.",
     "",
     "<output_contract>",
     JSON.stringify(OUTPUT_CONTRACT, null, 2),
@@ -453,6 +447,10 @@ function createMockCareerGuidance(input: CareerGuidanceInput): CareerGuidanceOut
             `Mức lương ghi nhận: ${formatSalary(posting.avg_salary.min, posting.avg_salary.max)}.`,
           ]
         : ["Chưa có posting trực tiếp; cần bổ sung dữ liệu thị trường trước khi quyết định."],
+      reference_documents: [
+        { title: "Kaggle Learn", url: "https://www.kaggle.com/learn" },
+        { title: "freeCodeCamp Learn", url: "https://www.freecodecamp.org/learn/" },
+      ],
       matched_profile_signals: matchedSignals.length > 0 ? matchedSignals : ["Chưa đủ tín hiệu hồ sơ"],
       skill_gaps: (posting?.required_skills.slice(0, 3) ?? [{ skill_name: firstSkill }]).map(
         (skill) => ({
@@ -475,18 +473,7 @@ function createMockCareerGuidance(input: CareerGuidanceInput): CareerGuidanceOut
           ? formatSalary(posting.avg_salary.min, posting.avg_salary.max)
           : "Chưa có dữ liệu lương trực tiếp",
       }),
-      related_jobs: posting
-        ? [
-            {
-              job_title: posting.job_title,
-              region: posting.region,
-              salary_band: formatSalary(posting.avg_salary.min, posting.avg_salary.max),
-              required_skills: posting.required_skills.map((skill) => skill.skill_name),
-              education_requirement: posting.education_requirement,
-              why_relevant: "Role xuất hiện trực tiếp trong bộ labor market signals được cung cấp.",
-            },
-          ]
-        : [],
+      related_jobs: [],
       autonomy_note: outputCopy.autonomyNote,
     } satisfies CareerRecommendation;
   });

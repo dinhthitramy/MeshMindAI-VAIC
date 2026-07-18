@@ -1,5 +1,6 @@
 "use client";
 
+import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import {
   BookOpenCheck,
@@ -7,9 +8,11 @@ import {
   Check,
   CircleHelp,
   Compass,
+  ExternalLink,
   Gauge,
   Lightbulb,
   MapPin,
+  Search,
   Milestone,
   Target,
 } from "lucide-react";
@@ -35,7 +38,11 @@ import { Separator } from "@/components/ui/separator";
 import type { CareerGuidanceOutput } from "@/lib/careerlens/schemas";
 import { applyRoadmapToJourneyAction } from "@/app/(app)/dashboard/my-journey/actions";
 
-import { selectCareerRecommendationAction } from "../actions";
+import {
+  findRelatedJobsAction,
+  selectCareerRecommendationAction,
+  type RelatedJobsActionState,
+} from "../actions";
 
 function cleanText(value: string) {
   return value.replace(/[–—]/g, "-");
@@ -55,19 +62,30 @@ function DetailList({ items }: { items: string[] }) {
 }
 
 type CareerPlanResultsProps = {
+  location: string;
   output: CareerGuidanceOutput;
   roadmapId: string;
   selectedRecommendationIndex?: number;
   successMessage?: string;
 };
 
+const initialRelatedJobsState: RelatedJobsActionState = {
+  status: "idle",
+  jobs: [],
+};
+
 export function CareerPlanResults({
+  location,
   output,
   roadmapId,
   selectedRecommendationIndex = 0,
   successMessage,
 }: CareerPlanResultsProps) {
   const t = useTranslations("Roadmap.results");
+  const [relatedJobsState, relatedJobsAction, findingJobs] = useActionState(
+    findRelatedJobsAction,
+    initialRelatedJobsState,
+  );
   const selectedRecommendation =
     output.recommendations[selectedRecommendationIndex] ??
     output.recommendations[0];
@@ -488,27 +506,65 @@ export function CareerPlanResults({
                 </Accordion>
               </div>
 
-              {recommendation.related_jobs.length > 0 ? (
-                <div>
-                  <h3 className="mb-4 flex items-center gap-2 border-t pt-6 text-base font-semibold">
+              <div>
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-t pt-6">
+                  <h3 className="flex items-center gap-2 text-base font-semibold">
                     <BriefcaseBusiness aria-hidden="true" className="size-4 text-primary" />
                     {t("relatedJobsTitle")}
                   </h3>
+                  <form action={relatedJobsAction}>
+                    <input type="hidden" name="pathTitle" value={recommendation.path_title} />
+                    <input type="hidden" name="location" value={location} />
+                    <input
+                      type="hidden"
+                      name="skills"
+                      value={recommendation.skill_gaps.map((gap) => gap.skill).join(", ")}
+                    />
+                    <Button type="submit" variant="outline" disabled={findingJobs}>
+                      <Search data-icon="inline-start" />
+                      {findingJobs ? t("jobSearchLoading") : t("jobSearchButton")}
+                    </Button>
+                  </form>
+                </div>
+                <p className="mb-4 text-sm leading-6 text-muted-foreground">
+                  {t("jobSearchDescription", { location })}
+                </p>
+                {relatedJobsState.status === "error" ? (
+                  <p role="alert" className="text-sm text-destructive">
+                    {relatedJobsState.message ?? t("jobSearchFailed")}
+                  </p>
+                ) : null}
+                {relatedJobsState.jobs.length > 0 ? (
                   <div className="grid gap-4 md:grid-cols-2">
-                    {recommendation.related_jobs.slice(0, 4).map((job) => (
-                      <div key={`${job.job_title}-${job.region}`} className="rounded-2xl border p-5">
-                        <p className="font-medium">{cleanText(job.job_title)}</p>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {cleanText(job.region)} | {cleanText(job.salary_band)}
-                        </p>
+                    {relatedJobsState.jobs.map((job) => (
+                      <a
+                        key={job.url}
+                        href={job.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rounded-2xl border p-5 transition-colors hover:bg-muted/60"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="font-medium">{cleanText(job.title)}</p>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              {cleanText(job.company)} | {cleanText(job.location)}
+                            </p>
+                          </div>
+                          <ExternalLink aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+                        </div>
                         <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                          {cleanText(job.why_relevant)}
+                          {cleanText(job.reason)}
                         </p>
-                      </div>
+                        <p className="mt-3 text-xs text-muted-foreground">
+                          {job.platform}
+                          {job.postedAt ? ` | ${job.postedAt}` : ""}
+                        </p>
+                      </a>
                     ))}
                   </div>
-                </div>
-              ) : null}
+                ) : null}
+              </div>
             </CardContent>
 
             <CardFooter className="flex-col items-stretch gap-5 border-t bg-card px-6 py-5 sm:flex-row sm:items-center sm:px-8">

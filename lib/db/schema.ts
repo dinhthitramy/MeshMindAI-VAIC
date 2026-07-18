@@ -800,6 +800,10 @@ export const careerRoadmaps = pgTable(
     selectedRecommendationIndex: integer("selected_recommendation_index")
       .default(0)
       .notNull(),
+    isFollowing: boolean("is_following").default(false).notNull(),
+    followProgress: jsonb("follow_progress").$type<string[]>().default([]).notNull(),
+    followedAt: timestamp("followed_at", { withTimezone: true }),
+    stoppedFollowingAt: timestamp("stopped_following_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -813,6 +817,7 @@ export const careerRoadmaps = pgTable(
       sql`${table.selectedRecommendationIndex} between 0 and 9`,
     ),
     index("career_roadmaps_user_updated_idx").on(table.userId, table.updatedAt),
+    index("career_roadmaps_user_following_idx").on(table.userId, table.isFollowing),
   ],
 );
 

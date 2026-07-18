@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { requirePermission } from "@/lib/auth/dal";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import {
-  CAREERLENS_MARKET_SEED,
+  createCareerLensMarketSeed,
   MARKET_INDUSTRY_COUNT,
   MARKET_ROLE_COUNT_PER_REGION,
 } from "@/lib/careerlens/market-seed";
@@ -22,11 +22,14 @@ import { getCareerPreferences } from "@/lib/careerlens/preferences";
 import { getRoadmapPrefillDefaults } from "@/lib/careerlens/roadmap-prefill";
 import {
   getCareerRoadmap,
+  getFollowedCareerRoadmap,
+  getFollowedCareerRoadmapHistory,
   getCareerRoadmapSummaries,
   getLatestCreatedCareerRoadmap,
   getLatestCareerRoadmap,
 } from "@/lib/careerlens/roadmaps";
 import { getCareerStartingPointSnapshot } from "@/lib/careerlens/starting-point";
+import { getVietnamProvinceNames } from "@/lib/careerlens/vietnam-provinces";
 
 import { CareerWorkspace } from "./_components/career-workspace";
 
@@ -57,6 +60,9 @@ export default async function CareerLensPage({
     latestRoadmap,
     latestCreatedRoadmap,
     preferences,
+    provinces,
+    followedRoadmap,
+    followedRoadmapHistory,
   ] =
     await Promise.all([
       getTranslations("Roadmap"),
@@ -69,7 +75,11 @@ export default async function CareerLensPage({
       getLatestCareerRoadmap(viewer.actor.userId),
       getLatestCreatedCareerRoadmap(viewer.actor.userId),
       getCareerPreferences(viewer.actor.userId),
+      getVietnamProvinceNames(),
+      getFollowedCareerRoadmap(viewer.actor.userId),
+      getFollowedCareerRoadmapHistory(viewer.actor.userId),
     ]);
+  const marketSeed = createCareerLensMarketSeed(provinces);
   const savedRoadmap = requestedSavedRoadmap ?? latestRoadmap;
   const newRoadmapDefaults = getRoadmapPrefillDefaults({
     enabled: preferences.reuseLatestRoadmapData,
@@ -78,14 +88,14 @@ export default async function CareerLensPage({
   });
 
   const regionCount = new Set(
-    CAREERLENS_MARKET_SEED.postings.map((posting) => posting.region),
+    marketSeed.postings.map((posting) => posting.region),
   ).size;
   const sourceDate = new Intl.DateTimeFormat(locale === "vi" ? "vi-VN" : "en-US", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
     timeZone: "UTC",
-  }).format(new Date(CAREERLENS_MARKET_SEED.source_timestamp));
+  }).format(new Date(marketSeed.source_timestamp));
 
   return (
     <section className="ai-workspace-surface relative min-h-dvh overflow-hidden">
@@ -135,8 +145,11 @@ export default async function CareerLensPage({
           startingPoint={startingPoint}
           savedRoadmap={savedRoadmap}
           savedRoadmaps={savedRoadmaps}
+          followedRoadmap={followedRoadmap}
+          followedRoadmapHistory={followedRoadmapHistory}
+          provinces={provinces}
           marketOverview={{
-            postingCount: CAREERLENS_MARKET_SEED.postings.length,
+            postingCount: marketSeed.postings.length,
             regionCount,
             roleCountPerRegion: MARKET_ROLE_COUNT_PER_REGION,
             industryCount: MARKET_INDUSTRY_COUNT,
