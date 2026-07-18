@@ -32,7 +32,7 @@ import {
 import { BrandLink } from "@/components/brand";
 import { SkipLink } from "@/components/skip-link";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { ThemeMenuItem } from "@/components/theme-selector";
+import { ThemeMenuToggleGroup } from "@/components/theme-selector";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -300,9 +300,6 @@ function SidebarPanel({
                     <span className="block truncate font-medium">
                       {viewer.displayName}
                     </span>
-                    <span className="block truncate text-xs text-sidebar-foreground/55">
-                      {viewer.roleLabel}
-                    </span>
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -319,9 +316,11 @@ function SidebarPanel({
                   <span className="block truncate font-medium text-popover-foreground">
                     {viewer.displayName}
                   </span>
-                  <span className="mt-0.5 block truncate font-normal">
-                    {viewer.email ?? viewer.roleLabel}
-                  </span>
+                  {viewer.email ? (
+                    <span className="mt-0.5 block truncate font-normal">
+                      {viewer.email}
+                    </span>
+                  ) : null}
                 </DropdownMenuLabel>
                 {viewer.canEditProfile && (
                   <DropdownMenuItem
@@ -336,13 +335,14 @@ function SidebarPanel({
                     {t("profile")}
                   </DropdownMenuItem>
                 )}
-                <ThemeMenuItem />
+                <ThemeMenuToggleGroup />
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <form action={logoutAction}>
                 <DropdownMenuGroup>
                   <DropdownMenuItem
                     variant="destructive"
+                    nativeButton
                     render={<button type="submit" className="w-full" />}
                   >
                     <LogOut aria-hidden="true" />
@@ -367,7 +367,6 @@ type DashboardViewer = {
   canEditProfile: boolean;
   displayName: string;
   email: string | null;
-  roleLabel: string;
   isAdmin: boolean;
 };
 
@@ -433,7 +432,7 @@ function DashboardShell({ children, viewer }: DashboardShellProps) {
       <div
         className={cn(
           "fixed inset-y-0 left-0 z-40 hidden border-r border-sidebar-border transition-[width] duration-200 ease-out motion-reduce:transition-none md:block",
-          collapsed ? "w-20" : "w-64",
+          collapsed ? "w-20" : "w-72",
         )}
       >
         <SidebarPanel
@@ -446,7 +445,7 @@ function DashboardShell({ children, viewer }: DashboardShellProps) {
       <div
         className={cn(
           "min-h-dvh transition-[padding] duration-200 ease-out motion-reduce:transition-none",
-          collapsed ? "md:pl-20" : "md:pl-64",
+          collapsed ? "md:pl-20" : "md:pl-72",
         )}
       >
         <header className="flex h-14 items-center border-b px-3 md:hidden">

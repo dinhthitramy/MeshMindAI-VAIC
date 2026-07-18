@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronDown, UserRound } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 import { BrandLink } from "@/components/brand";
@@ -9,15 +9,21 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getViewer } from "@/lib/auth/dal";
 
+import { LandingMobileNavigation } from "./landing-mobile-navigation";
+
 async function LandingHeader() {
   const [viewer, t] = await Promise.all([
     getViewer().catch(() => null),
     getTranslations("Landing"),
   ]);
-  const categories = [t("category1"), t("category2"), t("category3")];
+  const navigation = [
+    { href: "#features", label: t("navigation.features") },
+    { href: "#journey", label: t("navigation.journey") },
+    { href: "#market", label: t("navigation.market") },
+  ];
 
   return (
-    <header className="border-b border-border/80 bg-background/95">
+    <header className="sticky top-0 z-30 border-b border-border/70 bg-background/88 backdrop-blur-xl">
       <nav
         aria-label={t("primaryNavigation")}
         className="mx-auto flex h-16 w-full max-w-360 items-center gap-4 px-4 sm:px-6 lg:px-8"
@@ -26,38 +32,19 @@ async function LandingHeader() {
         <BrandLink className="hidden sm:inline-flex" />
 
         <div className="hidden items-center gap-1 md:flex">
-          {categories.map((category) => (
-            <span
-              key={category}
-              aria-disabled="true"
-              className="rounded-md px-3 py-2 text-sm text-muted-foreground"
+          {navigation.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30 motion-reduce:transition-none"
             >
-              {category}
-            </span>
+              {item.label}
+            </Link>
           ))}
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          <details className="group relative md:hidden">
-            <summary className="flex h-9 cursor-pointer list-none items-center rounded-full px-3 text-sm font-medium outline-none transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/30 motion-reduce:transition-none [&::-webkit-details-marker]:hidden">
-              {t("categories")}
-              <ChevronDown
-                aria-hidden="true"
-                className="ml-1 size-4 transition-transform group-open:rotate-180 motion-reduce:transition-none"
-              />
-            </summary>
-            <div className="absolute right-0 top-[calc(100%+0.5rem)] z-50 grid min-w-44 gap-1 rounded-xl border bg-popover p-2 text-popover-foreground shadow-lg">
-              {categories.map((category) => (
-                <span
-                  key={category}
-                  aria-disabled="true"
-                  className="rounded-lg px-3 py-2 text-sm text-muted-foreground"
-                >
-                  {category}
-                </span>
-              ))}
-            </div>
-          </details>
+          <LandingMobileNavigation items={navigation} label={t("navigation.menu")} />
 
           <LanguageSwitcher compact />
           <ThemeSelector />
@@ -66,7 +53,7 @@ async function LandingHeader() {
             href={viewer ? "/dashboard" : "/login"}
             className={cn(buttonVariants({ variant: "default", size: "sm" }))}
           >
-            <UserRound data-icon="inline-start" aria-hidden="true" />
+            <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
             {t("account")}
           </Link>
         </div>

@@ -25,7 +25,6 @@ export default async function DashboardLayout({
         canEditProfile: viewer.actor.kind === "user",
         displayName: viewer.displayName,
         email: viewer.email,
-        roleLabel: viewer.roles.join(", "),
         isAdmin: viewer.roles.includes("ADMIN"),
       }}
     >
