@@ -84,9 +84,10 @@ async function invalidFields(
 ): Promise<AuthActionState> {
   const t = await getTranslations("Auth");
   const localizedMessages: Record<string, string> = {
-    "Password must be at least 12 characters.": t("validation.passwordMin"),
+    "Password must be at least 8 characters.": t("validation.passwordMin"),
     "Password must be at most 128 characters.": t("validation.passwordMax"),
     "Password is too long.": t("validation.passwordLong"),
+    "Consent is required.": t("validation.dataConsent"),
     "Enter a valid email address.": t("validation.emailInvalid"),
     "Enter your full name.": t("validation.fullNameInvalid"),
     "Enter a valid day of birth.": t("validation.birthDayInvalid"),
@@ -178,6 +179,7 @@ export async function signupAction(
       "birthYear",
       "password",
       "passwordConfirmation",
+      "dataConsent",
     ]),
   );
 
@@ -238,6 +240,7 @@ export async function signupAction(
       action: "account.created",
       targetType: "user",
       targetId: user.id,
+      metadata: { dataConsent: true },
     });
   } catch (error) {
     if (isUniqueEmailError(error)) {

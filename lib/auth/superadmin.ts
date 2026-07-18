@@ -87,7 +87,7 @@ export async function verifySuperadminTotp(
   const challengeKey = mfaChallengeKey(challengeDigest);
   const config = getSuperadminConfig();
   const totp = new OTPAuth.TOTP({
-    issuer: "MeshMind",
+    issuer: "CareerLens",
     label: "Builtin Superadmin",
     algorithm: "SHA1",
     digits: 6,

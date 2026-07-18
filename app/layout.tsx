@@ -21,11 +21,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  applicationName: "CareerLens",
+  authors: [{ name: "MeshMind-AI" }],
+  creator: "MeshMind-AI",
   title: {
-    default: "MeshMind",
-    template: "%s | MeshMind",
+    default: "CareerLens",
+    template: "%s | CareerLens",
   },
-  description: "MeshMind",
+  description: "CareerLens",
 };
 
 export default async function RootLayout({

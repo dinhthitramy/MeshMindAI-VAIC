@@ -34,6 +34,7 @@ type SignupValues = {
   birthYear: string;
   password: string;
   passwordConfirmation: string;
+  dataConsent: boolean;
 };
 
 const initialValues: SignupValues = {
@@ -44,6 +45,7 @@ const initialValues: SignupValues = {
   birthYear: "",
   password: "",
   passwordConfirmation: "",
+  dataConsent: false,
 };
 
 const initialActionState: AuthActionState = { status: "idle" };
@@ -91,7 +93,12 @@ function SignupFlow({ currentYear }: SignupFlowProps) {
   function updateValue(
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) {
-    const { name, value } = event.target;
+    const { name } = event.target;
+    const value =
+      event.target instanceof HTMLInputElement &&
+      event.target.type === "checkbox"
+        ? event.target.checked
+        : event.target.value;
     setValues((current) => ({ ...current, [name]: value }));
     if (name === "password" || name === "passwordConfirmation") {
       setPasswordError("");
@@ -195,7 +202,7 @@ function SignupFlow({ currentYear }: SignupFlowProps) {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  placeholder={t("common.emailPlaceholder")}
+                  placeholder="email@example.com"
                   value={values.email}
                   onChange={updateValue}
                   aria-invalid={Boolean(actionState.fieldErrors?.email)}
@@ -348,7 +355,7 @@ function SignupFlow({ currentYear }: SignupFlowProps) {
                   name="password"
                   label={t("common.password")}
                   autoComplete="new-password"
-                  minLength={12}
+                  minLength={8}
                   value={values.password}
                   onChange={updateValue}
                   aria-invalid={
@@ -362,7 +369,7 @@ function SignupFlow({ currentYear }: SignupFlowProps) {
                   name="passwordConfirmation"
                   label={t("signup.confirmPassword")}
                   autoComplete="new-password"
-                  minLength={12}
+                  minLength={8}
                   value={values.passwordConfirmation}
                   onChange={updateValue}
                   aria-invalid={passwordError ? true : undefined}
@@ -396,6 +403,41 @@ function SignupFlow({ currentYear }: SignupFlowProps) {
                 <p className="text-xs leading-5 text-muted-foreground">
                   {t("signup.passwordHint")}
                 </p>
+                <div className="flex items-start gap-3 rounded-lg border border-border/80 bg-muted/30 p-3">
+                  <input
+                    id="signup-data-consent"
+                    name="dataConsent"
+                    type="checkbox"
+                    value="true"
+                    checked={values.dataConsent}
+                    onChange={updateValue}
+                    required
+                    className="mt-1 size-4 shrink-0 accent-primary"
+                  />
+                  <label
+                    htmlFor="signup-data-consent"
+                    className="text-xs leading-5 text-muted-foreground"
+                  >
+                    {t.rich("signup.consent", {
+                      terms: (chunks) => (
+                        <Link
+                          href="/terms"
+                          className="font-medium text-foreground underline-offset-4 hover:underline"
+                        >
+                          {chunks}
+                        </Link>
+                      ),
+                      privacy: (chunks) => (
+                        <Link
+                          href="/privacy"
+                          className="font-medium text-foreground underline-offset-4 hover:underline"
+                        >
+                          {chunks}
+                        </Link>
+                      ),
+                    })}
+                  </label>
+                </div>
               </>
             )}
           </PresencePanel>

@@ -57,7 +57,7 @@ function LoginForm() {
             name="email"
             type="email"
             autoComplete="email"
-            placeholder={t("common.emailPlaceholder")}
+            placeholder="email@example.com"
             required
           />
         </div>
@@ -72,26 +72,11 @@ function LoginForm() {
             <Link
               href="/forgot-password"
               className="text-xs font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
-              Forgot password?
+              {t("login.forgotPassword")}
             </Link>
           }
         />
 
-        <AnimatePresence initial={false}>
-          {state.message && (
-            <motion.p
-              key={state.message}
-              role="alert"
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -2 }}
-              transition={{ duration: 0.14 }}
-              className="text-sm text-destructive">
-              {state.message}
-            </motion.p>
-          )}
-        </AnimatePresence>
-        
         <AnimatePresence initial={false}>
           {state.message && (
             <motion.p

@@ -71,7 +71,7 @@ const birthDateSchema = z
 
 const passwordSchema = z
   .string()
-  .min(12, "Password must be at least 12 characters.")
+  .min(8, "Password must be at least 8 characters.")
   .max(128, "Password must be at most 128 characters.")
   .refine(
     (password) => Buffer.byteLength(password, "utf8") <= 256,
@@ -85,6 +85,9 @@ export const signupSchema = z
       fullName: z.string().trim().min(2, "Enter your full name.").max(120),
       password: passwordSchema,
       passwordConfirmation: z.string(),
+      dataConsent: z
+        .string()
+        .refine((value) => value === "true", "Consent is required."),
     }),
     birthDateSchema,
   )

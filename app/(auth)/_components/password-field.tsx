@@ -37,6 +37,7 @@ function PasswordField({
           id={inputId}
           type={isVisible ? "text" : "password"}
           className={cn("pr-12", className)}
+          placeholder="********"
           {...props}
         />
         <Button

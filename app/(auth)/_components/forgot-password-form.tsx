@@ -81,7 +81,7 @@ function ForgotPasswordForm() {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  placeholder={t("common.emailPlaceholder")}
+                  placeholder="email@example.com"
                   required
                   autoFocus
                 />

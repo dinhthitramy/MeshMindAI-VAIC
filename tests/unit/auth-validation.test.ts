@@ -13,6 +13,7 @@ describe("signup validation", () => {
       birthYear: "2000",
       password: "correct horse battery staple",
       passwordConfirmation: "correct horse battery staple",
+      dataConsent: "true",
       role: "BUILTIN_SUPERADMIN",
     });
 
@@ -30,6 +31,37 @@ describe("signup validation", () => {
       birthYear: 2000,
       password: "short",
       passwordConfirmation: "different",
+      dataConsent: "true",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts passwords with eight characters", () => {
+    const result = signupSchema.safeParse({
+      email: "user@example.com",
+      fullName: "Example User",
+      birthDay: 14,
+      birthMonth: 7,
+      birthYear: 2000,
+      password: "12345678",
+      passwordConfirmation: "12345678",
+      dataConsent: "true",
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it("requires data consent", () => {
+    const result = signupSchema.safeParse({
+      email: "user@example.com",
+      fullName: "Example User",
+      birthDay: 14,
+      birthMonth: 7,
+      birthYear: 2000,
+      password: "12345678",
+      passwordConfirmation: "12345678",
+      dataConsent: "false",
     });
 
     expect(result.success).toBe(false);

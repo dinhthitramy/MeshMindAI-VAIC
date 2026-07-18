@@ -1,18 +1,21 @@
 {
   "Common": {
     "skipToContent": "Skip to content",
-    "homeAria": "MeshMind home",
+    "homeAria": "CareerLens home",
+    "brandName": "CareerLens",
+    "developedBy": "Developed by MeshMind-AI",
+    "legalNavigation": "Legal navigation",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
     "language": {
       "english": "English",
       "vietnamese": "Vietnamese",
-      "currentSwitch": "Language: {language}. Switch to {nextLanguage}.",
-      "switchTo": "Switch to {language}",
-      "shortEnglish": "EN",
-      "shortVietnamese": "VI"
+      "current": "Current language: {language}",
+      "select": "Select language"
     }
   },
   "Preloader": {
-    "loading": "Preparing MeshMind",
+    "loading": "Preparing CareerLens",
     "progressLabel": "Loading progress",
     "percent": "{percent}%",
     "messages": {
@@ -28,7 +31,6 @@
     "system": "System",
     "light": "Light",
     "dark": "Dark",
-    "preference": "Theme preference",
     "currentSwitch": "Theme: {theme}. Switch to {nextTheme}."
   },
   "Landing": {
@@ -42,7 +44,6 @@
   "Auth": {
     "common": {
       "email": "Email",
-      "emailPlaceholder": "you@example.com",
       "password": "Password",
       "backToLogin": "Back to login",
       "continue": "Continue",
@@ -53,11 +54,11 @@
     "login": {
       "metadataTitle": "Log in",
       "title": "Welcome back",
-      "description": "Enter your details to continue to MeshMind.",
+      "description": "Enter your details to continue to CareerLens.",
       "forgotPassword": "Forgot password?",
       "submitting": "Logging in...",
       "submit": "Log in",
-      "newUser": "New to MeshMind?",
+      "newUser": "New to CareerLens?",
       "createAccount": "Create an account"
     },
     "signup": {
@@ -100,7 +101,8 @@
         "12": "December"
       },
       "confirmPassword": "Confirm password",
-      "passwordHint": "Use at least 12 characters.",
+      "passwordHint": "Use at least 8 characters.",
+      "consent": "I consent to CareerLens collecting, storing, and processing data related to my account, and I agree to the <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
       "back": "Back",
       "submitting": "Creating account...",
       "submit": "Create account",
@@ -154,7 +156,8 @@
       "resetSuccess": "Your password has been reset. You can now log in."
     },
     "validation": {
-      "passwordMin": "Password must be at least 12 characters.",
+      "passwordMin": "Password must be at least 8 characters.",
+      "dataConsent": "You must consent to data collection and processing to create an account.",
       "passwordMax": "Password must be at most 128 characters.",
       "passwordLong": "Password is too long.",
       "emailInvalid": "Enter a valid email address.",
@@ -189,7 +192,7 @@
   "Profile": {
     "metadataTitle": "Personal information",
     "title": "Personal information",
-    "description": "Keep your details current so MeshMind can personalize your experience.",
+    "description": "Keep your details current so CareerLens can personalize your experience.",
     "summary": "These details identify your account and help tailor your experience to you.",
     "form": {
       "title": "Profile details",

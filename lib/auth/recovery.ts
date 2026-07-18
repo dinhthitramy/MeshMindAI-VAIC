@@ -39,9 +39,9 @@ export async function issuePasswordReset(userId: string, email: string) {
 
   await sendEmail({
     to: email,
-    subject: "Reset your MeshMind password",
+    subject: "Reset your CareerLens password",
     text: `Reset your password: ${resetUrl.toString()}\n\nThis link expires in 30 minutes.`,
-    html: `<p>Reset your MeshMind password using the link below.</p><p><a href="${resetUrl.toString()}">Reset password</a></p><p>This link expires in 30 minutes.</p>`,
+    html: `<p>Reset your CareerLens password using the link below.</p><p><a href="${resetUrl.toString()}">Reset password</a></p><p>This link expires in 30 minutes.</p>`,
   });
 }
 

@@ -12,6 +12,34 @@ html[data-preloader-active="true"] .app-preloader {
   display: grid;
 }
 
+@keyframes auth-grid-drift {
+  to {
+    transform: translate3d(2.75rem, 2.75rem, 0);
+  }
+}
+
+.auth-grid-background {
+  position: absolute;
+  inset: -3rem;
+  z-index: 0;
+  pointer-events: none;
+  contain: strict;
+  background-image:
+    linear-gradient(to right, var(--auth-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--auth-grid-line) 1px, transparent 1px);
+  background-size: 2.75rem 2.75rem;
+  animation: auth-grid-drift 28s linear infinite;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-grid-background {
+    animation: none;
+    will-change: auto;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -57,13 +85,15 @@ html[data-preloader-active="true"] .app-preloader {
 }
 
 :root {
+  --brand-accent: #0049ad;
+  --auth-grid-line: rgb(0 73 173 / 14%);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: var(--brand-accent);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -74,7 +104,7 @@ html[data-preloader-active="true"] .app-preloader {
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: var(--brand-accent);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -83,22 +113,24 @@ html[data-preloader-active="true"] .app-preloader {
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary: var(--brand-accent);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-ring: var(--brand-accent);
 }
 
 .dark {
+  --brand-accent: #38b6ff;
+  --auth-grid-line: rgb(56 182 255 / 13%);
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
+  --primary: var(--brand-accent);
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -109,7 +141,7 @@ html[data-preloader-active="true"] .app-preloader {
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --ring: var(--brand-accent);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -117,12 +149,12 @@ html[data-preloader-active="true"] .app-preloader {
   --chart-5: oklch(0.269 0 0);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary: var(--brand-accent);
+  --sidebar-primary-foreground: oklch(0.205 0 0);
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: var(--brand-accent);
 }
 
 @layer base {

@@ -26,6 +26,7 @@ import {
   X,
 } from "lucide-react";
 
+import { BrandLink } from "@/components/brand";
 import { SkipLink } from "@/components/skip-link";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeSelector } from "@/components/theme-selector";
@@ -175,9 +176,12 @@ function SidebarPanel({
         <div
           className={cn(
             "flex h-16 shrink-0 items-center border-b border-sidebar-border px-3",
-            collapsed ? "justify-center" : "justify-end",
+            collapsed ? "justify-center" : "justify-between",
           )}
         >
+          {!collapsed && (
+            <BrandLink className="min-w-0" />
+          )}
           {mobile ? (
             <Button
               ref={closeButtonRef}
@@ -241,6 +245,7 @@ function SidebarPanel({
 
         <div className="flex flex-col gap-2 border-t border-sidebar-border p-3">
           <LanguageSwitcher
+            align="start"
             compact={collapsed}
             className={
               collapsed
@@ -249,12 +254,7 @@ function SidebarPanel({
             }
           />
           <ThemeSelector
-            compact={collapsed}
-            className={
-              collapsed
-                ? "text-sidebar-foreground hover:bg-sidebar-accent"
-                : "w-full"
-            }
+            className="text-sidebar-foreground hover:bg-sidebar-accent"
           />
 
           <DropdownMenu>
@@ -451,9 +451,10 @@ function DashboardShell({ children, viewer }: DashboardShellProps) {
           >
             <MenuIcon />
           </Button>
+          <BrandLink credit={false} className="ml-2" />
           <div className="ml-auto flex items-center gap-1">
             <LanguageSwitcher compact />
-            <ThemeSelector compact />
+            <ThemeSelector />
           </div>
         </header>
         <main
