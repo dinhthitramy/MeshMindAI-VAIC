@@ -16,7 +16,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import { cn } from "@/lib/utils";
 
 import { AuthCard } from "./auth-card";
@@ -273,7 +273,7 @@ function SignupFlow({ currentYear }: SignupFlowProps) {
                   </AnimatePresence>
                 </div>
                 <fieldset className="grid gap-2">
-                  <legend className="text-sm font-medium">
+                  <legend className="text-sm font-medium mb-1">
                     {t("signup.dateOfBirth")}
                   </legend>
                   <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)_minmax(0,0.8fr)]">
@@ -305,7 +305,7 @@ function SignupFlow({ currentYear }: SignupFlowProps) {
                       <Label htmlFor="signup-birth-month" className="sr-only">
                         {t("signup.birthMonth")}
                       </Label>
-                      <Select
+                      <NativeSelect
                         id="signup-birth-month"
                         name="birthMonth"
                         autoComplete="bday-month"
@@ -327,7 +327,7 @@ function SignupFlow({ currentYear }: SignupFlowProps) {
                             {t(`signup.months.${month}`)}
                           </option>
                         ))}
-                      </Select>
+                      </NativeSelect>
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="signup-birth-day" className="sr-only">

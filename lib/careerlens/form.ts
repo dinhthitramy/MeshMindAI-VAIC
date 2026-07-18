@@ -67,6 +67,7 @@ function interestCategory(interest: string): "sport" | "technology" | "business"
 export function buildCareerGuidanceInput(
   values: CareerLensFormValues,
   profileId: string,
+  preferredOutputLanguage: "vi" | "en" = "vi",
 ): CareerGuidanceInput {
   const interests = splitList(values.interests, 12);
 
@@ -132,7 +133,7 @@ export function buildCareerGuidanceInput(
       intent: values.intent,
       question: values.question,
       target_career_or_major: values.targetCareer || null,
-      preferred_output_language: "vi",
+      preferred_output_language: preferredOutputLanguage,
     },
   };
 }

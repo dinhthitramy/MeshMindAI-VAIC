@@ -1,5 +1,15 @@
 import type { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { AVAILABLE_MODELS } from "@/lib/ai";
 import { requirePermission } from "@/lib/auth/dal";
 import { PERMISSIONS } from "@/lib/auth/permissions";
@@ -11,17 +21,19 @@ import {
 
 import { CareerWorkspace } from "./_components/career-workspace";
 
-export const metadata: Metadata = {
-  title: "Lộ trình AI",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Roadmap");
+  return { title: t("metadataTitle") };
+}
 
 export default async function CareerLensPage() {
   await requirePermission(PERMISSIONS.DASHBOARD_ACCESS);
+  const [t, locale] = await Promise.all([getTranslations("Roadmap"), getLocale()]);
 
   const regionCount = new Set(
     CAREERLENS_MARKET_SEED.postings.map((posting) => posting.region),
   ).size;
-  const sourceDate = new Intl.DateTimeFormat("vi-VN", {
+  const sourceDate = new Intl.DateTimeFormat(locale === "vi" ? "vi-VN" : "en-US", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -29,27 +41,58 @@ export default async function CareerLensPage() {
   }).format(new Date(CAREERLENS_MARKET_SEED.source_timestamp));
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-      <header className="mb-8 max-w-3xl">
-        <p className="text-sm font-medium text-primary">CareerLens Guidance AI</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-          Tạo lộ trình từ điều em đã biết về mình
-        </h1>
-        <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground">
-          Kết nối sở thích, trải nghiệm và điều kiện thực tế với tín hiệu tuyển dụng mẫu tại Việt Nam.
-        </p>
-      </header>
+    <section className="ai-workspace-surface relative min-h-dvh overflow-hidden">
+      <div aria-hidden="true" className="ai-workspace-grid pointer-events-none absolute inset-x-0 top-0 h-[34rem]" />
+      <div className="relative mx-auto w-full max-w-[88rem] px-4 py-8 sm:px-6 sm:py-12 lg:px-10 lg:py-16">
+        <header className="mb-12 grid gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(19rem,0.75fr)] lg:items-end lg:gap-16">
+          <div className="max-w-4xl">
+            <Badge variant="secondary">{t("eyebrow")}</Badge>
+            <h1 className="mt-5 max-w-3xl text-4xl font-semibold tracking-[-0.04em] text-balance sm:text-5xl lg:text-6xl lg:leading-[1.02]">
+              {t("title")}
+            </h1>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+              {t("description")}
+            </p>
+          </div>
 
-      <CareerWorkspace
-        models={AVAILABLE_MODELS}
-        marketOverview={{
-          postingCount: CAREERLENS_MARKET_SEED.postings.length,
-          regionCount,
-          roleCountPerRegion: MARKET_ROLE_COUNT_PER_REGION,
-          industryCount: MARKET_INDUSTRY_COUNT,
-          sourceDate,
-        }}
-      />
+          <div className="rounded-[2rem] bg-foreground/5 p-1.5 ring-1 ring-foreground/5">
+            <Card className="overflow-hidden rounded-[calc(2rem-0.375rem)] border-0 bg-foreground text-background shadow-none">
+              <CardHeader className="gap-3 p-6">
+                <Badge variant="secondary">{t("brief.status")}</Badge>
+                <CardTitle className="text-xl text-background">{t("brief.title")}</CardTitle>
+                <CardDescription className="text-background/60">{t("brief.description")}</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-0 px-6 pb-6">
+                {(["profile", "signals", "plan"] as const).map((step, index) => (
+                  <div key={step}>
+                    {index > 0 ? <Separator className="bg-background/10" /> : null}
+                    <div className="grid grid-cols-[2rem_1fr] gap-3 py-3">
+                      <span className="font-mono text-xs text-background/40">0{index + 1}</span>
+                      <div>
+                        <p className="text-sm font-medium">{t(`steps.${step}.title`)}</p>
+                        <p className="mt-1 text-xs leading-5 text-background/55">
+                          {t(`steps.${step}.description`)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        </header>
+
+        <CareerWorkspace
+          models={AVAILABLE_MODELS}
+          marketOverview={{
+            postingCount: CAREERLENS_MARKET_SEED.postings.length,
+            regionCount,
+            roleCountPerRegion: MARKET_ROLE_COUNT_PER_REGION,
+            industryCount: MARKET_INDUSTRY_COUNT,
+            sourceDate,
+          }}
+        />
+      </div>
     </section>
   );
 }
