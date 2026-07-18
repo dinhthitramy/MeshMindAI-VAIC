@@ -93,6 +93,14 @@ import {
 } from "./research-message";
 
 const HOME_TAB = "assistant-home";
+
+type FollowedRoadmapProgress = {
+  title: string;
+  href: string;
+  progress: number;
+  completedCount: number;
+  totalCount: number;
+};
 const ACTIVE_SESSION_STORAGE_KEY = "meshmind.ai-assistant.active-session.v1";
 const SCROLL_FOLLOW_DISTANCE = 120;
 const REMOTE_RUN_POLL_MS = 1_500;
@@ -393,12 +401,14 @@ function EmptyState({
 function OverviewHome({
   conversationCount,
   disabled,
+  followedRoadmap,
   modelCount,
   onNewConversation,
   viewerName,
 }: {
   conversationCount: number;
   disabled: boolean;
+  followedRoadmap: FollowedRoadmapProgress | null;
   modelCount: number;
   onNewConversation: () => void;
   viewerName: string;
@@ -446,15 +456,56 @@ function OverviewHome({
           <p className="font-mono text-3xl font-semibold tracking-[-0.04em]">{modelCount}</p>
           <p className="mt-2 text-sm text-background/55">{t("modelCount")}</p>
         </div>
+        {followedRoadmap ? (
+          <>
+            <Separator className="my-6 bg-background/10" />
+            <div className="flex flex-col gap-4">
+              <div>
+                <p className="text-sm font-medium">{t("followingTitle")}</p>
+                <p className="mt-1 line-clamp-2 text-sm text-background/55">
+                  {followedRoadmap.title}
+                </p>
+              </div>
+              <div>
+                <div className="mb-2 flex items-center justify-between gap-3 text-xs text-background/60">
+                  <span>
+                    {t("followingProgress", {
+                      completed: followedRoadmap.completedCount,
+                      total: followedRoadmap.totalCount,
+                    })}
+                  </span>
+                  <span>{followedRoadmap.progress}%</span>
+                </div>
+                <div className="h-2 overflow-hidden rounded-full bg-background/15">
+                  <div
+                    className="h-full rounded-full bg-background"
+                    style={{ width: `${followedRoadmap.progress}%` }}
+                  />
+                </div>
+              </div>
+              <Button
+                variant="secondary"
+                size="sm"
+                nativeButton={false}
+                render={<Link href={followedRoadmap.href} />}
+              >
+                <Route data-icon="inline-start" />
+                {t("openFollowing")}
+              </Button>
+            </div>
+          </>
+        ) : null}
       </aside>
     </section>
   );
 }
 
 export function AIChat({
+  followedRoadmap,
   initialModels,
   viewerName,
 }: {
+  followedRoadmap: FollowedRoadmapProgress | null;
   initialModels: string[];
   viewerName: string;
 }) {
@@ -1226,6 +1277,7 @@ export function AIChat({
               <OverviewHome
                 conversationCount={sessions.length}
                 disabled={interactionDisabled}
+                followedRoadmap={followedRoadmap}
                 modelCount={initialModels.length}
                 onNewConversation={createNewSession}
                 viewerName={viewerName}
