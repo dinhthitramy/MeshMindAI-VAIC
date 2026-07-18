@@ -156,12 +156,11 @@ async function auditBestEffort(
 }
 
 function isUniqueEmailError(error: unknown) {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    error.code === "23505"
-  );
+  if (typeof error !== "object" || error === null) {
+    return false;
+  }
+  const code = (error as any).code || (error as any).cause?.code;
+  return code === "23505";
 }
 
 export async function signupAction(
