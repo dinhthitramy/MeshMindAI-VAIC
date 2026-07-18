@@ -1,36 +1,74 @@
 "use server";
 
+import { desc, eq, and } from "drizzle-orm";
+
 import { requireViewer } from "@/lib/auth/dal";
-import { generateAIResponse } from "@/lib/ai";
-
-const SYSTEM_PROMPT = `You are MeshMind AI, a career guidance assistant for Vietnamese students.
-Your role is to help students understand career paths, required skills, salary expectations, and job market trends in Vietnam.
-
-Guidelines:
-- Be concise, direct, and practical
-- Ground advice in real Vietnamese labor market context
-- Present multiple options rather than a single answer
-- Never reinforce gender or regional bias
-- Always frame suggestions as references, not definitive answers
-- If asked about topics unrelated to career guidance, politely redirect
-
-Respond in the same language the user writes in (Vietnamese or English).`;
+import { getDb } from "@/lib/db";
+import { chatSessions, chatMessages, type ChatSession, type ChatMessage } from "@/lib/db/schema";
+import { AVAILABLE_MODELS } from "@/lib/ai";
 
 export async function getAvailableModelsAction() {
-  const { AVAILABLE_MODELS } = await import("@/lib/ai");
   return AVAILABLE_MODELS;
 }
 
-export async function askAIAction(message: string, model?: string) {
+export async function getSessionsAction(): Promise<ChatSession[]> {
   const viewer = await requireViewer();
+  if (viewer.actor.kind !== "user") return [];
 
-  const { text, rawResponse } = await generateAIResponse({
-    systemPrompt: SYSTEM_PROMPT,
-    userPrompt: message,
-    model,
-    traceName: "system",
-    userId: viewer.actor.kind === "user" ? viewer.actor.userId : undefined,
-  });
+  const db = getDb();
+  return db
+    .select()
+    .from(chatSessions)
+    .where(eq(chatSessions.userId, viewer.actor.userId))
+    .orderBy(desc(chatSessions.updatedAt))
+    .limit(50);
+}
 
-  return { text, rawResponse };
+export async function createSessionAction(model: string): Promise<ChatSession> {
+  const viewer = await requireViewer();
+  if (viewer.actor.kind !== "user") throw new Error("Forbidden");
+
+  const db = getDb();
+  const [session] = await db
+    .insert(chatSessions)
+    .values({ userId: viewer.actor.userId, title: "New Chat", model })
+    .returning();
+
+  return session;
+}
+
+export async function loadMessagesAction(sessionId: string): Promise<ChatMessage[]> {
+  const viewer = await requireViewer();
+  if (viewer.actor.kind !== "user") return [];
+
+  const db = getDb();
+
+  // Verify ownership
+  const [session] = await db
+    .select({ id: chatSessions.id })
+    .from(chatSessions)
+    .where(
+      and(eq(chatSessions.id, sessionId), eq(chatSessions.userId, viewer.actor.userId)),
+    )
+    .limit(1);
+
+  if (!session) return [];
+
+  return db
+    .select()
+    .from(chatMessages)
+    .where(eq(chatMessages.sessionId, sessionId))
+    .orderBy(chatMessages.createdAt);
+}
+
+export async function deleteSessionAction(sessionId: string): Promise<void> {
+  const viewer = await requireViewer();
+  if (viewer.actor.kind !== "user") throw new Error("Forbidden");
+
+  const db = getDb();
+  await db
+    .delete(chatSessions)
+    .where(
+      and(eq(chatSessions.id, sessionId), eq(chatSessions.userId, viewer.actor.userId)),
+    );
 }

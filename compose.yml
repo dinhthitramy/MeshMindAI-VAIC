@@ -6,10 +6,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-meshmind}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
     ports:
-      - host_ip: 127.0.0.1
-        target: 5432
-        published: "${POSTGRES_PORT:-5432}"
-        protocol: tcp
+      - "127.0.0.1:5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
@@ -33,10 +30,7 @@ services:
         "noeviction",
       ]
     ports:
-      - host_ip: 127.0.0.1
-        target: 6379
-        published: "${REDIS_PORT:-6379}"
-        protocol: tcp
+      - "127.0.0.1:6380:6379"
     volumes:
       - redis_data:/data
     healthcheck:
