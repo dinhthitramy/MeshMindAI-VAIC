@@ -43,6 +43,13 @@
       "when": 1784399498484,
       "tag": "0005_youthful_galactus",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1784410477183,
+      "tag": "0006_tiresome_banshee",
+      "breakpoints": true
     }
   ]
 }

@@ -10,6 +10,7 @@ import {
   Gauge,
   Lightbulb,
   MapPin,
+  Milestone,
   Target,
 } from "lucide-react";
 
@@ -32,6 +33,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { CareerGuidanceOutput } from "@/lib/careerlens/schemas";
+import { applyRoadmapToJourneyAction } from "@/app/(app)/dashboard/my-journey/actions";
 
 import { selectCareerRecommendationAction } from "../actions";
 
@@ -509,11 +511,20 @@ export function CareerPlanResults({
               ) : null}
             </CardContent>
 
-            <CardFooter className="gap-3 border-t bg-card px-6 py-5 sm:px-8">
-              <CircleHelp aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-              <p className="text-sm leading-6 text-muted-foreground">
-                {cleanText(recommendation.autonomy_note)}
-              </p>
+            <CardFooter className="flex-col items-stretch gap-5 border-t bg-card px-6 py-5 sm:flex-row sm:items-center sm:px-8">
+              <div className="flex min-w-0 flex-1 items-start gap-3">
+                <CircleHelp aria-hidden="true" className="mt-1 size-4 shrink-0 text-muted-foreground" />
+                <p className="text-sm leading-6 text-muted-foreground">
+                  {cleanText(recommendation.autonomy_note)}
+                </p>
+              </div>
+              <form action={applyRoadmapToJourneyAction} className="shrink-0">
+                <input type="hidden" name="roadmapId" value={roadmapId} />
+                <Button type="submit" size="lg">
+                  <Milestone data-icon="inline-start" />
+                  {t("applyToJourney")}
+                </Button>
+              </form>
             </CardFooter>
           </Card>
         ))}

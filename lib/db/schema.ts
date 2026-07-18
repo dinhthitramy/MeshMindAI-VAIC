@@ -554,8 +554,75 @@ export const careerRoadmaps = pgTable(
   ],
 );
 
+export const journeyImports = pgTable(
+  "journey_imports",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    roadmapId: uuid("roadmap_id").references(() => careerRoadmaps.id, {
+      onDelete: "set null",
+    }),
+    directionTitle: text("direction_title").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("journey_imports_user_created_idx").on(table.userId, table.createdAt),
+    index("journey_imports_roadmap_idx").on(table.roadmapId),
+  ],
+);
+
+export const journeyEntries = pgTable(
+  "journey_entries",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    importId: uuid("import_id").references(() => journeyImports.id, {
+      onDelete: "set null",
+    }),
+    source: text("source").$type<"manual" | "roadmap" | "ai">().notNull(),
+    category: text("category")
+      .$type<"learning" | "experience" | "career" | "personal">()
+      .notNull(),
+    title: text("title").notNull(),
+    description: text("description").notNull().default(""),
+    targetDate: date("target_date", { mode: "string" }).notNull(),
+    completed: boolean("completed").default(false).notNull(),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    sourceLabel: text("source_label"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    check(
+      "journey_entries_source_valid",
+      sql`${table.source} in ('manual', 'roadmap', 'ai')`,
+    ),
+    check(
+      "journey_entries_category_valid",
+      sql`${table.category} in ('learning', 'experience', 'career', 'personal')`,
+    ),
+    check(
+      "journey_entries_title_not_blank",
+      sql`char_length(trim(${table.title})) > 0`,
+    ),
+    index("journey_entries_user_date_idx").on(table.userId, table.targetDate),
+    index("journey_entries_import_idx").on(table.importId),
+  ],
+);
+
 export type ChatSession = typeof chatSessions.$inferSelect;
 export type ChatMessage = typeof chatMessages.$inferSelect;
+export type JourneyEntry = typeof journeyEntries.$inferSelect;
 
 export function lower(column: AnyPgColumn): SQL {
   return sql`lower(${column})`;

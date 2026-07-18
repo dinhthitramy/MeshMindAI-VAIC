@@ -430,7 +430,8 @@
     "settings": "Cài đặt",
     "logout": "Đăng xuất",
     "logoutUser": "Đăng xuất {name}",
-    "careerRoadmap": "Lộ trình AI"
+    "careerRoadmap": "Lộ trình AI",
+    "myJourney": "Đường đến chính mình"
   },
   "Roadmap": {
     "metadataTitle": "Lộ trình AI",
@@ -684,6 +685,7 @@
       "otherDirectionsTitle": "Các hướng khác trong lần tư vấn này",
       "otherDirectionsDescription": "Đổi hướng đang chọn nếu một phương án khác phù hợp hơn sau khi so sánh.",
       "chooseDirection": "Chọn hướng này",
+      "applyToJourney": "Áp dụng vào hành trình",
       "matchedTitle": "Vì sao hướng này đáng thử",
       "evidenceTitle": "Bằng chứng thị trường",
       "skillGapsTitle": "Skill gap cần ưu tiên",
@@ -739,6 +741,82 @@
         "promotion": "Đường phát triển lên vị trí cao hơn",
         "readinessProof": "Bằng chứng sẵn sàng: {value}"
       }
+    }
+  },
+  "Journey": {
+    "metadataTitle": "Đường đến chính mình",
+    "eyebrow": "Nhật ký phát triển của bạn",
+    "title": "Đường đến chính mình",
+    "description": "Biến kế hoạch thành những việc có thể hoàn thành, nhìn lại tiến bộ và tiếp tục lớn lên theo cách của riêng bạn.",
+    "add": "Thêm một dấu mốc",
+    "askAi": "Chỉnh cùng AI",
+    "edit": "Chỉnh sửa dấu mốc",
+    "toggle": "Đánh dấu hoàn thành cho {title}",
+    "done": "Đã hoàn thành",
+    "fromRoadmap": "Từ {source}",
+    "sourceLegend": "Nguồn nội dung",
+    "sources": {
+      "manual": "Bạn tự tạo",
+      "roadmap": "AI tạo từ lộ trình",
+      "ai": "AI thêm qua hội thoại"
+    },
+    "progress": "Đã hoàn thành {completed}/{total} dấu mốc",
+    "yearNavigation": "Chọn năm trên hành trình",
+    "imported": "Đã thêm {count} dấu mốc mới từ lộ trình. Nhật ký cũ được giữ nguyên.",
+    "importFailed": "Không tìm thấy lộ trình phù hợp để thêm.",
+    "addTitle": "Thêm dấu mốc mới",
+    "editTitle": "Chỉnh sửa dấu mốc",
+    "entryDescription": "Bạn luôn có thể đổi nội dung hoặc thời gian để kế hoạch sát với nhịp sống thực tế.",
+    "save": "Lưu dấu mốc",
+    "cancel": "Hủy",
+    "delete": "Xoá dấu mốc",
+    "deleteTitle": "Xoá dấu mốc này?",
+    "deleteDescription": "{title} sẽ bị xoá vĩnh viễn khỏi hành trình của bạn. Hành động này không thể hoàn tác.",
+    "confirmDelete": "Xoá vĩnh viễn",
+    "deleteError": "Chưa thể xoá dấu mốc lúc này. Vui lòng thử lại.",
+    "fields": {
+      "title": "Việc bạn muốn thực hiện",
+      "description": "Ghi chú",
+      "descriptionHint": "Mô tả kết quả bạn muốn nhìn thấy hoặc cách để biết mình đã hoàn thành.",
+      "date": "Ngày dự kiến",
+      "category": "Nhóm dấu mốc"
+    },
+    "categories": {
+      "learning": "Học tập",
+      "experience": "Trải nghiệm",
+      "career": "Nghề nghiệp",
+      "personal": "Bản thân"
+    },
+    "empty": {
+      "title": "Trang đầu tiên đang chờ bạn viết",
+      "description": "Thêm một việc bạn muốn làm hoặc áp dụng lộ trình AI để bắt đầu hành trình này.",
+      "action": "Viết dấu mốc đầu tiên"
+    },
+    "reflection": {
+      "label": "Lời nhắn từ AI",
+      "empty": "Bạn không cần nhìn thấy toàn bộ con đường mới có thể bắt đầu. Một dấu mốc thật lòng là đủ.",
+      "progress": "Bạn đã giữ lời với chính mình ở {completed} trong {total} dấu mốc. Đó là tiến bộ có thật.",
+      "next": "Bước gần nhất đang chờ bạn: {title}. Hãy làm nó vừa đủ nhỏ để có thể bắt đầu hôm nay.",
+      "complete": "Bạn đã hoàn thành mọi dấu mốc hiện có. Đây là lúc nhìn lại, ghi nhận và chọn thử thách tiếp theo.",
+      "identity": "Mỗi việc hoàn thành là một bằng chứng về con người bạn đang trở thành"
+    },
+    "future": {
+      "eyebrow": "Dải tương lai của bạn",
+      "label": "Kỳ vọng trong 3 tháng tới",
+      "empty": "Thêm một dấu mốc gần để tương lai bắt đầu có hình hài",
+      "expand": "Mở rộng",
+      "collapse": "Thu gọn"
+    },
+    "ai": {
+      "title": "Cùng AI chỉnh hành trình",
+      "description": "Nói điều bạn muốn thay đổi. AI có thể dời thời gian, viết lại, thêm hoặc xoá dấu mốc khi bạn yêu cầu rõ ràng.",
+      "name": "AI đồng hành",
+      "welcome": "Bạn muốn điều chỉnh điều gì? Ví dụ: Dời các mục học chứng chỉ sang tháng 10, chia mục chuẩn bị CV thành hai bước hoặc xoá một dấu mốc không còn phù hợp.",
+      "placeholder": "Mô tả thay đổi bạn muốn...",
+      "hint": "Enter để gửi, Shift + Enter để xuống dòng",
+      "send": "Gửi yêu cầu",
+      "working": "Đang sắp xếp lại hành trình...",
+      "error": "AI chưa thể chỉnh hành trình lúc này. Hãy thử lại hoặc sửa trực tiếp từng dấu mốc."
     }
   },
   "Assistant": {

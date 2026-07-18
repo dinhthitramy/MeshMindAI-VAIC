@@ -430,7 +430,8 @@
     "settings": "Settings",
     "logout": "Log out",
     "logoutUser": "Log out {name}",
-    "careerRoadmap": "AI Roadmap"
+    "careerRoadmap": "AI Roadmap",
+    "myJourney": "The way to myself"
   },
   "Roadmap": {
     "metadataTitle": "AI Roadmap",
@@ -684,6 +685,7 @@
       "otherDirectionsTitle": "Other directions from this session",
       "otherDirectionsDescription": "Change the selected direction if another option fits better after comparison.",
       "chooseDirection": "Choose this direction",
+      "applyToJourney": "Add to my journey",
       "matchedTitle": "Why this direction is worth trying",
       "evidenceTitle": "Market evidence",
       "skillGapsTitle": "Priority skill gaps",
@@ -739,6 +741,82 @@
         "promotion": "Path toward a more senior role",
         "readinessProof": "Proof of readiness: {value}"
       }
+    }
+  },
+  "Journey": {
+    "metadataTitle": "The way to myself",
+    "eyebrow": "Your growth journal",
+    "title": "The way to myself",
+    "description": "Turn plans into finishable steps, see your progress, and keep growing into a life that feels like your own.",
+    "add": "Add a milestone",
+    "askAi": "Edit with AI",
+    "edit": "Edit milestone",
+    "toggle": "Mark {title} as complete",
+    "done": "Completed",
+    "fromRoadmap": "From {source}",
+    "sourceLegend": "Content source",
+    "sources": {
+      "manual": "Created by you",
+      "roadmap": "AI from roadmap",
+      "ai": "AI from conversation"
+    },
+    "progress": "Completed {completed}/{total} milestones",
+    "yearNavigation": "Choose a year on your journey",
+    "imported": "Added {count} new milestones from the roadmap. Your existing journal stayed unchanged.",
+    "importFailed": "No matching roadmap was found to add.",
+    "addTitle": "Add a new milestone",
+    "editTitle": "Edit milestone",
+    "entryDescription": "Change the content or timing whenever your plan needs to match real life more closely.",
+    "save": "Save milestone",
+    "cancel": "Cancel",
+    "delete": "Delete milestone",
+    "deleteTitle": "Delete this milestone?",
+    "deleteDescription": "{title} will be permanently removed from your journey. This action cannot be undone.",
+    "confirmDelete": "Delete permanently",
+    "deleteError": "This milestone could not be deleted. Please try again.",
+    "fields": {
+      "title": "What you want to do",
+      "description": "Notes",
+      "descriptionHint": "Describe the result you want to see or how you will know it is complete.",
+      "date": "Target date",
+      "category": "Milestone category"
+    },
+    "categories": {
+      "learning": "Learning",
+      "experience": "Experience",
+      "career": "Career",
+      "personal": "Self"
+    },
+    "empty": {
+      "title": "Your first page is waiting",
+      "description": "Add something you want to do, or apply an AI roadmap to begin this journey.",
+      "action": "Write the first milestone"
+    },
+    "reflection": {
+      "label": "A note from AI",
+      "empty": "You do not need to see the whole path before you begin. One honest milestone is enough.",
+      "progress": "You kept a promise to yourself in {completed} of {total} milestones. That is real progress.",
+      "next": "Your nearest step is {title}. Make it small enough to begin today.",
+      "complete": "You completed every milestone currently here. Take a moment to notice it, then choose what comes next.",
+      "identity": "Every completed step is evidence of the person you are becoming"
+    },
+    "future": {
+      "eyebrow": "Your future ribbon",
+      "label": "Your next 3 months",
+      "empty": "Add a near-term milestone and give the future a clearer shape",
+      "expand": "Expand",
+      "collapse": "Collapse"
+    },
+    "ai": {
+      "title": "Edit the journey with AI",
+      "description": "Describe what should change. AI can move dates, rewrite, add, or delete milestones when you make a clear request.",
+      "name": "Journey AI",
+      "welcome": "What would you like to adjust? For example: Move certificate goals to October, split CV preparation into smaller steps, or delete a milestone that no longer fits.",
+      "placeholder": "Describe the change you want...",
+      "hint": "Enter to send, Shift + Enter for a new line",
+      "send": "Send request",
+      "working": "Reorganizing your journey...",
+      "error": "AI cannot edit the journey right now. Try again, or edit each milestone directly."
     }
   },
   "Assistant": {

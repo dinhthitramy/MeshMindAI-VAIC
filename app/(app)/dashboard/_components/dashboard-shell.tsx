@@ -20,6 +20,7 @@ import {
   House,
   Menu as MenuIcon,
   MapPinned,
+  Milestone,
   PanelLeftClose,
   PanelLeftOpen,
   Route,
@@ -182,6 +183,16 @@ function SidebarPanel({
         ]
       : []),
     { href: "/dashboard/careerlens", label: t("careerRoadmap"), icon: Route, exact: false },
+    ...(viewer.canEditProfile
+      ? [
+          {
+            href: "/dashboard/my-journey",
+            label: t("myJourney"),
+            icon: Milestone,
+            exact: false,
+          },
+        ]
+      : []),
     ...(viewer.isAdmin
       ? [{ href: "/dashboard/admin", label: "Admin", icon: ShieldCheck, exact: false }]
       : []),
