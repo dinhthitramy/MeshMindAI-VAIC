@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1784276621206,
-      "tag": "0000_create-users",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1784282874140,
-      "tag": "0001_auth_rbac",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1784283749929,
-      "tag": "0002_backfill_user_roles",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1784314783369,
-      "tag": "0003_full-birth-date",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1752854400000,
-      "tag": "0005_chat_tables",
+      "when": 1784368191928,
+      "tag": "0000_warm_morlocks",
       "breakpoints": true
     }
   ]
