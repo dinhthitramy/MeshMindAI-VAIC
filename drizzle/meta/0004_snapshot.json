@@ -1,6 +1,6 @@
 {
-  "id": "55f8914e-9aa6-4efd-b92b-55f21fd71712",
-  "prevId": "a9a77138-9004-46e3-a415-85857f4e5e02",
+  "id": "b4c84488-22b7-4b82-8787-ca4eaaebc31d",
+  "prevId": "101435a4-56f1-41d5-bfc7-a989c65a4753",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -149,8 +149,33 @@
           "primaryKey": false,
           "notNull": true
         },
+        "access_token": {
+          "name": "access_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "token_expires_at": {
+          "name": "token_expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
@@ -645,9 +670,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "birth_date": {
-          "name": "birth_date",
-          "type": "date",
+        "birth_year": {
+          "name": "birth_year",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "birth_month": {
+          "name": "birth_month",
+          "type": "smallint",
           "primaryKey": false,
           "notNull": true
         },
@@ -707,9 +738,13 @@
           "name": "users_session_version_positive",
           "value": "\"users\".\"session_version\" > 0"
         },
-        "users_birth_date_valid": {
-          "name": "users_birth_date_valid",
-          "value": "\"users\".\"birth_date\" between date '1900-01-01' and current_date"
+        "users_birth_year_positive": {
+          "name": "users_birth_year_positive",
+          "value": "\"users\".\"birth_year\" > 0"
+        },
+        "users_birth_month_valid": {
+          "name": "users_birth_month_valid",
+          "value": "\"users\".\"birth_month\" between 1 and 12"
         }
       },
       "isRLSEnabled": false
