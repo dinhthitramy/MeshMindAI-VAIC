@@ -5,7 +5,7 @@ import { getRoadmapPrefillDefaults } from "@/lib/careerlens/roadmap-prefill";
 
 const formValues: CareerLensStoredFormValues = {
   activity: "Dự án câu lạc bộ",
-  currentRegion: "Hà Nội",
+  currentRegion: "Thành phố Hà Nội",
   educationLevel: "university",
   familyConstraints: "",
   interests: "Công nghệ",
@@ -16,7 +16,7 @@ const formValues: CareerLensStoredFormValues = {
   strongSubject: "Toán",
   subjectScore: 9,
   targetBudget: "",
-  targetRegion: "Hà Nội",
+  targetRegion: "Thành phố Hà Nội",
   weeklyHours: 12,
   workEnvironment: "team_based",
 };

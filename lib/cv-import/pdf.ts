@@ -21,7 +21,6 @@ export class CvPdfError extends Error {
     this.name = "CvPdfError";
   }
 }
-
 function hasPdfSignature(bytes: Uint8Array) {
   return (
     bytes.length >= 5 &&
@@ -77,4 +76,3 @@ export async function extractCvPdf(file: File) {
     throw new CvPdfError("readFailed");
   }
 }
-

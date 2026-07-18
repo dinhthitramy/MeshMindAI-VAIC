@@ -45,3 +45,9 @@ next-env.d.ts
 
 # mcp output folder
 .*-mcp/
+
+# private
+private/
+
+# local deepwork state
+.slim/deepwork/
