@@ -29,6 +29,7 @@ const monthNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
 type SignupValues = {
   email: string;
   fullName: string;
+  birthDay: string;
   birthMonth: string;
   birthYear: string;
   password: string;
@@ -38,6 +39,7 @@ type SignupValues = {
 const initialValues: SignupValues = {
   email: "",
   fullName: "",
+  birthDay: "",
   birthMonth: "",
   birthYear: "",
   password: "",
@@ -52,7 +54,11 @@ const stepVariants: Variants = {
   exit: (direction: number) => ({ opacity: 0, x: direction * -8 }),
 };
 
-function SignupFlow() {
+type SignupFlowProps = {
+  currentYear: number;
+};
+
+function SignupFlow({ currentYear }: SignupFlowProps) {
   const t = useTranslations("Auth");
   const steps = [
     t("signup.steps.account"),
@@ -157,6 +163,7 @@ function SignupFlow() {
           <>
             <input type="hidden" name="email" value={values.email} />
             <input type="hidden" name="fullName" value={values.fullName} />
+            <input type="hidden" name="birthDay" value={values.birthDay} />
             <input type="hidden" name="birthMonth" value={values.birthMonth} />
             <input type="hidden" name="birthYear" value={values.birthYear} />
           </>
@@ -247,7 +254,31 @@ function SignupFlow() {
                   <legend className="text-sm font-medium">
                     {t("signup.dateOfBirth")}
                   </legend>
-                  <div className="grid grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] gap-3">
+                  <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)_minmax(0,0.8fr)]">
+                    <div className="grid gap-2">
+                      <Label htmlFor="signup-birth-year" className="sr-only">
+                        {t("signup.birthYear")}
+                      </Label>
+                      <Input
+                        id="signup-birth-year"
+                        name="birthYear"
+                        type="number"
+                        inputMode="numeric"
+                        autoComplete="bday-year"
+                        min={1900}
+                        max={currentYear}
+                        placeholder={t("signup.year")}
+                        value={values.birthYear}
+                        onChange={updateValue}
+                        aria-invalid={
+                          Boolean(
+                            actionState.fieldErrors?.birthYear ||
+                              actionState.fieldErrors?.birthDate,
+                          )
+                        }
+                        required
+                      />
+                    </div>
                     <div className="grid gap-2">
                       <Label htmlFor="signup-birth-month" className="sr-only">
                         {t("signup.birthMonth")}
@@ -258,7 +289,12 @@ function SignupFlow() {
                         autoComplete="bday-month"
                         value={values.birthMonth}
                         onChange={updateValue}
-                        aria-invalid={Boolean(actionState.fieldErrors?.birthMonth)}
+                        aria-invalid={
+                          Boolean(
+                            actionState.fieldErrors?.birthMonth ||
+                              actionState.fieldErrors?.birthDate,
+                          )
+                        }
                         required
                       >
                         <option value="" disabled>
@@ -272,25 +308,35 @@ function SignupFlow() {
                       </Select>
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="signup-birth-year" className="sr-only">
-                        {t("signup.birthYear")}
+                      <Label htmlFor="signup-birth-day" className="sr-only">
+                        {t("signup.birthDay")}
                       </Label>
                       <Input
-                        id="signup-birth-year"
-                        name="birthYear"
+                        id="signup-birth-day"
+                        name="birthDay"
                         type="number"
                         inputMode="numeric"
-                        autoComplete="bday-year"
+                        autoComplete="bday-day"
                         min={1}
-                        max={new Date().getFullYear()}
-                        placeholder={t("signup.year")}
-                        value={values.birthYear}
+                        max={31}
+                        placeholder={t("signup.day")}
+                        value={values.birthDay}
                         onChange={updateValue}
-                        aria-invalid={Boolean(actionState.fieldErrors?.birthYear)}
+                        aria-invalid={
+                          Boolean(
+                            actionState.fieldErrors?.birthDay ||
+                              actionState.fieldErrors?.birthDate,
+                          )
+                        }
                         required
                       />
                     </div>
                   </div>
+                  {actionState.fieldErrors?.birthDate?.[0] && (
+                    <p role="alert" className="text-sm text-destructive">
+                      {actionState.fieldErrors.birthDate[0]}
+                    </p>
+                  )}
                 </fieldset>
               </>
             )}

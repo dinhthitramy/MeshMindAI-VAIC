@@ -43,8 +43,7 @@ export default async function ProfilePage() {
 
   const [profile] = await getDb()
     .select({
-      birthMonth: users.birthMonth,
-      birthYear: users.birthYear,
+      birthDate: users.birthDate,
       email: users.email,
       fullName: users.fullName,
     })
@@ -56,7 +55,10 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
-  const currentYear = new Date().getFullYear();
+  const [birthYear, birthMonth, birthDay] = profile.birthDate
+    .split("-")
+    .map(Number);
+  const currentYear = new Date().getUTCFullYear();
 
   return (
     <section className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
@@ -85,7 +87,16 @@ export default async function ProfilePage() {
           </CardContent>
         </Card>
 
-        <ProfileForm currentYear={currentYear} profile={profile} />
+        <ProfileForm
+          currentYear={currentYear}
+          profile={{
+            birthDay,
+            birthMonth,
+            birthYear,
+            email: profile.email,
+            fullName: profile.fullName,
+          }}
+        />
       </div>
     </section>
   );

@@ -16,12 +16,12 @@
     "progressLabel": "Tiến trình tải",
     "percent": "{percent}%",
     "messages": {
-      "semanticPathways": "Đang hiệu chỉnh các luồng ngữ nghĩa và sắp xếp không gian làm việc cho một phiên làm việc hiệu quả đến mức đáng ngờ.",
-      "opinionatedAlgorithms": "Đang thương lượng với vài thuật toán cực kỳ kiên định về cách mọi thứ nên được tổ chức.",
-      "filingCabinets": "Đang lập chỉ mục những tủ hồ sơ tưởng tượng, đối chiếu các nhãn và giả vờ rằng mọi thứ luôn ngăn nắp.",
-      "distributedThoughts": "Đang căn chỉnh các dòng suy nghĩ phân tán để mọi ý tưởng hữu ích đến đúng nơi vào gần như đúng thời điểm.",
-      "tinyGears": "Đang kiểm tra lần cuối từng bánh răng nhỏ, từng công tắc kín đáo và vài chi tiết không ai nhớ đã lắp vào.",
-      "knowledgeThreads": "Đang nối các sợi tri thức, tháo những nút thắt không cần thiết và dành chỗ cho điều bạn sắp khám phá."
+      "semanticPathways": "Đang tải thêm RAM...",
+      "opinionatedAlgorithms": "Đang thương lượng với đám mây...",
+      "filingCabinets": "Đang gom các điểm ảnh đi lạc...",
+      "distributedThoughts": "Đang đánh thức hamster máy chủ...",
+      "tinyGears": "Đang tắt đi bật lại...",
+      "knowledgeThreads": "Đang uốn spline thần kinh..."
     }
   },
   "Theme": {
@@ -79,8 +79,10 @@
       "fullName": "Họ và tên",
       "fullNamePlaceholder": "Nhập họ và tên",
       "dateOfBirth": "Ngày sinh",
+      "birthDay": "Ngày",
       "birthMonth": "Tháng sinh",
       "birthYear": "Năm sinh",
+      "day": "Ngày",
       "month": "Tháng",
       "year": "Năm",
       "months": {
@@ -157,8 +159,11 @@
       "passwordLong": "Mật khẩu quá dài.",
       "emailInvalid": "Nhập địa chỉ email hợp lệ.",
       "fullNameInvalid": "Nhập họ và tên của bạn.",
+      "birthDayInvalid": "Nhập ngày trong tháng hợp lệ.",
+      "birthMonthInvalid": "Chọn tháng sinh hợp lệ.",
       "birthYearInvalid": "Nhập năm sinh hợp lệ.",
-      "birthYearFuture": "Năm sinh không thể ở tương lai.",
+      "birthDateInvalid": "Nhập ngày sinh hợp lệ.",
+      "birthDateFuture": "Ngày sinh không thể ở tương lai.",
       "passwordMismatch": "Mật khẩu xác nhận không khớp.",
       "totpInvalid": "Nhập mã xác thực gồm sáu chữ số."
     }
@@ -194,7 +199,8 @@
       "email": "Email",
       "emailHint": "Đây cũng là email bạn dùng để đăng nhập.",
       "dateOfBirth": "Ngày sinh",
-      "dateOfBirthHint": "MeshMind chỉ lưu tháng và năm sinh.",
+      "dateOfBirthHint": "Nhập đầy đủ ngày, tháng và năm sinh của bạn.",
+      "birthDay": "Ngày sinh",
       "birthMonth": "Tháng sinh",
       "birthYear": "Năm sinh",
       "save": "Lưu thay đổi",
@@ -217,6 +223,8 @@
     "validation": {
       "email": "Nhập địa chỉ email hợp lệ.",
       "fullName": "Nhập họ và tên có ít nhất 2 ký tự.",
+      "birthDate": "Nhập ngày sinh hợp lệ và không ở tương lai.",
+      "birthDay": "Nhập ngày trong tháng hợp lệ.",
       "birthMonth": "Chọn tháng sinh hợp lệ.",
       "birthYear": "Nhập năm sinh từ 1900 đến năm hiện tại."
     },

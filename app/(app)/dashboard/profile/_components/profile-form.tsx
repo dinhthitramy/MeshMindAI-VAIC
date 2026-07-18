@@ -39,6 +39,7 @@ const initialState: ProfileActionState = { status: "idle" };
 type ProfileFormProps = {
   currentYear: number;
   profile: {
+    birthDay: number;
     birthMonth: number;
     birthYear: number;
     email: string;
@@ -108,32 +109,13 @@ function ProfileForm({ currentYear, profile }: ProfileFormProps) {
             <FieldSet>
               <FieldLegend variant="label">{t("form.dateOfBirth")}</FieldLegend>
               <FieldDescription>{t("form.dateOfBirthHint")}</FieldDescription>
-              <FieldGroup className="grid gap-4 sm:grid-cols-2">
+              <FieldGroup className="grid gap-4 sm:grid-cols-3">
                 <Field
-                  data-invalid={Boolean(fieldError("birthMonth")) || undefined}
-                >
-                  <FieldLabel htmlFor="profile-birth-month">
-                    {t("form.birthMonth")}
-                  </FieldLabel>
-                  <Select
-                    id="profile-birth-month"
-                    name="birthMonth"
-                    autoComplete="bday-month"
-                    defaultValue={profile.birthMonth}
-                    aria-invalid={Boolean(fieldError("birthMonth")) || undefined}
-                    required
-                  >
-                    {monthNumbers.map((month) => (
-                      <option key={month} value={month}>
-                        {t(`months.${month}`)}
-                      </option>
-                    ))}
-                  </Select>
-                  <FieldError>{fieldError("birthMonth")}</FieldError>
-                </Field>
-
-                <Field
-                  data-invalid={Boolean(fieldError("birthYear")) || undefined}
+                  data-invalid={
+                    Boolean(
+                      fieldError("birthYear") || fieldError("birthDate"),
+                    ) || undefined
+                  }
                 >
                   <FieldLabel htmlFor="profile-birth-year">
                     {t("form.birthYear")}
@@ -147,12 +129,77 @@ function ProfileForm({ currentYear, profile }: ProfileFormProps) {
                     min={1900}
                     max={currentYear}
                     defaultValue={profile.birthYear}
-                    aria-invalid={Boolean(fieldError("birthYear")) || undefined}
+                    aria-invalid={
+                      Boolean(
+                        fieldError("birthYear") || fieldError("birthDate"),
+                      ) || undefined
+                    }
                     required
                   />
                   <FieldError>{fieldError("birthYear")}</FieldError>
                 </Field>
+
+                <Field
+                  data-invalid={
+                    Boolean(
+                      fieldError("birthMonth") || fieldError("birthDate"),
+                    ) || undefined
+                  }
+                >
+                  <FieldLabel htmlFor="profile-birth-month">
+                    {t("form.birthMonth")}
+                  </FieldLabel>
+                  <Select
+                    id="profile-birth-month"
+                    name="birthMonth"
+                    autoComplete="bday-month"
+                    defaultValue={profile.birthMonth}
+                    aria-invalid={
+                      Boolean(
+                        fieldError("birthMonth") || fieldError("birthDate"),
+                      ) || undefined
+                    }
+                    required
+                  >
+                    {monthNumbers.map((month) => (
+                      <option key={month} value={month}>
+                        {t(`months.${month}`)}
+                      </option>
+                    ))}
+                  </Select>
+                  <FieldError>{fieldError("birthMonth")}</FieldError>
+                </Field>
+
+                <Field
+                  data-invalid={
+                    Boolean(
+                      fieldError("birthDay") || fieldError("birthDate"),
+                    ) || undefined
+                  }
+                >
+                  <FieldLabel htmlFor="profile-birth-day">
+                    {t("form.birthDay")}
+                  </FieldLabel>
+                  <Input
+                    id="profile-birth-day"
+                    name="birthDay"
+                    type="number"
+                    inputMode="numeric"
+                    autoComplete="bday-day"
+                    min={1}
+                    max={31}
+                    defaultValue={profile.birthDay}
+                    aria-invalid={
+                      Boolean(
+                        fieldError("birthDay") || fieldError("birthDate"),
+                      ) || undefined
+                    }
+                    required
+                  />
+                  <FieldError>{fieldError("birthDay")}</FieldError>
+                </Field>
               </FieldGroup>
+              <FieldError>{fieldError("birthDate")}</FieldError>
             </FieldSet>
           </FieldGroup>
         </CardContent>

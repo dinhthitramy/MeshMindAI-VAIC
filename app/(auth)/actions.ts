@@ -86,8 +86,11 @@ async function invalidFields(
     "Password is too long.": t("validation.passwordLong"),
     "Enter a valid email address.": t("validation.emailInvalid"),
     "Enter your full name.": t("validation.fullNameInvalid"),
+    "Enter a valid day of birth.": t("validation.birthDayInvalid"),
+    "Enter a valid birth month.": t("validation.birthMonthInvalid"),
     "Enter a valid birth year.": t("validation.birthYearInvalid"),
-    "Birth year cannot be in the future.": t("validation.birthYearFuture"),
+    "Enter a valid date of birth.": t("validation.birthDateInvalid"),
+    "Date of birth cannot be in the future.": t("validation.birthDateFuture"),
     "Passwords do not match.": t("validation.passwordMismatch"),
     "Enter the six-digit authentication code.": t("validation.totpInvalid"),
   };
@@ -167,6 +170,7 @@ export async function signupAction(
     valuesFrom(formData, [
       "email",
       "fullName",
+      "birthDay",
       "birthMonth",
       "birthYear",
       "password",
@@ -207,8 +211,7 @@ export async function signupAction(
           fullName: parsed.data.fullName,
           email: parsed.data.email,
           passwordHash,
-          birthMonth: parsed.data.birthMonth,
-          birthYear: parsed.data.birthYear,
+          birthDate: parsed.data.birthDate,
         })
         .returning({ id: users.id, sessionVersion: users.sessionVersion });
 

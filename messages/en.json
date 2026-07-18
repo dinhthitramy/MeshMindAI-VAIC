@@ -16,12 +16,12 @@
     "progressLabel": "Loading progress",
     "percent": "{percent}%",
     "messages": {
-      "semanticPathways": "Calibrating semantic pathways and arranging the workspace for a suspiciously productive session.",
-      "opinionatedAlgorithms": "Negotiating with several highly opinionated algorithms about how everything should be organized.",
-      "filingCabinets": "Indexing imaginary filing cabinets, reconciling their labels, and pretending they were always this orderly.",
-      "distributedThoughts": "Aligning distributed thoughts so every useful idea arrives in the right place at approximately the right time.",
-      "tinyGears": "Performing final checks on every tiny gear, discreet switch, and mysterious component nobody remembers installing.",
-      "knowledgeThreads": "Connecting threads of knowledge, loosening unnecessary knots, and making room for whatever you discover next."
+      "semanticPathways": "Downloading more RAM...",
+      "opinionatedAlgorithms": "Negotiating with the cloud...",
+      "filingCabinets": "Herding stray pixels...",
+      "distributedThoughts": "Waking the server hamsters...",
+      "tinyGears": "Turning it off and on again...",
+      "knowledgeThreads": "Reticulating neural splines..."
     }
   },
   "Theme": {
@@ -79,8 +79,10 @@
       "fullName": "Full name",
       "fullNamePlaceholder": "Your full name",
       "dateOfBirth": "Date of birth",
+      "birthDay": "Day of birth",
       "birthMonth": "Birth month",
       "birthYear": "Birth year",
+      "day": "Day",
       "month": "Month",
       "year": "Year",
       "months": {
@@ -157,8 +159,11 @@
       "passwordLong": "Password is too long.",
       "emailInvalid": "Enter a valid email address.",
       "fullNameInvalid": "Enter your full name.",
+      "birthDayInvalid": "Enter a valid day of birth.",
+      "birthMonthInvalid": "Enter a valid birth month.",
       "birthYearInvalid": "Enter a valid birth year.",
-      "birthYearFuture": "Birth year cannot be in the future.",
+      "birthDateInvalid": "Enter a valid date of birth.",
+      "birthDateFuture": "Date of birth cannot be in the future.",
       "passwordMismatch": "Passwords do not match.",
       "totpInvalid": "Enter the six-digit authentication code."
     }
@@ -194,7 +199,8 @@
       "email": "Email",
       "emailHint": "This is also the email you use to sign in.",
       "dateOfBirth": "Date of birth",
-      "dateOfBirthHint": "MeshMind only stores your birth month and year.",
+      "dateOfBirthHint": "Enter your complete date of birth.",
+      "birthDay": "Day",
       "birthMonth": "Birth month",
       "birthYear": "Birth year",
       "save": "Save changes",
@@ -217,6 +223,8 @@
     "validation": {
       "email": "Enter a valid email address.",
       "fullName": "Enter a full name with at least 2 characters.",
+      "birthDate": "Enter a valid date of birth that is not in the future.",
+      "birthDay": "Enter a valid day of birth.",
       "birthMonth": "Choose a valid birth month.",
       "birthYear": "Enter a birth year between 1900 and the current year."
     },

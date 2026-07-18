@@ -2,7 +2,6 @@
 
 import { useId, useState, type ComponentProps, type ReactNode } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -44,34 +43,22 @@ function PasswordField({
           type="button"
           variant="ghost"
           size="icon-sm"
+          pressAnimation={false}
           aria-label={t(isVisible ? "hideField" : "showField", {
             field: label.toLocaleLowerCase(),
           })}
           aria-controls={inputId}
           aria-pressed={isVisible}
           onClick={() => setIsVisible((visible) => !visible)}
-          className="absolute right-1.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-        >
+          className="absolute right-1.5 top-1/2 -translate-y-1/2 text-muted-foreground">
           <span
             aria-hidden="true"
-            className="relative flex size-4 items-center justify-center"
-          >
-            <AnimatePresence initial={false} mode="popLayout">
-              <motion.span
-                key={isVisible ? "hidden" : "visible"}
-                initial={{ opacity: 0, rotate: -8 }}
-                animate={{ opacity: 1, rotate: 0 }}
-                exit={{ opacity: 0, rotate: 8 }}
-                transition={{ duration: 0.12 }}
-                className="absolute inset-0 flex items-center justify-center"
-              >
-                {isVisible ? (
-                  <EyeOff aria-hidden="true" />
-                ) : (
-                  <Eye aria-hidden="true" />
-                )}
-              </motion.span>
-            </AnimatePresence>
+            className="flex size-4 items-center justify-center">
+            {isVisible ? (
+              <EyeOff aria-hidden="true" />
+            ) : (
+              <Eye aria-hidden="true" />
+            )}
           </span>
         </Button>
       </div>

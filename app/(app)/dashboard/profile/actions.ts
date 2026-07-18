@@ -54,6 +54,7 @@ export async function updateProfileAction(
   const parsed = profileSchema.safeParse({
     email: formData.get("email"),
     fullName: formData.get("fullName"),
+    birthDay: formData.get("birthDay"),
     birthMonth: formData.get("birthMonth"),
     birthYear: formData.get("birthYear"),
   });
@@ -63,6 +64,8 @@ export async function updateProfileAction(
     const messages: Record<string, string> = {
       email: t("validation.email"),
       fullName: t("validation.fullName"),
+      birthDate: t("validation.birthDate"),
+      birthDay: t("validation.birthDay"),
       birthMonth: t("validation.birthMonth"),
       birthYear: t("validation.birthYear"),
     };
@@ -85,8 +88,7 @@ export async function updateProfileAction(
       .set({
         email: parsed.data.email,
         fullName: parsed.data.fullName,
-        birthMonth: parsed.data.birthMonth,
-        birthYear: parsed.data.birthYear,
+        birthDate: parsed.data.birthDate,
         updatedAt: new Date(),
       })
       .where(eq(users.id, viewer.actor.userId))
@@ -102,7 +104,7 @@ export async function updateProfileAction(
       targetType: "user",
       targetId: updatedUser.id,
       metadata: {
-        fields: ["fullName", "email", "birthMonth", "birthYear"],
+        fields: ["fullName", "email", "birthDate"],
       },
     });
   } catch (error) {
