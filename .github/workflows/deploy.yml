@@ -49,7 +49,7 @@ jobs:
           cd /opt/meshmind-ai
           git reset --hard HEAD
           git pull --ff-only origin main
-          npm ci
+          npm install
           npm run build
           npm run db:migrate
 
