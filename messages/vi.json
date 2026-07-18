@@ -196,6 +196,16 @@
     "title": "Thông tin cá nhân",
     "description": "Cập nhật thông tin giúp CareerLens cá nhân hóa trải nghiệm của bạn.",
     "summary": "Thông tin này được dùng để nhận diện tài khoản và điều chỉnh trải nghiệm phù hợp với bạn.",
+    "personality": {
+      "emptyTitle": "Khám phá phong cách của bạn",
+      "emptyDescription": "Hoàn thành 12 câu hỏi ngắn để nhận diện những khuynh hướng nổi bật trong cách bạn suy nghĩ và hành động.",
+      "completedTitle": "Kết quả tính cách",
+      "completedDescription": "Xem lại kết quả gần nhất hoặc làm lại bài test khi bạn muốn cập nhật góc nhìn về bản thân.",
+      "completedOn": "Hoàn thành {date}",
+      "takeTest": "Làm bài test",
+      "retake": "Làm lại bài test",
+      "viewDetails": "Xem chi tiết"
+    },
     "form": {
       "title": "Chi tiết hồ sơ",
       "description": "Chỉnh sửa thông tin tài khoản của bạn bên dưới.",
@@ -239,6 +249,162 @@
       "emailInUse": "Email này đã được sử dụng bởi một tài khoản khác.",
       "failed": "Chưa thể lưu thay đổi. Vui lòng thử lại.",
       "unavailable": "Tài khoản này không có hồ sơ cá nhân để chỉnh sửa."
+    }
+  },
+  "PersonalityTest": {
+    "metadataTitle": "Bài test tính cách",
+    "title": "Bài test tính cách",
+    "description": "Khám phá cách bạn nạp năng lượng, tiếp nhận thông tin, đưa ra quyết định và tổ chức cuộc sống.",
+    "backToProfile": "Quay lại hồ sơ",
+    "intro": {
+      "title": "Hiểu mình rõ hơn qua 12 câu hỏi",
+      "description": "Chọn phương án giống bạn nhất trong phần lớn tình huống. Không có câu trả lời đúng hay sai.",
+      "currentResult": "Kết quả hiện tại của bạn",
+      "timeTitle": "Khoảng 3 phút",
+      "timeDescription": "Bài test ngắn, tập trung vào những lựa chọn quen thuộc trong đời sống.",
+      "answerTitle": "Trả lời theo phản xạ đầu tiên",
+      "answerDescription": "Chọn điều bạn thường làm, không phải điều bạn mong mình sẽ làm.",
+      "noteTitle": "Một công cụ để tự khám phá",
+      "note": "Kết quả phản ánh khuynh hướng tại thời điểm làm bài và không thay thế đánh giá chuyên môn về tâm lý.",
+      "start": "Bắt đầu làm bài",
+      "retake": "Bắt đầu làm lại"
+    },
+    "question": {
+      "progress": "Câu {current} / {total}",
+      "guidance": "Chọn phương án gần với bạn hơn.",
+      "required": "Hãy chọn một phương án để tiếp tục.",
+      "back": "Câu trước",
+      "next": "Câu tiếp theo",
+      "finish": "Xem kết quả",
+      "submitting": "Đang lưu..."
+    },
+    "result": {
+      "title": "Kết quả của bạn đã sẵn sàng",
+      "description": "Bốn chữ cái dưới đây tóm tắt những khuynh hướng bạn đã thể hiện trong bài test.",
+      "traitsTitle": "Bốn khuynh hướng nổi bật",
+      "noteTitle": "Hãy dùng kết quả như một điểm bắt đầu",
+      "note": "Tính cách có thể thay đổi theo bối cảnh và trải nghiệm. Bạn có thể làm lại bài test khi cảm thấy kết quả không còn phù hợp.",
+      "retake": "Làm lại bài test",
+      "backToProfile": "Xem trong hồ sơ"
+    },
+    "traits": {
+      "E": {
+        "title": "Hướng ngoại",
+        "description": "Bạn thường nạp năng lượng qua tương tác và thích suy nghĩ bằng cách trao đổi với người khác."
+      },
+      "I": {
+        "title": "Hướng nội",
+        "description": "Bạn thường nạp năng lượng trong không gian riêng và thích suy nghĩ kỹ trước khi chia sẻ."
+      },
+      "S": {
+        "title": "Thực tế",
+        "description": "Bạn chú ý đến dữ kiện cụ thể, kinh nghiệm trực tiếp và những gì có thể áp dụng ngay."
+      },
+      "N": {
+        "title": "Trực giác",
+        "description": "Bạn dễ nhận ra các mẫu liên kết, khả năng tương lai và ý nghĩa phía sau thông tin."
+      },
+      "T": {
+        "title": "Lý trí",
+        "description": "Bạn thường ưu tiên tính nhất quán, bằng chứng và nguyên tắc khi đưa ra quyết định."
+      },
+      "F": {
+        "title": "Cảm xúc",
+        "description": "Bạn thường cân nhắc giá trị cá nhân, nhu cầu và tác động của quyết định đến con người."
+      },
+      "J": {
+        "title": "Nguyên tắc",
+        "description": "Bạn cảm thấy thoải mái hơn khi có kế hoạch, mốc rõ ràng và mọi việc được hoàn tất đúng hạn."
+      },
+      "P": {
+        "title": "Linh hoạt",
+        "description": "Bạn thích giữ các lựa chọn mở, khám phá trong quá trình làm và điều chỉnh theo tình huống."
+      }
+    },
+    "types": {
+      "INTJ": { "title": "Nhà chiến lược" },
+      "INTP": { "title": "Nhà phân tích" },
+      "ENTJ": { "title": "Người kiến tạo" },
+      "ENTP": { "title": "Người khám phá" },
+      "INFJ": { "title": "Người định hướng" },
+      "INFP": { "title": "Người hòa giải" },
+      "ENFJ": { "title": "Người truyền cảm hứng" },
+      "ENFP": { "title": "Người khơi mở" },
+      "ISTJ": { "title": "Người tổ chức" },
+      "ISFJ": { "title": "Người đồng hành" },
+      "ESTJ": { "title": "Người điều phối" },
+      "ESFJ": { "title": "Người kết nối" },
+      "ISTP": { "title": "Người giải quyết" },
+      "ISFP": { "title": "Người trải nghiệm" },
+      "ESTP": { "title": "Người hành động" },
+      "ESFP": { "title": "Người tạo năng lượng" }
+    },
+    "questions": {
+      "0": {
+        "prompt": "Sau một tuần bận rộn, điều gì giúp bạn lấy lại năng lượng tốt hơn?",
+        "a": "Gặp gỡ bạn bè hoặc tham gia một hoạt động có nhiều người",
+        "b": "Dành thời gian yên tĩnh một mình hoặc với một vài người thân"
+      },
+      "1": {
+        "prompt": "Khi bước vào một nhóm hoàn toàn mới, bạn thường làm gì?",
+        "a": "Chủ động bắt chuyện và làm quen với nhiều người",
+        "b": "Quan sát trước rồi kết nối với một vài người phù hợp"
+      },
+      "2": {
+        "prompt": "Khi có một ý tưởng chưa hoàn chỉnh, bạn thích xử lý nó theo cách nào?",
+        "a": "Nói ra để cùng người khác làm rõ ý tưởng",
+        "b": "Tự suy nghĩ cho rõ rồi mới chia sẻ"
+      },
+      "3": {
+        "prompt": "Khi học một chủ đề mới, cách bắt đầu nào hữu ích với bạn hơn?",
+        "a": "Xem ví dụ cụ thể và làm thử từng bước",
+        "b": "Hiểu bức tranh tổng thể và các khả năng trước"
+      },
+      "4": {
+        "prompt": "Bạn thường tin tưởng loại thông tin nào hơn?",
+        "a": "Dữ kiện rõ ràng và chi tiết có thể kiểm chứng",
+        "b": "Mẫu liên kết và ý nghĩa có thể suy ra từ nhiều nguồn"
+      },
+      "5": {
+        "prompt": "Với một nhiệm vụ mới, bạn muốn nhận hướng dẫn như thế nào?",
+        "a": "Có quy trình và tiêu chí cụ thể để thực hiện",
+        "b": "Có mục tiêu chung và không gian để tự khám phá cách làm"
+      },
+      "6": {
+        "prompt": "Khi phải đưa ra một quyết định khó, bạn thường ưu tiên điều gì?",
+        "a": "Lựa chọn nhất quán với bằng chứng và nguyên tắc",
+        "b": "Lựa chọn phù hợp với giá trị và tác động đến mọi người"
+      },
+      "7": {
+        "prompt": "Khi góp ý cho một người đang gặp khó khăn, bạn thường làm gì trước?",
+        "a": "Phân tích vấn đề và nói thẳng giải pháp khả thi",
+        "b": "Lắng nghe cảm xúc và lựa lời để họ dễ tiếp nhận"
+      },
+      "8": {
+        "prompt": "Trong một bất đồng, điều gì quan trọng với bạn hơn?",
+        "a": "Tìm ra cách giải quyết công bằng theo cùng một tiêu chuẩn",
+        "b": "Giữ kết nối và cân nhắc nhu cầu riêng của từng người"
+      },
+      "9": {
+        "prompt": "Khi bắt đầu một dự án dài, bạn thường chọn cách nào?",
+        "a": "Lập kế hoạch, chia mốc và theo dõi tiến độ",
+        "b": "Bắt tay vào làm, khám phá rồi điều chỉnh kế hoạch dần"
+      },
+      "10": {
+        "prompt": "Một chuyến đi khiến bạn thoải mái hơn khi được chuẩn bị thế nào?",
+        "a": "Có lịch trình và các lựa chọn chính được chốt trước",
+        "b": "Có vài điểm chính nhưng vẫn đủ tự do để thay đổi"
+      },
+      "11": {
+        "prompt": "Khi có thời hạn quan trọng, nhịp làm việc nào giống bạn hơn?",
+        "a": "Tạo cấu trúc sớm và hoàn thành từng phần theo kế hoạch",
+        "b": "Giữ nhịp linh hoạt và tăng tốc khi đã có đủ thông tin"
+      }
+    },
+    "actions": {
+      "saved": "Kết quả đã được lưu vào hồ sơ của bạn.",
+      "failed": "Có lỗi xảy ra khi lưu. Vui lòng thử lại.",
+      "unavailable": "Tài khoản này không thể lưu kết quả bài test."
     }
   }
 }

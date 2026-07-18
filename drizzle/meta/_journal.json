@@ -8,6 +8,13 @@
       "when": 1784368191928,
       "tag": "0000_warm_morlocks",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784375500963,
+      "tag": "0001_goofy_rattler",
+      "breakpoints": true
     }
   ]
 }

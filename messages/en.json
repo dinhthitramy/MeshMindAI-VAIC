@@ -196,6 +196,16 @@
     "title": "Personal information",
     "description": "Keep your details current so CareerLens can personalize your experience.",
     "summary": "These details identify your account and help tailor your experience to you.",
+    "personality": {
+      "emptyTitle": "Discover your personal style",
+      "emptyDescription": "Answer 12 short questions to identify patterns in how you think, decide, and act.",
+      "completedTitle": "Personality result",
+      "completedDescription": "Review your latest result or retake the test whenever you want a fresh perspective.",
+      "completedOn": "Completed {date}",
+      "takeTest": "Take the test",
+      "retake": "Retake the test",
+      "viewDetails": "View details"
+    },
     "form": {
       "title": "Profile details",
       "description": "Edit your account information below.",
@@ -239,6 +249,162 @@
       "emailInUse": "This email is already used by another account.",
       "failed": "We could not save your changes. Please try again.",
       "unavailable": "This account does not have a personal profile to edit."
+    }
+  },
+  "PersonalityTest": {
+    "metadataTitle": "Personality test",
+    "title": "Personality test",
+    "description": "Explore how you recharge, take in information, make decisions, and organize daily life.",
+    "backToProfile": "Back to profile",
+    "intro": {
+      "title": "Understand yourself through 12 questions",
+      "description": "Choose the option that sounds most like you in everyday situations. There are no right or wrong answers.",
+      "currentResult": "Your current result",
+      "timeTitle": "About 3 minutes",
+      "timeDescription": "A short test focused on familiar choices from daily life.",
+      "answerTitle": "Trust your first response",
+      "answerDescription": "Choose what you usually do, not what you think you should do.",
+      "noteTitle": "A tool for self-discovery",
+      "note": "Your result reflects current preferences and does not replace a professional psychological assessment.",
+      "start": "Start the test",
+      "retake": "Start again"
+    },
+    "question": {
+      "progress": "Question {current} / {total}",
+      "guidance": "Choose the option that is closer to you.",
+      "required": "Choose one option to continue.",
+      "back": "Previous",
+      "next": "Next question",
+      "finish": "View result",
+      "submitting": "Saving..."
+    },
+    "result": {
+      "title": "Your result is ready",
+      "description": "These four letters summarize the preferences shown in your answers.",
+      "traitsTitle": "Your four leading preferences",
+      "noteTitle": "Use this result as a starting point",
+      "note": "Personality can shift across contexts and experiences. You can retake the test when the result no longer feels right.",
+      "retake": "Retake the test",
+      "backToProfile": "View in profile"
+    },
+    "traits": {
+      "E": {
+        "title": "Extraversion",
+        "description": "You often recharge through interaction and like to develop ideas by talking with others."
+      },
+      "I": {
+        "title": "Introversion",
+        "description": "You often recharge in private and prefer to reflect before sharing your thoughts."
+      },
+      "S": {
+        "title": "Sensing",
+        "description": "You notice concrete facts, direct experience, and information you can apply right away."
+      },
+      "N": {
+        "title": "Intuition",
+        "description": "You readily notice patterns, future possibilities, and meaning behind information."
+      },
+      "T": {
+        "title": "Thinking",
+        "description": "You often prioritize consistency, evidence, and principles when making decisions."
+      },
+      "F": {
+        "title": "Feeling",
+        "description": "You often consider personal values, individual needs, and the human impact of decisions."
+      },
+      "J": {
+        "title": "Judging",
+        "description": "You feel more comfortable with plans, clear milestones, and work completed on schedule."
+      },
+      "P": {
+        "title": "Perceiving",
+        "description": "You prefer to keep options open, explore as you go, and adjust to the situation."
+      }
+    },
+    "types": {
+      "INTJ": { "title": "The Strategist" },
+      "INTP": { "title": "The Analyst" },
+      "ENTJ": { "title": "The Builder" },
+      "ENTP": { "title": "The Explorer" },
+      "INFJ": { "title": "The Guide" },
+      "INFP": { "title": "The Mediator" },
+      "ENFJ": { "title": "The Inspirer" },
+      "ENFP": { "title": "The Catalyst" },
+      "ISTJ": { "title": "The Organizer" },
+      "ISFJ": { "title": "The Supporter" },
+      "ESTJ": { "title": "The Coordinator" },
+      "ESFJ": { "title": "The Connector" },
+      "ISTP": { "title": "The Problem Solver" },
+      "ISFP": { "title": "The Experiencer" },
+      "ESTP": { "title": "The Doer" },
+      "ESFP": { "title": "The Energizer" }
+    },
+    "questions": {
+      "0": {
+        "prompt": "After a busy week, what helps you recharge more?",
+        "a": "Meeting friends or joining an activity with plenty of people",
+        "b": "Spending quiet time alone or with a few people close to me"
+      },
+      "1": {
+        "prompt": "When you enter a completely new group, what do you usually do?",
+        "a": "Start conversations and get to know several people",
+        "b": "Observe first, then connect with a few people who feel right"
+      },
+      "2": {
+        "prompt": "When an idea is still taking shape, how do you prefer to work through it?",
+        "a": "Talk it through with others until it becomes clearer",
+        "b": "Think it through privately before sharing it"
+      },
+      "3": {
+        "prompt": "When learning a new subject, which starting point helps you more?",
+        "a": "Seeing a concrete example and trying it step by step",
+        "b": "Understanding the big picture and possible directions first"
+      },
+      "4": {
+        "prompt": "Which kind of information do you tend to trust more?",
+        "a": "Clear facts and details that can be verified",
+        "b": "Patterns and meaning that emerge across several sources"
+      },
+      "5": {
+        "prompt": "How would you rather receive instructions for a new task?",
+        "a": "With a clear process and specific criteria to follow",
+        "b": "With an overall goal and room to discover my own approach"
+      },
+      "6": {
+        "prompt": "When making a difficult decision, what do you usually prioritize?",
+        "a": "The choice that best fits the evidence and consistent principles",
+        "b": "The choice that best fits my values and its effect on people"
+      },
+      "7": {
+        "prompt": "When giving feedback to someone who is struggling, what do you do first?",
+        "a": "Analyze the issue and state a practical solution directly",
+        "b": "Listen to their feelings and phrase feedback with care"
+      },
+      "8": {
+        "prompt": "During a disagreement, what matters more to you?",
+        "a": "Finding a fair solution based on the same standard for everyone",
+        "b": "Preserving the relationship and considering individual needs"
+      },
+      "9": {
+        "prompt": "When starting a long project, which approach feels more natural?",
+        "a": "Plan the work, set milestones, and track progress",
+        "b": "Begin, explore, and adjust the plan as I learn"
+      },
+      "10": {
+        "prompt": "What kind of preparation makes a trip feel more comfortable?",
+        "a": "A schedule with the main choices settled in advance",
+        "b": "A few anchor points with freedom to change plans"
+      },
+      "11": {
+        "prompt": "When an important deadline is approaching, which rhythm sounds more like you?",
+        "a": "Create structure early and complete each part according to plan",
+        "b": "Stay flexible and accelerate once I have enough information"
+      }
+    },
+    "actions": {
+      "saved": "Your result has been saved to your profile.",
+      "failed": "Something went wrong while saving. Please try again.",
+      "unavailable": "This account cannot save a personality test result."
     }
   }
 }

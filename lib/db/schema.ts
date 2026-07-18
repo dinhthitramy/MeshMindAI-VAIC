@@ -216,6 +216,41 @@ export const chatMessages = pgTable(
   (table) => [index("chat_messages_session_id_idx").on(table.sessionId)],
 );
 
+export type PersonalityScores = Record<
+  "E" | "I" | "S" | "N" | "T" | "F" | "J" | "P",
+  number
+>;
+
+export const personalityTestResults = pgTable(
+  "personality_test_results",
+  {
+    userId: uuid("user_id")
+      .primaryKey()
+      .references(() => users.id, { onDelete: "cascade" }),
+    resultType: text("result_type").notNull(),
+    answers: jsonb("answers").$type<Array<"a" | "b">>().notNull(),
+    scores: jsonb("scores").$type<PersonalityScores>().notNull(),
+    testVersion: integer("test_version").default(1).notNull(),
+    completedAt: timestamp("completed_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    check(
+      "personality_test_results_type_valid",
+      sql`${table.resultType} in ('INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP', 'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP')`,
+    ),
+    check(
+      "personality_test_results_version_positive",
+      sql`${table.testVersion} > 0`,
+    ),
+    index("personality_test_results_completed_at_idx").on(table.completedAt),
+  ],
+);
+
 export type ChatSession = typeof chatSessions.$inferSelect;
 export type ChatMessage = typeof chatMessages.$inferSelect;
 
