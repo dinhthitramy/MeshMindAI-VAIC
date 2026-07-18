@@ -3,7 +3,10 @@ import "server-only";
 import { z } from "zod";
 
 import { selectCareerLensMarketSignals } from "./market-seed";
-import type { CareerGuidanceInput } from "./schemas";
+import type {
+  CareerGuidanceInput,
+  CareerStartingPointSnapshot,
+} from "./schemas";
 import { VIETNAM_PROVINCES } from "./vietnam-provinces";
 
 export const careerLensFormSchema = z.object({
@@ -41,13 +44,17 @@ export const careerLensFormSchema = z.object({
     "compare_paths",
     "roadmap_detail",
   ]),
-  targetCareer: z.string().trim().max(200),
   question: z.string().trim().min(10).max(2_000),
-  model: z.string().trim().min(1).max(120),
   consent: z.string().refine((value) => value === "on" || value === "true"),
 });
 
 export type CareerLensFormValues = z.infer<typeof careerLensFormSchema>;
+export const careerLensStoredFormSchema = careerLensFormSchema.omit({
+  consent: true,
+});
+export type CareerLensStoredFormValues = z.infer<
+  typeof careerLensStoredFormSchema
+>;
 
 function splitList(value: string, limit: number): string[] {
   return [...new Set(value.split(/[,;\n]/).map((item) => item.trim()).filter(Boolean))].slice(
@@ -64,12 +71,126 @@ function interestCategory(interest: string): "sport" | "technology" | "business"
   return "other";
 }
 
+function periodLabel(
+  startMonth: number,
+  startYear: number,
+  endMonth: number | null,
+  endYear: number | null,
+) {
+  const start = `${String(startMonth).padStart(2, "0")}/${startYear}`;
+  const end =
+    endMonth && endYear
+      ? `${String(endMonth).padStart(2, "0")}/${endYear}`
+      : "Hiện tại";
+  return `${start} - ${end}`;
+}
+
+function startingPointActivities(snapshot: CareerStartingPointSnapshot | null) {
+  if (!snapshot) return [];
+
+  return [
+    ...snapshot.education.flatMap((record) =>
+      record.researchTitle
+        ? [
+            {
+              type: "project" as const,
+              name: record.researchTitle,
+              description: record.researchDescription ?? "",
+              duration: periodLabel(
+                record.startMonth,
+                record.startYear,
+                record.endMonth,
+                record.endYear,
+              ),
+              evidence: record.institutionName,
+            },
+          ]
+        : [],
+    ),
+    ...snapshot.certificates.map((certificate) => ({
+      type: "certificate" as const,
+      name: certificate.name,
+      description: `Cấp năm ${certificate.issuedYear}`,
+      duration: periodLabel(
+        certificate.startMonth,
+        certificate.startYear,
+        certificate.endMonth,
+        certificate.endYear,
+      ),
+      evidence: certificate.hasAttachment ? "Có tệp minh chứng" : null,
+    })),
+    ...snapshot.competitions.map((competition) => ({
+      type: "competition" as const,
+      name: competition.name,
+      description: competition.awardName ?? "",
+      duration: periodLabel(
+        competition.startMonth,
+        competition.startYear,
+        competition.endMonth,
+        competition.endYear,
+      ),
+      evidence: competition.awardName,
+    })),
+    ...snapshot.activities.map((activity) => ({
+      type: "other" as const,
+      name: activity.name,
+      description: "",
+      duration: periodLabel(
+        activity.startMonth,
+        activity.startYear,
+        activity.endMonth,
+        activity.endYear,
+      ),
+      evidence: null,
+    })),
+    ...snapshot.workExperiences.map((experience) => ({
+      type: "part_time" as const,
+      name: experience.position
+        ? `${experience.position} tại ${experience.workplaceName}`
+        : experience.workplaceName,
+      description: [experience.learnings, experience.skills]
+        .filter(Boolean)
+        .join(". "),
+      duration: periodLabel(
+        experience.startMonth,
+        experience.startYear,
+        experience.endMonth,
+        experience.endYear,
+      ),
+      evidence: null,
+    })),
+  ];
+}
+
+function startingPointAcademicRecords(
+  snapshot: CareerStartingPointSnapshot | null,
+) {
+  if (!snapshot) return [];
+
+  return snapshot.education.flatMap((record) =>
+    record.transcriptEntries.map((entry) => ({
+      subject: `${entry.subjectName} (${record.institutionName})`,
+      score:
+        record.scoreScale === 4
+          ? Math.round(entry.score * 2.5 * 100) / 100
+          : entry.score,
+      evidence: "school_record" as const,
+    })),
+  );
+}
+
 export function buildCareerGuidanceInput(
   values: CareerLensFormValues,
   profileId: string,
   preferredOutputLanguage: "vi" | "en" = "vi",
+  startingPoint: CareerStartingPointSnapshot | null = null,
 ): CareerGuidanceInput {
   const interests = splitList(values.interests, 12);
+  const profileSkills = startingPoint
+    ? startingPoint.workExperiences.flatMap((experience) =>
+        splitList(experience.skills ?? "", 20),
+      )
+    : [];
 
   return {
     student_profile: {
@@ -81,6 +202,7 @@ export function buildCareerGuidanceInput(
       target_regions: [values.targetRegion],
       languages: splitList(values.languages, 8),
       academic_records: [
+        ...startingPointAcademicRecords(startingPoint).slice(0, 499),
         {
           subject: values.strongSubject,
           score: values.subjectScore,
@@ -88,6 +210,7 @@ export function buildCareerGuidanceInput(
         },
       ],
       self_reported_activities: [
+        ...startingPointActivities(startingPoint).slice(0, 99),
         {
           type: "project",
           name: "Trải nghiệm người học tự chia sẻ",
@@ -113,11 +236,12 @@ export function buildCareerGuidanceInput(
       simulated_experiences: [],
       conversation_memory: {
         stable_interests: interests,
-        stable_abilities: [values.strongSubject],
+        stable_abilities: [...new Set([values.strongSubject, ...profileSkills])],
         avoid_paths: [],
         previous_recommendations: [],
         student_decisions: [],
       },
+      starting_point: startingPoint,
     },
     labor_market_signals: selectCareerLensMarketSignals({
       currentRegion: values.currentRegion,
@@ -125,14 +249,18 @@ export function buildCareerGuidanceInput(
       keywords: [
         values.strongSubject,
         values.interests,
-        values.targetCareer,
         values.question,
+        ...(startingPoint?.education.flatMap((record) => [
+          record.fieldOfStudy ?? "",
+          record.researchTitle ?? "",
+        ]) ?? []),
+        ...profileSkills,
       ],
     }),
     user_request: {
       intent: values.intent,
       question: values.question,
-      target_career_or_major: values.targetCareer || null,
+      target_career_or_major: null,
       preferred_output_language: preferredOutputLanguage,
     },
   };

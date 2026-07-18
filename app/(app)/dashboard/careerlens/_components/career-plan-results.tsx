@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -31,6 +32,8 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { CareerGuidanceOutput } from "@/lib/careerlens/schemas";
+
+import { selectCareerRecommendationAction } from "../actions";
 
 function cleanText(value: string) {
   return value.replace(/[–—]/g, "-");
@@ -51,11 +54,28 @@ function DetailList({ items }: { items: string[] }) {
 
 type CareerPlanResultsProps = {
   output: CareerGuidanceOutput;
+  roadmapId: string;
+  selectedRecommendationIndex?: number;
   successMessage?: string;
 };
 
-export function CareerPlanResults({ output, successMessage }: CareerPlanResultsProps) {
+export function CareerPlanResults({
+  output,
+  roadmapId,
+  selectedRecommendationIndex = 0,
+  successMessage,
+}: CareerPlanResultsProps) {
   const t = useTranslations("Roadmap.results");
+  const selectedRecommendation =
+    output.recommendations[selectedRecommendationIndex] ??
+    output.recommendations[0];
+  const selectedIndex = Math.max(
+    0,
+    output.recommendations.indexOf(selectedRecommendation),
+  );
+  const visibleRecommendations = selectedRecommendation
+    ? [{ recommendation: selectedRecommendation, recommendationIndex: selectedIndex }]
+    : [];
 
   return (
     <section aria-labelledby="career-plan-results" className="flex flex-col gap-12">
@@ -168,7 +188,7 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
       </div>
 
       <div className="flex flex-col gap-8">
-        {output.recommendations.map((recommendation, recommendationIndex) => (
+        {visibleRecommendations.map(({ recommendation, recommendationIndex }) => (
           <Card
             key={`${recommendation.path_title}-${recommendationIndex}`}
             className="overflow-hidden rounded-[2rem] border-0 bg-muted/35 shadow-none ring-1 ring-foreground/5"
@@ -178,9 +198,12 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
                 0{recommendationIndex + 1}
               </p>
               <div>
-                <Badge variant="outline" className="border-primary/25 text-primary">
-                  {t(`category.${recommendation.path_category}`)}
-                </Badge>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="outline">
+                    {t(`category.${recommendation.path_category}`)}
+                  </Badge>
+                  <Badge>{t("selected")}</Badge>
+                </div>
                 <CardTitle className="mt-4 text-2xl tracking-[-0.025em] sm:text-3xl">
                   {cleanText(recommendation.path_title)}
                 </CardTitle>
@@ -467,6 +490,42 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
           </Card>
         ))}
       </div>
+
+      {output.recommendations.length > 1 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("otherDirectionsTitle")}</CardTitle>
+            <CardDescription>{t("otherDirectionsDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-2">
+            {output.recommendations.map((recommendation, recommendationIndex) => (
+              <div key={`${recommendation.path_title}-${recommendationIndex}`} className="flex flex-col gap-4 rounded-xl border p-5">
+                <div className="flex flex-1 flex-col gap-2">
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline">{t(`category.${recommendation.path_category}`)}</Badge>
+                    {recommendationIndex === selectedIndex ? (
+                      <Badge>{t("selected")}</Badge>
+                    ) : null}
+                  </div>
+                  <p className="font-medium">{cleanText(recommendation.path_title)}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("fitValue", { value: recommendation.fit_score })}
+                  </p>
+                </div>
+                {recommendationIndex !== selectedIndex ? (
+                  <form action={selectCareerRecommendationAction}>
+                    <input type="hidden" name="roadmapId" value={roadmapId} />
+                    <input type="hidden" name="recommendationIndex" value={recommendationIndex} />
+                    <Button type="submit" variant="outline">
+                      {t("chooseDirection")}
+                    </Button>
+                  </form>
+                ) : null}
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      ) : null}
 
       {output.questions_to_improve_recommendation.length > 0 ? (
         <Card className="rounded-[2rem] shadow-none">

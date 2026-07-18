@@ -61,6 +61,7 @@ function createCareerGuidanceInput(): CareerGuidanceInput {
         previous_recommendations: [],
         student_decisions: [],
       },
+      starting_point: null,
     },
     labor_market_signals: {
       source_timestamp: "2026-07-18T00:00:00Z",

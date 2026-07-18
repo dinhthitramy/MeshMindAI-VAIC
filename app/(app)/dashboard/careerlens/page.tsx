@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +11,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { AVAILABLE_MODELS } from "@/lib/ai";
 import { requirePermission } from "@/lib/auth/dal";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import {
@@ -18,6 +18,12 @@ import {
   MARKET_INDUSTRY_COUNT,
   MARKET_ROLE_COUNT_PER_REGION,
 } from "@/lib/careerlens/market-seed";
+import {
+  getCareerRoadmap,
+  getCareerRoadmapSummaries,
+  getLatestCareerRoadmap,
+} from "@/lib/careerlens/roadmaps";
+import { getCareerStartingPointSnapshot } from "@/lib/careerlens/starting-point";
 
 import { CareerWorkspace } from "./_components/career-workspace";
 
@@ -26,9 +32,32 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("metadataTitle") };
 }
 
-export default async function CareerLensPage() {
-  await requirePermission(PERMISSIONS.DASHBOARD_ACCESS);
-  const [t, locale] = await Promise.all([getTranslations("Roadmap"), getLocale()]);
+export default async function CareerLensPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ roadmap?: string | string[] }>;
+}) {
+  const viewer = await requirePermission(PERMISSIONS.DASHBOARD_ACCESS);
+  if (viewer.actor.kind !== "user") redirect("/dashboard");
+
+  const requestedRoadmap = (await searchParams).roadmap;
+  const requestedRoadmapId = Array.isArray(requestedRoadmap)
+    ? requestedRoadmap[0]
+    : requestedRoadmap;
+
+  const [t, locale, startingPoint, savedRoadmaps, requestedSavedRoadmap] =
+    await Promise.all([
+      getTranslations("Roadmap"),
+      getLocale(),
+      getCareerStartingPointSnapshot(viewer.actor.userId),
+      getCareerRoadmapSummaries(viewer.actor.userId),
+      requestedRoadmapId
+        ? getCareerRoadmap(viewer.actor.userId, requestedRoadmapId)
+        : Promise.resolve(null),
+    ]);
+  const savedRoadmap =
+    requestedSavedRoadmap ??
+    (await getLatestCareerRoadmap(viewer.actor.userId));
 
   const regionCount = new Set(
     CAREERLENS_MARKET_SEED.postings.map((posting) => posting.region),
@@ -83,7 +112,9 @@ export default async function CareerLensPage() {
         </header>
 
         <CareerWorkspace
-          models={AVAILABLE_MODELS}
+          startingPoint={startingPoint}
+          savedRoadmap={savedRoadmap}
+          savedRoadmaps={savedRoadmaps}
           marketOverview={{
             postingCount: CAREERLENS_MARKET_SEED.postings.length,
             regionCount,

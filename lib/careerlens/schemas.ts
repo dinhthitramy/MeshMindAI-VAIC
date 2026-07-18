@@ -4,6 +4,95 @@ const nonEmptyText = z.string().trim().min(1).max(2_000);
 const optionalText = z.string().trim().max(2_000).nullable();
 const confidenceSchema = z.enum(["low", "medium", "high"]);
 
+export const careerStartingPointSnapshotSchema = z.object({
+  personality: z
+    .object({
+      resultType: z.string().trim().min(1).max(10),
+      scores: z.record(z.string(), z.number()),
+      completedAt: z.iso.datetime({ offset: true }),
+    })
+    .nullable(),
+  education: z
+    .array(
+      z.object({
+        id: z.uuid(),
+        level: z.enum(["HIGH_SCHOOL", "UNDERGRADUATE", "GRADUATE"]),
+        institutionName: nonEmptyText,
+        fieldOfStudy: optionalText,
+        startMonth: z.number().int().min(1).max(12),
+        startYear: z.number().int().min(1900),
+        endMonth: z.number().int().min(1).max(12),
+        endYear: z.number().int().min(1900),
+        scoreScale: z.union([z.literal(4), z.literal(10)]),
+        researchTitle: optionalText,
+        researchDescription: optionalText,
+        transcriptEntries: z
+          .array(
+            z.object({
+              stage: z.enum(["GRADE_10", "GRADE_11", "GRADE_12", "CUMULATIVE"]),
+              subjectName: nonEmptyText,
+              credits: z.number().positive().nullable(),
+              score: z.number().nonnegative(),
+            }),
+          )
+          .max(500),
+      }),
+    )
+    .max(20),
+  certificates: z
+    .array(
+      z.object({
+        name: nonEmptyText,
+        issuedYear: z.number().int().min(1900),
+        startMonth: z.number().int().min(1).max(12),
+        startYear: z.number().int().min(1900),
+        endMonth: z.number().int().min(1).max(12),
+        endYear: z.number().int().min(1900),
+        hasAttachment: z.boolean(),
+      }),
+    )
+    .max(100),
+  competitions: z
+    .array(
+      z.object({
+        name: nonEmptyText,
+        awardName: optionalText,
+        year: z.number().int().min(1900),
+        startMonth: z.number().int().min(1).max(12),
+        startYear: z.number().int().min(1900),
+        endMonth: z.number().int().min(1).max(12),
+        endYear: z.number().int().min(1900),
+      }),
+    )
+    .max(100),
+  activities: z
+    .array(
+      z.object({
+        name: nonEmptyText,
+        startMonth: z.number().int().min(1).max(12),
+        startYear: z.number().int().min(1900),
+        endMonth: z.number().int().min(1).max(12),
+        endYear: z.number().int().min(1900),
+      }),
+    )
+    .max(100),
+  workExperiences: z
+    .array(
+      z.object({
+        workplaceName: nonEmptyText,
+        position: optionalText,
+        startMonth: z.number().int().min(1).max(12),
+        startYear: z.number().int().min(1900),
+        endMonth: z.number().int().min(1).max(12).nullable(),
+        endYear: z.number().int().min(1900).nullable(),
+        isCurrent: z.boolean(),
+        learnings: optionalText,
+        skills: optionalText,
+      }),
+    )
+    .max(100),
+});
+
 const academicRecordSchema = z.object({
   subject: nonEmptyText,
   score: z.number().min(0).max(10).nullable(),
@@ -118,12 +207,13 @@ export const studentProfileSchema = z.object({
   current_region: z.string().trim().min(1).max(200),
   target_regions: z.array(nonEmptyText).max(20),
   languages: z.array(nonEmptyText).max(20),
-  academic_records: z.array(academicRecordSchema).max(100),
+  academic_records: z.array(academicRecordSchema).max(500),
   self_reported_activities: z.array(activitySchema).max(100),
   personal_interests: z.array(interestSchema).max(100),
   preferences: preferencesSchema,
   simulated_experiences: z.array(simulatedExperienceSchema).max(100),
   conversation_memory: conversationMemorySchema,
+  starting_point: careerStartingPointSnapshotSchema.nullable().default(null),
 });
 
 const requiredSkillSchema = z.object({
@@ -366,3 +456,6 @@ export type CareerGuidanceRequest = z.infer<typeof careerGuidanceRequestSchema>;
 export type CareerGuidanceInput = z.infer<typeof careerGuidanceInputSchema>;
 export type CareerRecommendation = z.infer<typeof careerRecommendationSchema>;
 export type CareerGuidanceOutput = z.infer<typeof careerGuidanceOutputSchema>;
+export type CareerStartingPointSnapshot = z.infer<
+  typeof careerStartingPointSnapshotSchema
+>;
