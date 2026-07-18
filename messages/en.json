@@ -31,6 +31,7 @@
     "system": "System",
     "light": "Light",
     "dark": "Dark",
+    "menuLabel": "Theme",
     "currentSwitch": "Theme: {theme}. Switch to {nextTheme}."
   },
   "Landing": {

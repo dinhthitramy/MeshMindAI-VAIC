@@ -8,6 +8,7 @@ import { recordAuditEvent } from "@/lib/auth/audit";
 import { requireViewer } from "@/lib/auth/dal";
 import { profileSchema } from "@/lib/auth/validation";
 import { getDb } from "@/lib/db";
+import { isUniqueEmailError } from "@/lib/db/errors";
 import { users } from "@/lib/db/schema";
 
 export type ProfileActionState = {
@@ -15,14 +16,6 @@ export type ProfileActionState = {
   message?: string;
   fieldErrors?: Record<string, string[]>;
 };
-
-function isUniqueEmailError(error: unknown) {
-  if (typeof error !== "object" || error === null) {
-    return false;
-  }
-  const code = (error as any).code || (error as any).cause?.code;
-  return code === "23505";
-}
 
 async function auditBestEffort(
   event: Parameters<typeof recordAuditEvent>[0],

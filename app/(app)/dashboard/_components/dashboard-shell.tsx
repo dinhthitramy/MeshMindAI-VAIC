@@ -31,7 +31,7 @@ import {
 import { BrandLink } from "@/components/brand";
 import { SkipLink } from "@/components/skip-link";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { ThemeSelector } from "@/components/theme-selector";
+import { ThemeMenuItem } from "@/components/theme-selector";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -258,10 +258,6 @@ function SidebarPanel({
                 : "w-full text-sidebar-foreground hover:bg-sidebar-accent"
             }
           />
-          <ThemeSelector
-            className="text-sidebar-foreground hover:bg-sidebar-accent"
-          />
-
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
@@ -333,6 +329,7 @@ function SidebarPanel({
                     {t("profile")}
                   </DropdownMenuItem>
                 )}
+                <ThemeMenuItem />
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <form action={logoutAction}>
@@ -460,7 +457,6 @@ function DashboardShell({ children, viewer }: DashboardShellProps) {
           <BrandLink credit={false} className="ml-2" />
           <div className="ml-auto flex items-center gap-1">
             <LanguageSwitcher compact />
-            <ThemeSelector />
           </div>
         </header>
         <main

@@ -42,3 +42,6 @@ next-env.d.ts
 
 # claude directory
 .claude
+
+# mcp output folder
+.*-mcp/
