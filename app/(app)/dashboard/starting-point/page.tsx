@@ -6,6 +6,7 @@ import { BrainCircuit, Eye, RotateCcw, Sparkles } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { ProfileRecords } from "@/app/(app)/dashboard/profile/_components/profile-records";
+import { CvImportDialog } from "@/app/(app)/dashboard/starting-point/_components/cv-import-card";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -190,13 +191,16 @@ export default async function StartingPointPage() {
 
   return (
     <section className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-      <header className="mb-8 max-w-2xl">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          {t("title")}
-        </h1>
-        <p className="mt-3 text-base leading-7 text-muted-foreground">
-          {t("description")}
-        </p>
+      <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="max-w-2xl">
+          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+            {t("title")}
+          </h1>
+          <p className="mt-3 text-base leading-7 text-muted-foreground">
+            {t("description")}
+          </p>
+        </div>
+        <CvImportDialog />
       </header>
 
       <Card>

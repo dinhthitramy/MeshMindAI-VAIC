@@ -4,6 +4,7 @@ import { getViewer } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db";
 import { chatMessages, chatSessions } from "@/lib/db/schema";
 import { getLangfuse } from "@/lib/ai/langfuse";
+import { DEFAULT_MODEL, resolveAIModel } from "@/lib/ai";
 
 export const runtime = "nodejs";
 
@@ -95,15 +96,28 @@ export async function POST(request: Request) {
     { role: "user", content: message.trim() },
   ];
 
-  // Call FPT Cloud with streaming
-  const fptRes = await fetch("https://mkp-api.fptcloud.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({ model, messages, stream: true }),
-  });
+  const requestFptStream = (activeModel: string) =>
+    fetch("https://mkp-api.fptcloud.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({ model: activeModel, messages, stream: true }),
+    });
+
+  let activeModel = resolveAIModel(model);
+  let fptRes = await requestFptStream(activeModel);
+
+  if ((!fptRes.ok || !fptRes.body) && activeModel !== DEFAULT_MODEL) {
+    console.warn("[chat/stream] selected model failed; retrying with default", {
+      selectedModel: activeModel,
+      fallbackModel: DEFAULT_MODEL,
+      status: fptRes.status,
+    });
+    activeModel = DEFAULT_MODEL;
+    fptRes = await requestFptStream(activeModel);
+  }
 
   if (!fptRes.ok || !fptRes.body) {
     const errText = await fptRes.text().catch(() => "unknown");
@@ -111,12 +125,21 @@ export async function POST(request: Request) {
     return new Response("AI service error", { status: 502 });
   }
 
+  await db
+    .update(chatSessions)
+    .set({ model: activeModel, updatedAt: new Date() })
+    .where(eq(chatSessions.id, sessionId));
+
   // Pipe FPT SSE through while capturing the full response text for DB save
   let fullText = "";
   const decoder = new TextDecoder();
   const langfuse = getLangfuse();
   const trace = langfuse?.trace({ name: "chat-stream", userId, input: { messages } });
-  const generation = trace?.generation({ name: "fpt-stream", model, input: messages });
+  const generation = trace?.generation({
+    name: "fpt-stream",
+    model: activeModel,
+    input: messages,
+  });
 
   const { readable, writable } = new TransformStream<Uint8Array, Uint8Array>({
     transform(chunk, controller) {
@@ -144,7 +167,7 @@ export async function POST(request: Request) {
           sessionId,
           role: "assistant",
           content: fullText,
-          model,
+          model: activeModel,
         });
         generation?.end({ output: fullText });
         trace?.update({ output: fullText });
@@ -160,6 +183,7 @@ export async function POST(request: Request) {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
       "X-Accel-Buffering": "no",
+      "X-AI-Model": activeModel,
     },
   });
 }

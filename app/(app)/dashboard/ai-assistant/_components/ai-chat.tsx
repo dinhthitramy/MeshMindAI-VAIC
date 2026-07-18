@@ -550,6 +550,9 @@ export function AIChat({
         throw new Error(`Stream error: ${res.status}`);
       }
 
+      const responseModel = res.headers.get("X-AI-Model") ?? selectedModel;
+      if (responseModel !== selectedModel) setSelectedModel(responseModel);
+
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let accumulated = "";
@@ -572,7 +575,7 @@ export function AIChat({
                 setMessages((prev) =>
                   prev.map((m) =>
                     m.id === assistantMsgId
-                      ? { ...m, content: accumulated, model: selectedModel }
+                      ? { ...m, content: accumulated, model: responseModel }
                       : m,
                   ),
                 );

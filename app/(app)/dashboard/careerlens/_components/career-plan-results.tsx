@@ -283,7 +283,7 @@ export function CareerPlanResults({
                 <Accordion className="mt-5 gap-0 overflow-visible rounded-none border-0">
                   {recommendation.roadmap.map((stage, stageIndex) => (
                     <AccordionItem
-                      key={`${stage.stage_order}-${stage.stage_name}`}
+                      key={`${stage.stage_order}-${stage.stage_type}`}
                       value={String(stage.stage_order)}
                       className="relative border-0 bg-transparent pb-6 pl-14 not-last:border-b-0 last:pb-0 data-open:bg-transparent"
                     >
@@ -304,7 +304,7 @@ export function CareerPlanResults({
                           <span className="flex min-w-0 flex-1 flex-col gap-2">
                             <span className="flex flex-wrap items-center gap-2">
                               <span className="text-base font-semibold">
-                                {cleanText(stage.stage_name)}
+                                {t(`stages.${stage.stage_type}`)}
                               </span>
                               <Badge variant="secondary">
                                 {cleanText(stage.time_limit)}

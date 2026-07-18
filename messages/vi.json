@@ -691,6 +691,11 @@
       "roadmapTitle": "Roadmap thực hành",
       "roadmapDiagramDescription": "Bấm vào từng chặng trên sơ đồ để xem mục tiêu, công việc và bằng chứng cần hoàn thành.",
       "roadmapClickHint": "Bấm để xem chi tiết chặng này",
+      "stages": {
+        "learning": "Học tập",
+        "internship": "Thực tập",
+        "full_time": "Công việc chính thức"
+      },
       "relatedJobsTitle": "Việc làm liên quan",
       "followUpTitle": "Câu hỏi cho lần tư vấn tiếp theo",
       "followUpDescription": "Trả lời thêm các câu này để thu hẹp skill gap và chi phí.",
@@ -769,7 +774,46 @@
   "StartingPoint": {
     "metadataTitle": "Điểm Xuất Phát",
     "title": "Điểm Xuất Phát",
-    "description": "Tập hợp kết quả tính cách, học vấn, kinh nghiệm và những dấu mốc giúp bạn hiểu rõ nền tảng hiện tại của mình."
+    "description": "Tập hợp kết quả tính cách, học vấn, kinh nghiệm và những dấu mốc giúp bạn hiểu rõ nền tảng hiện tại của mình.",
+    "cvImport": {
+      "title": "Nhập dữ liệu từ CV",
+      "description": "Tải CV lên để hệ thống nhận diện học vấn, chứng chỉ, thành tích, hoạt động và kinh nghiệm làm việc. Chỉ những thông tin chưa có mới được bổ sung vào hồ sơ.",
+      "badge": "AI hỗ trợ",
+      "fileLabel": "CV của bạn",
+      "fileHint": "Chấp nhận PDF tối đa 6 MB và 15 trang. File cần có lớp văn bản có thể chọn được.",
+      "selectedFile": "Đã chọn: {name}",
+      "privacy": "CV chỉ được xử lý trong lần nhập này và không được lưu dưới dạng tệp. Bạn có thể chỉnh sửa từng mục sau khi hoàn tất.",
+      "submit": "Phân tích và bổ sung hồ sơ",
+      "processing": "Đang đọc và chuẩn hoá CV...",
+      "successTitle": "Đã cập nhật Điểm Xuất Phát",
+      "errorTitle": "Chưa thể nhập CV",
+      "counts": {
+        "education": "{count} học vấn",
+        "transcriptEntries": "{count} môn học",
+        "certificates": "{count} chứng chỉ",
+        "competitions": "{count} cuộc thi",
+        "activities": "{count} hoạt động",
+        "workExperiences": "{count} kinh nghiệm",
+        "duplicates": "{count} mục trùng hoặc không tương thích được bỏ qua"
+      },
+      "actions": {
+        "saved": "Đã bổ sung {count} mục từ CV. Hãy kiểm tra lại thông tin bên dưới.",
+        "noNewData": "Không có thông tin mới để bổ sung. Những mục trùng với hồ sơ hiện tại đã được giữ nguyên.",
+        "checkFile": "Hãy chọn lại một file CV phù hợp.",
+        "analysisFailed": "Hệ thống chưa thể nhận diện dữ liệu trong CV này. Vui lòng kiểm tra nội dung file và thử lại.",
+        "failed": "Không thể lưu dữ liệu từ CV lúc này. Vui lòng thử lại.",
+        "unavailable": "Tài khoản này không có hồ sơ Điểm Xuất Phát để cập nhật."
+      },
+      "validation": {
+        "required": "Hãy chọn file CV PDF.",
+        "tooLarge": "File CV phải có dung lượng không quá 6 MB.",
+        "invalidType": "Chỉ chấp nhận file PDF có phần mở rộng .pdf.",
+        "invalidContent": "Nội dung file không đúng định dạng PDF.",
+        "tooManyPages": "CV chỉ được dài tối đa 15 trang.",
+        "noText": "Không tìm thấy đủ văn bản trong PDF. Nếu đây là bản scan, hãy xuất lại CV dưới dạng PDF có thể chọn chữ.",
+        "readFailed": "Không thể đọc file PDF này. File có thể bị hỏng hoặc được bảo vệ bằng mật khẩu."
+      }
+    }
   },
   "Profile": {
     "metadataTitle": "Thông tin cá nhân",
