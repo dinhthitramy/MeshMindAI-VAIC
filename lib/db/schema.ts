@@ -3,7 +3,9 @@ import {
   type AnyPgColumn,
   boolean,
   check,
+  customType,
   date,
+  doublePrecision,
   index,
   integer,
   jsonb,
@@ -22,6 +24,23 @@ export const auditActorKind = pgEnum("audit_actor_kind", [
   "BUILTIN_SUPERADMIN",
   "SYSTEM",
 ]);
+export const educationLevel = pgEnum("education_level", [
+  "HIGH_SCHOOL",
+  "UNDERGRADUATE",
+  "GRADUATE",
+]);
+export const transcriptStage = pgEnum("transcript_stage", [
+  "GRADE_10",
+  "GRADE_11",
+  "GRADE_12",
+  "CUMULATIVE",
+]);
+
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({
+  dataType() {
+    return "bytea";
+  },
+});
 
 export const users = pgTable(
   "users",
@@ -214,6 +233,272 @@ export const chatMessages = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => [index("chat_messages_session_id_idx").on(table.sessionId)],
+);
+
+export type PersonalityScores = Record<
+  "E" | "I" | "S" | "N" | "T" | "F" | "J" | "P",
+  number
+>;
+
+export const personalityTestResults = pgTable(
+  "personality_test_results",
+  {
+    userId: uuid("user_id")
+      .primaryKey()
+      .references(() => users.id, { onDelete: "cascade" }),
+    resultType: text("result_type").notNull(),
+    answers: jsonb("answers").$type<Array<"a" | "b">>().notNull(),
+    scores: jsonb("scores").$type<PersonalityScores>().notNull(),
+    testVersion: integer("test_version").default(1).notNull(),
+    completedAt: timestamp("completed_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    check(
+      "personality_test_results_type_valid",
+      sql`${table.resultType} in ('INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP', 'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP')`,
+    ),
+    check(
+      "personality_test_results_version_positive",
+      sql`${table.testVersion} > 0`,
+    ),
+    index("personality_test_results_completed_at_idx").on(table.completedAt),
+  ],
+);
+
+export const educationRecords = pgTable(
+  "education_records",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    level: educationLevel("level").notNull(),
+    institutionName: text("institution_name").notNull(),
+    fieldOfStudy: text("field_of_study"),
+    startMonth: integer("start_month").notNull(),
+    startYear: integer("start_year").notNull(),
+    endMonth: integer("end_month").notNull(),
+    endYear: integer("end_year").notNull(),
+    scoreScale: integer("score_scale").default(10).notNull(),
+    researchTitle: text("research_title"),
+    researchDescription: text("research_description"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    check("education_records_start_month_valid", sql`${table.startMonth} between 1 and 12`),
+    check("education_records_end_month_valid", sql`${table.endMonth} between 1 and 12`),
+    check("education_records_start_year_valid", sql`${table.startYear} >= 1900`),
+    check("education_records_end_year_valid", sql`${table.endYear} >= 1900`),
+    check("education_records_date_order_valid", sql`(${table.endYear}, ${table.endMonth}) >= (${table.startYear}, ${table.startMonth})`),
+    check("education_records_score_scale_valid", sql`${table.scoreScale} in (4, 10)`),
+    check("education_records_high_school_research_empty", sql`${table.level} <> 'HIGH_SCHOOL' or (${table.researchTitle} is null and ${table.researchDescription} is null)`),
+    index("education_records_user_id_idx").on(table.userId),
+    index("education_records_user_level_idx").on(table.userId, table.level),
+  ],
+);
+
+export const transcriptEntries = pgTable(
+  "transcript_entries",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    educationRecordId: uuid("education_record_id")
+      .notNull()
+      .references(() => educationRecords.id, { onDelete: "cascade" }),
+    stage: transcriptStage("stage").notNull(),
+    subjectName: text("subject_name").notNull(),
+    credits: doublePrecision("credits"),
+    score: doublePrecision("score").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    check("transcript_entries_score_nonnegative", sql`${table.score} >= 0`),
+    check("transcript_entries_credits_positive", sql`${table.credits} is null or ${table.credits} > 0`),
+    uniqueIndex("transcript_entries_subject_stage_unique").on(
+      table.educationRecordId,
+      table.stage,
+      lower(table.subjectName),
+    ),
+    index("transcript_entries_education_record_id_idx").on(table.educationRecordId),
+  ],
+);
+
+export const certificates = pgTable(
+  "certificates",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    issuedYear: integer("issued_year").notNull(),
+    startMonth: integer("start_month").notNull(),
+    startYear: integer("start_year").notNull(),
+    endMonth: integer("end_month").notNull(),
+    endYear: integer("end_year").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    check("certificates_issued_year_valid", sql`${table.issuedYear} >= 1900`),
+    check("certificates_start_month_valid", sql`${table.startMonth} between 1 and 12`),
+    check("certificates_end_month_valid", sql`${table.endMonth} between 1 and 12`),
+    check("certificates_start_year_valid", sql`${table.startYear} >= 1900`),
+    check("certificates_end_year_valid", sql`${table.endYear} >= 1900`),
+    check("certificates_date_order_valid", sql`(${table.endYear}, ${table.endMonth}) >= (${table.startYear}, ${table.startMonth})`),
+    index("certificates_user_id_idx").on(table.userId),
+  ],
+);
+
+export const certificateAttachments = pgTable("certificate_attachments", {
+  certificateId: uuid("certificate_id")
+    .primaryKey()
+    .references(() => certificates.id, { onDelete: "cascade" }),
+  fileName: text("file_name").notNull(),
+  mimeType: text("mime_type").notNull(),
+  byteSize: integer("byte_size").notNull(),
+  data: bytea("data").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+}, (table) => [
+  check("certificate_attachments_byte_size_positive", sql`${table.byteSize} > 0`),
+  check(
+    "certificate_attachments_byte_size_max",
+    sql`${table.byteSize} <= 5242880`,
+  ),
+  check(
+    "certificate_attachments_mime_type_valid",
+    sql`${table.mimeType} in ('application/pdf', 'image/jpeg', 'image/png', 'image/webp')`,
+  ),
+]);
+
+export const competitions = pgTable(
+  "competitions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    awardName: text("award_name"),
+    year: integer("year").notNull(),
+    startMonth: integer("start_month").notNull(),
+    startYear: integer("start_year").notNull(),
+    endMonth: integer("end_month").notNull(),
+    endYear: integer("end_year").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    check("competitions_year_valid", sql`${table.year} >= 1900`),
+    check("competitions_start_month_valid", sql`${table.startMonth} between 1 and 12`),
+    check("competitions_end_month_valid", sql`${table.endMonth} between 1 and 12`),
+    check("competitions_start_year_valid", sql`${table.startYear} >= 1900`),
+    check("competitions_end_year_valid", sql`${table.endYear} >= 1900`),
+    check("competitions_date_order_valid", sql`(${table.endYear}, ${table.endMonth}) >= (${table.startYear}, ${table.startMonth})`),
+    index("competitions_user_id_idx").on(table.userId),
+  ],
+);
+
+export const profileActivities = pgTable(
+  "profile_activities",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    startMonth: integer("start_month").notNull(),
+    startYear: integer("start_year").notNull(),
+    endMonth: integer("end_month").notNull(),
+    endYear: integer("end_year").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    check("profile_activities_start_month_valid", sql`${table.startMonth} between 1 and 12`),
+    check("profile_activities_end_month_valid", sql`${table.endMonth} between 1 and 12`),
+    check("profile_activities_start_year_valid", sql`${table.startYear} >= 1900`),
+    check("profile_activities_end_year_valid", sql`${table.endYear} >= 1900`),
+    check("profile_activities_date_order_valid", sql`(${table.endYear}, ${table.endMonth}) >= (${table.startYear}, ${table.startMonth})`),
+    index("profile_activities_user_id_idx").on(table.userId),
+  ],
+);
+
+export const workExperiences = pgTable(
+  "work_experiences",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    workplaceName: text("workplace_name").notNull(),
+    position: text("position"),
+    startMonth: integer("start_month").notNull(),
+    startYear: integer("start_year").notNull(),
+    endMonth: integer("end_month"),
+    endYear: integer("end_year"),
+    isCurrent: boolean("is_current").default(false).notNull(),
+    learnings: text("learnings"),
+    skills: text("skills"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    check(
+      "work_experiences_start_month_valid",
+      sql`${table.startMonth} between 1 and 12`,
+    ),
+    check(
+      "work_experiences_end_month_valid",
+      sql`${table.endMonth} is null or ${table.endMonth} between 1 and 12`,
+    ),
+    check("work_experiences_start_year_valid", sql`${table.startYear} >= 1900`),
+    check(
+      "work_experiences_end_year_valid",
+      sql`${table.endYear} is null or ${table.endYear} >= 1900`,
+    ),
+    check(
+      "work_experiences_end_date_consistent",
+      sql`(${table.isCurrent} and ${table.endMonth} is null and ${table.endYear} is null) or (not ${table.isCurrent} and ${table.endMonth} is not null and ${table.endYear} is not null)`,
+    ),
+    check(
+      "work_experiences_date_order_valid",
+      sql`${table.isCurrent} or (${table.endYear}, ${table.endMonth}) >= (${table.startYear}, ${table.startMonth})`,
+    ),
+    index("work_experiences_user_id_idx").on(table.userId),
+  ],
 );
 
 export type ChatSession = typeof chatSessions.$inferSelect;

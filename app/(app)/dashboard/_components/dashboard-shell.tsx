@@ -19,6 +19,7 @@ import { useTranslations } from "next-intl";
 import {
   House,
   Menu as MenuIcon,
+  MapPinned,
   PanelLeftClose,
   PanelLeftOpen,
   Route,
@@ -169,6 +170,16 @@ function SidebarPanel({
   const t = useTranslations("Dashboard");
   const navigationItems: NavigationItem[] = [
     { href: "/dashboard", label: t("home"), icon: House, exact: true },
+    ...(viewer.canEditProfile
+      ? [
+          {
+            href: "/dashboard/starting-point",
+            label: t("startingPoint"),
+            icon: MapPinned,
+            exact: false,
+          },
+        ]
+      : []),
     { href: "/dashboard/careerlens", label: t("careerRoadmap"), icon: Route, exact: false },
     ...(viewer.isAdmin
       ? [{ href: "/dashboard/admin", label: "Admin", icon: ShieldCheck, exact: false }]

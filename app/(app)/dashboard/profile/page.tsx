@@ -36,10 +36,7 @@ export default async function ProfilePage() {
     requireViewer(),
     getTranslations("Profile"),
   ]);
-
-  if (viewer.actor.kind !== "user") {
-    redirect("/dashboard");
-  }
+  if (viewer.actor.kind !== "user") redirect("/dashboard");
 
   const [profile] = await getDb()
     .select({
@@ -50,15 +47,11 @@ export default async function ProfilePage() {
     .from(users)
     .where(eq(users.id, viewer.actor.userId))
     .limit(1);
-
-  if (!profile) {
-    redirect("/login");
-  }
+  if (!profile) redirect("/login");
 
   const [birthYear, birthMonth, birthDay] = profile.birthDate
     .split("-")
     .map(Number);
-  const currentYear = new Date().getUTCFullYear();
 
   return (
     <section className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
@@ -88,7 +81,7 @@ export default async function ProfilePage() {
         </Card>
 
         <ProfileForm
-          currentYear={currentYear}
+          currentYear={new Date().getUTCFullYear()}
           profile={{
             birthDay,
             birthMonth,

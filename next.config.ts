@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
     ],
   },
   output: "standalone",
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "8mb",
+    },
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();
