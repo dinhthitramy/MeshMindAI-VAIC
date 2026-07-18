@@ -31,6 +31,7 @@
     "system": "Hệ thống",
     "light": "Sáng",
     "dark": "Tối",
+    "menuLabel": "Giao diện",
     "currentSwitch": "Giao diện: {theme}. Chuyển sang chế độ {nextTheme}."
   },
   "Landing": {
@@ -144,6 +145,7 @@
       "invalidCredentials": "Email hoặc mật khẩu không đúng.",
       "signupRateLimit": "Bạn đã đăng ký quá nhiều lần. Vui lòng thử lại sau.",
       "accountCreationFailed": "Không thể tạo tài khoản với thông tin này.",
+      "emailInUse": "Email này đã được sử dụng. Hãy đăng nhập hoặc dùng một email khác.",
       "accountCreatedLoginUnavailable": "Tài khoản đã được tạo nhưng chưa thể tự động đăng nhập. Vui lòng thử đăng nhập lại sau ít phút.",
       "loginRateLimit": "Bạn đã đăng nhập quá nhiều lần. Vui lòng thử lại sau.",
       "tooManyAttemptsRestart": "Bạn đã thử quá nhiều lần. Vui lòng bắt đầu lại quy trình đăng nhập sau.",

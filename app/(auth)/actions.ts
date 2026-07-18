@@ -8,6 +8,7 @@ import { and, eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 
 import { getDb } from "@/lib/db";
+import { isUniqueEmailError } from "@/lib/db/errors";
 import { roles, userRoles, users } from "@/lib/db/schema";
 import { RedisUnavailableError } from "@/lib/redis";
 import { recordAuditEvent } from "@/lib/auth/audit";
@@ -155,14 +156,6 @@ async function auditBestEffort(
   }
 }
 
-function isUniqueEmailError(error: unknown) {
-  if (typeof error !== "object" || error === null) {
-    return false;
-  }
-  const code = (error as any).code || (error as any).cause?.code;
-  return code === "23505";
-}
-
 export async function signupAction(
   _previousState: AuthActionState,
   formData: FormData,
@@ -245,7 +238,8 @@ export async function signupAction(
     if (isUniqueEmailError(error)) {
       return {
         status: "error",
-        message: t("accountCreationFailed"),
+        message: t("checkFields"),
+        fieldErrors: { email: [t("emailInUse")] },
       };
     }
 

@@ -53,12 +53,12 @@
     "vitest": "^4.1.10"
   },
   "allowScripts": {
-    "esbuild@0.18.20": true,
-    "esbuild@0.25.12": true,
-    "esbuild@0.28.1": true,
     "fsevents@2.3.3": true,
-    "argon2@0.44.0": true,
-    "sharp@0.34.5": true,
-    "unrs-resolver@1.12.2": true
+    "esbuild": true,
+    "@parcel/watcher": true,
+    "argon2": true,
+    "@swc/core": true,
+    "sharp": true,
+    "unrs-resolver": true
   }
 }
