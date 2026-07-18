@@ -812,7 +812,7 @@ function FutureFooter({ entries }: { entries: JourneyEntryView[] }) {
   });
 
   return (
-    <div className="pointer-events-none fixed right-3 bottom-3 left-3 z-30 md:right-5 md:bottom-5 md:left-[19rem]">
+    <div className="pointer-events-none fixed right-3 bottom-3 left-3 z-30 transition-[left] duration-200 ease-out motion-reduce:transition-none md:right-5 md:bottom-5 md:left-[calc(var(--dashboard-sidebar-width)_+_1rem)]">
       <motion.footer
         layout={!shouldReduceMotion}
         initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}

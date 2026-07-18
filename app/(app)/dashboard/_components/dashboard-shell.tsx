@@ -4,6 +4,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type CSSProperties,
   type ReactNode,
   type RefObject,
 } from "react";
@@ -466,6 +467,11 @@ function DashboardShell({ children, viewer }: DashboardShellProps) {
       </div>
 
       <div
+        style={
+          {
+            "--dashboard-sidebar-width": collapsed ? "5rem" : "18rem",
+          } as CSSProperties
+        }
         className={cn(
           "min-h-dvh transition-[padding] duration-200 ease-out motion-reduce:transition-none",
           collapsed ? "md:pl-20" : "md:pl-72",
