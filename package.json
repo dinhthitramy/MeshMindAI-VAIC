@@ -13,6 +13,7 @@
     "auth:provision-superadmin": "node scripts/provision-superadmin.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:reset": "node scripts/reset-dev-db.mjs",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
