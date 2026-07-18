@@ -35,12 +35,250 @@
     "currentSwitch": "Giao diện: {theme}. Chuyển sang chế độ {nextTheme}."
   },
   "Landing": {
+    "meta": {
+      "title": "AI định hướng nghề nghiệp cho học sinh, sinh viên",
+      "description": "CareerLens kết nối năng lực, mong muốn và tín hiệu thị trường để tạo lộ trình nghề nghiệp có thể hành động."
+    },
     "primaryNavigation": "Điều hướng chính",
-    "category1": "Danh mục 01",
-    "category2": "Danh mục 02",
-    "category3": "Danh mục 03",
-    "categories": "Danh mục",
-    "account": "Tài khoản"
+    "navigation": {
+      "features": "Tính năng",
+      "journey": "Hành trình",
+      "market": "Dữ liệu thị trường",
+      "menu": "Khám phá"
+    },
+    "account": "Tài khoản",
+    "hero": {
+      "badge": "Tầm nhìn CareerLens",
+      "titleLine1": "Hiểu mình hôm nay.",
+      "titleLine2": "Vững hướng đi ngày mai.",
+      "description": "Kết nối năng lực, mong muốn và tín hiệu nghề nghiệp thành một lộ trình có thể hành động.",
+      "primary": "Bắt đầu khám phá",
+      "primaryAuthenticated": "Mở lộ trình của tôi",
+      "secondary": "Xem cách hoạt động",
+      "imageAlt": "Nhóm sinh viên cùng trao đổi trong khuôn viên trường",
+      "preview": {
+        "title": "Career agent",
+        "status": "Đang đối chiếu nguồn mới",
+        "badge": "Minh họa",
+        "searching": "Tìm tín hiệu kỹ năng và nghề nghiệp phù hợp với hồ sơ của bạn",
+        "sourcesLabel": "Nguồn đang được đối chiếu",
+        "result": "Ba hướng đi để so sánh và kiểm chứng"
+      }
+    },
+    "intelligence": {
+      "title": "Một hồ sơ. Ba lớp thấu hiểu.",
+      "description": "CareerLens không khóa bạn vào một bài test. Hệ thống kết nối dữ liệu cá nhân, tiến trình thật và bối cảnh nghề nghiệp đang thay đổi.",
+      "profile": {
+        "title": "Hiểu bản thân",
+        "description": "Tổng hợp năng lực, sở thích, phong cách học và điều kiện thực tế thay vì chỉ dựa trên một nhãn tính cách."
+      },
+      "growth": {
+        "title": "Nhìn thấy tiến bộ",
+        "description": "Giữ lại cột mốc, dự án và lựa chọn qua nhiều năm để mỗi lần tư vấn bắt đầu từ hành trình thật của bạn."
+      },
+      "market": {
+        "title": "Đọc chuyển động thị trường",
+        "description": "Đối chiếu hồ sơ với nghề, kỹ năng, tin tuyển dụng và các tín hiệu toàn cầu có nguồn dẫn rõ ràng."
+      }
+    },
+    "assessment": {
+      "title": "Đánh giá để hiểu, không phải để phán xét.",
+      "description": "Các bài trắc nghiệm khách quan giúp nhận diện năng lực học thuật, động lực và kỹ năng xã hội cần được quan sát thêm.",
+      "signals": {
+        "aptitude": "Tư duy và năng lực nền tảng",
+        "social": "Giao tiếp và hợp tác",
+        "motivation": "Động lực và cách học"
+      },
+      "states": {
+        "observe": "Quan sát",
+        "practice": "Thực hành",
+        "develop": "Phát triển"
+      },
+      "preview": {
+        "badge": "Tình huống khách quan",
+        "question": "Khi một dự án nhóm chậm tiến độ, bạn thường bắt đầu từ đâu?",
+        "options": {
+          "one": "Tự hoàn thành phần còn thiếu",
+          "two": "Làm rõ vấn đề và phân lại vai trò",
+          "three": "Chờ trưởng nhóm đưa ra quyết định"
+        },
+        "reading": "Tín hiệu đang đọc",
+        "note": "Kết quả là điểm khởi đầu cho đối thoại và trải nghiệm thực tế, không phải kết luận cố định."
+      }
+    },
+    "journey": {
+      "badge": "Hồ sơ phát triển dài hạn",
+      "title": "Đi cùng bạn qua từng lần đổi hướng.",
+      "description": "Mỗi cột mốc bổ sung bằng chứng mới để AI điều chỉnh gợi ý, thay vì buộc bạn giữ nguyên lựa chọn ban đầu.",
+      "steps": {
+        "explore": {
+          "stage": "THPT",
+          "title": "Khám phá",
+          "description": "Nhận diện điểm mạnh, thử các môi trường và thu hẹp nhóm ngành đáng tìm hiểu."
+        },
+        "learn": {
+          "stage": "Đại học / học nghề",
+          "title": "Xây nền",
+          "description": "Chọn môn học, dự án và kỹ năng tạo bằng chứng cho hướng đi đang cân nhắc."
+        },
+        "experience": {
+          "stage": "Thực tập",
+          "title": "Kiểm chứng",
+          "description": "Đối chiếu kỳ vọng với công việc thật, phản hồi thật và yêu cầu tuyển dụng thật."
+        },
+        "grow": {
+          "stage": "Công việc đầu tiên",
+          "title": "Phát triển",
+          "description": "Cập nhật mục tiêu, skill gap và bước tiến tiếp theo từ kết quả bạn đã tạo ra."
+        }
+      }
+    },
+    "roadmap": {
+      "title": "Biết kỹ năng nào cần đi trước.",
+      "description": "AI chuyển khoảng cách năng lực thành thứ tự ưu tiên rõ ràng, có cột mốc và bằng chứng để tự kiểm chứng.",
+      "skills": {
+        "foundation": "Kỹ năng nền tảng cho hướng đã chọn",
+        "project": "Thực hành qua dự án có đầu ra",
+        "social": "Giao tiếp và phối hợp trong môi trường thật"
+      },
+      "priority": {
+        "label": "Skill priority",
+        "title": "Thứ tự rèn luyện",
+        "now": "Bắt đầu ngay",
+        "next": "Bước tiếp theo",
+        "maintain": "Duy trì song song",
+        "note": "Ưu tiên thay đổi khi hồ sơ, mục tiêu hoặc thị trường thay đổi."
+      },
+      "paths": {
+        "title": "Ba hướng để thử",
+        "description": "So sánh mức phù hợp, chi phí học và bằng chứng cần tạo trước khi chọn."
+      },
+      "adaptive": {
+        "title": "Lộ trình biết thích nghi",
+        "description": "Mỗi lần check-in là một cơ hội cập nhật mục tiêu, không phải bắt đầu lại từ đầu.",
+        "checkIn": "Check-in",
+        "adjust": "Điều chỉnh"
+      }
+    },
+    "market": {
+      "badge": "Hybrid realtime + agent nền",
+      "title": "Đọc thị trường khi thế giới đang thay đổi.",
+      "description": "Agent tìm kiếm web theo thời gian thực, đối chiếu nguồn và kết hợp các đợt quét nền để phát hiện tín hiệu mới.",
+      "sources": {
+        "labor": "Chỉ số lao động",
+        "macro": "Bối cảnh vĩ mô",
+        "skills": "Nghề và kỹ năng",
+        "future": "Triển vọng tương lai"
+      },
+      "agent": {
+        "title": "Market intelligence agent",
+        "status": "Tìm kiếm, đọc và đối chiếu",
+        "live": "Realtime",
+        "query": "Kỹ năng nào đang xuất hiện nhiều hơn trong các vai trò đầu vào?",
+        "web": "Tin tức và báo cáo",
+        "jobs": "Tin tuyển dụng công khai",
+        "reports": "Nguồn thống kê"
+      },
+      "forecast": {
+        "label": "Kịch bản 3-5 năm",
+        "title": "Triển vọng, không phải lời tiên tri",
+        "description": "Mỗi nhận định đi cùng phạm vi, thời gian, nguồn và mức độ tin cậy.",
+        "states": {
+          "growing": {
+            "title": "Tín hiệu tăng",
+            "description": "Nhiều nguồn độc lập cùng chỉ về một hướng."
+          },
+          "stable": {
+            "title": "Tín hiệu ổn định",
+            "description": "Nhu cầu có nhưng chưa cho thấy thay đổi rõ rệt."
+          },
+          "uncertain": {
+            "title": "Chưa đủ dữ liệu",
+            "description": "AI nói rõ khi bằng chứng chưa đủ để kết luận."
+          }
+        },
+        "note": "CareerLens phân biệt dữ liệu quan sát, ước tính và dự báo; không tự tạo phần trăm độ chính xác."
+      }
+    },
+    "cv": {
+      "imageAlt": "Nhóm sinh viên cùng làm việc quanh một chiếc bàn",
+      "photoCard": {
+        "title": "Từ trải nghiệm thành bằng chứng",
+        "description": "Dự án, vai trò và kết quả cụ thể"
+      },
+      "title": "Biến điều đã làm thành một CV có sức nặng.",
+      "description": "AI giúp cấu trúc nội dung, phát hiện câu viết chung chung và đối chiếu CV với yêu cầu của cơ hội bạn đang nhắm tới.",
+      "review": {
+        "title": "CV review assistant",
+        "status": "Đang đọc theo ngữ cảnh vị trí",
+        "badge": "Tầm nhìn",
+        "items": {
+          "evidence": {
+            "title": "Bổ sung bằng chứng",
+            "description": "Nêu rõ phần bạn thực hiện, đầu ra và điều đã học được."
+          },
+          "clarity": {
+            "title": "Làm rõ tác động",
+            "description": "Thay mô tả chung bằng kết quả có thể kiểm chứng."
+          },
+          "match": {
+            "title": "Đối chiếu với cơ hội",
+            "description": "Ưu tiên trải nghiệm liên quan mà không nhồi từ khóa."
+          }
+        }
+      }
+    },
+    "trust": {
+      "title": "AI có trách nhiệm phải cho bạn biết vì sao.",
+      "description": "Mỗi gợi ý cần được truy ngược về dữ liệu, giới hạn và quyền quyết định của chính người học.",
+      "citations": {
+        "title": "Nguồn dẫn có thể mở",
+        "description": "Nhận định thị trường, nghề và kỹ năng luôn đi cùng URL, ngày xuất bản và thời điểm truy cập."
+      },
+      "privacy": {
+        "title": "Quyền riêng tư từ đầu",
+        "description": "Thông tin nhạy cảm không cần thiết được loại khỏi payload trước khi gửi tới model."
+      },
+      "explain": {
+        "title": "Gợi ý có giải thích",
+        "description": "Bạn thấy điểm mạnh, skill gap và bằng chứng nào đã dẫn đến từng hướng đi."
+      },
+      "autonomy": {
+        "title": "Người học giữ quyền quyết định",
+        "description": "CareerLens đề xuất để bạn thử và kiểm chứng, không lựa chọn tương lai thay bạn."
+      },
+      "scope": {
+        "title": "Phạm vi hiện tại",
+        "description": "AI chat và bản tạo ba lộ trình đang hoạt động ở mức POC. Assessment dài hạn, CV review và dữ liệu web realtime thuộc tầm nhìn sản phẩm đang được xây dựng.",
+        "badge": "Roadmap công khai"
+      }
+    },
+    "faq": {
+      "title": "Những điều nên biết trước khi bắt đầu.",
+      "description": "CareerLens được thiết kế như một công cụ hỗ trợ suy nghĩ và thử nghiệm, không phải máy chấm điểm tương lai.",
+      "items": {
+        "one": {
+          "question": "CareerLens có quyết định nghề nghiệp thay tôi không?",
+          "answer": "Không. Hệ thống đưa ra các hướng để so sánh, câu hỏi cần kiểm chứng và bước hành động tiếp theo; quyết định cuối cùng luôn thuộc về bạn."
+        },
+        "two": {
+          "question": "Thông tin thị trường có luôn là dữ liệu thời gian thực không?",
+          "answer": "Tầm nhìn sản phẩm kết hợp agent tìm kiếm realtime và quét nền định kỳ. Mỗi kết quả sẽ ghi rõ nguồn, ngày xuất bản và thời điểm truy cập để bạn đánh giá độ mới."
+        },
+        "three": {
+          "question": "Kết quả bài test có cố định hồ sơ của tôi không?",
+          "answer": "Không. Kết quả chỉ là một tín hiệu trong hồ sơ phát triển; trải nghiệm, dự án và phản hồi mới có thể thay đổi cách hệ thống hiểu bạn."
+        },
+        "four": {
+          "question": "Tôi có thể đổi hướng sau khi đã có lộ trình không?",
+          "answer": "Có. Lộ trình được thiết kế để cập nhật theo mục tiêu, điều kiện và bằng chứng mới thay vì buộc bạn bắt đầu lại từ đầu."
+        }
+      }
+    },
+    "finalCta": {
+      "title": "Tương lai không cần một câu trả lời vội.",
+      "description": "Bắt đầu bằng việc hiểu mình rõ hơn, thử một hướng nhỏ và để bằng chứng dẫn bạn tới bước tiếp theo."
+    }
   },
   "Auth": {
     "common": {
@@ -178,7 +416,7 @@
     "menuMetadataTitle": "Menu",
     "homeHeading": "Tổng quan",
     "menuHeading": "Menu",
-    "home": "Trang chính",
+    "home": "Trang chủ",
     "startingPoint": "Điểm Xuất Phát",
     "menu": "Menu",
     "navigation": "Điều hướng bảng điều khiển",
@@ -507,7 +745,6 @@
     "newConversation": "Tạo cuộc trò chuyện",
     "conversations": "Cuộc trò chuyện",
     "delete": "Xóa cuộc trò chuyện",
-    "confirmDelete": "Bấm lần nữa để xác nhận xóa",
     "model": "Model",
     "provider": "FPT Cloud AI",
     "placeholder": "Hỏi về học tập, lộ trình, ngành nghề...",

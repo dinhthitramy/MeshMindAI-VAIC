@@ -205,7 +205,6 @@ function ModelSelector({
 
   return (
     <div className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
-      <span className="shrink-0">{t("model")}</span>
       <Select
         items={modelItems}
         value={selected}
@@ -234,49 +233,44 @@ function ModelSelector({
 function SessionTab({
   session,
   disabled,
-  onDelete,
 }: {
   session: ChatSession;
   disabled: boolean;
+}) {
+  return (
+    <TabsTrigger
+      value={session.id}
+      data-session-id={session.id}
+      disabled={disabled}
+      className="h-7 min-w-32 max-w-52 flex-none px-3 text-xs"
+    >
+      <span className="truncate">{session.title}</span>
+    </TabsTrigger>
+  );
+}
+
+function DeleteConversationButton({
+  disabled,
+  onDelete,
+}: {
+  disabled: boolean;
   onDelete: () => void;
 }) {
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const t = useTranslations("Assistant");
 
-  function handleDelete(e: React.MouseEvent) {
-    e.stopPropagation();
-    if (confirmDelete) {
-      onDelete();
-    } else {
-      setConfirmDelete(true);
-      setTimeout(() => setConfirmDelete(false), 2500);
-    }
-  }
-
   return (
-    <div className="group/session-tab flex h-9 shrink-0 items-center">
-      <TabsTrigger
-        value={session.id}
-        disabled={disabled}
-        className="h-7 min-w-32 max-w-52 flex-none px-3 text-xs"
-      >
-        <span className="truncate">{session.title}</span>
-      </TabsTrigger>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon-xs"
-        onClick={handleDelete}
-        aria-label={confirmDelete ? t("confirmDelete") : t("delete")}
-        title={confirmDelete ? t("confirmDelete") : t("delete")}
-        className={cn(
-          "-ml-2 mr-1 shrink-0 text-muted-foreground/50 opacity-60 transition-opacity group-hover/session-tab:opacity-100 group-has-data-active/session-tab:opacity-100 focus-visible:opacity-100",
-          confirmDelete && "text-destructive opacity-100 hover:text-destructive",
-        )}
-      >
-        <Trash2 />
-      </Button>
-    </div>
+    <Button
+      type="button"
+      variant="destructive"
+      size="icon-sm"
+      onClick={onDelete}
+      disabled={disabled}
+      aria-label={t("delete")}
+      title={t("delete")}
+      className="shrink-0"
+    >
+      <Trash2 />
+    </Button>
   );
 }
 
@@ -406,6 +400,7 @@ export function AIChat({
   viewerName: string;
 }) {
   const t = useTranslations("Assistant");
+  const shouldReduceMotion = useReducedMotion();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [sessionsLoading, setSessionsLoading] = useState(true);
   const [sessionsError, setSessionsError] = useState(false);
@@ -416,6 +411,7 @@ export function AIChat({
   const [isStreaming, setIsStreaming] = useState(false);
   const [, startTransition] = useTransition();
   const messagesRef = useRef<HTMLDivElement>(null);
+  const tabsViewportRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -436,6 +432,34 @@ export function AIChat({
       container.scrollTop = container.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    if (!currentSessionId) return;
+
+    const viewport = tabsViewportRef.current;
+    const activeTab = viewport?.querySelector<HTMLElement>(
+      `[data-session-id="${CSS.escape(currentSessionId)}"]`,
+    );
+
+    if (!viewport || !activeTab) return;
+
+    const viewportRect = viewport.getBoundingClientRect();
+    const tabRect = activeTab.getBoundingClientRect();
+    const overflowRight = tabRect.right - viewportRect.right;
+    const overflowLeft = tabRect.left - viewportRect.left;
+
+    if (overflowRight > 0) {
+      viewport.scrollBy({
+        left: overflowRight + 8,
+        behavior: shouldReduceMotion ? "auto" : "smooth",
+      });
+    } else if (overflowLeft < 0) {
+      viewport.scrollBy({
+        left: overflowLeft - 8,
+        behavior: shouldReduceMotion ? "auto" : "smooth",
+      });
+    }
+  }, [currentSessionId, sessions, shouldReduceMotion]);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -465,19 +489,27 @@ export function AIChat({
   const createNewSession = useCallback(async () => {
     if (isStreaming) return;
     const session = await createSessionAction(selectedModel);
-    setSessions((prev) => [session, ...prev]);
+    setSessions((prev) => [...prev, session]);
     setCurrentSessionId(session.id);
     setMessages([]);
   }, [isStreaming, selectedModel]);
 
   const handleDeleteSession = useCallback(async (sessionId: string) => {
+    const sessionIndex = sessions.findIndex((session) => session.id === sessionId);
+    const previousSession = sessionIndex > 0 ? sessions[sessionIndex - 1] : null;
+
     await deleteSessionAction(sessionId);
     setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+
     if (currentSessionId === sessionId) {
-      setCurrentSessionId(null);
-      setMessages([]);
+      if (previousSession) {
+        switchSession(previousSession.id);
+      } else {
+        setCurrentSessionId(null);
+        setMessages([]);
+      }
     }
-  }, [currentSessionId]);
+  }, [currentSessionId, sessions, switchSession]);
 
   const sendMessage = useCallback(async (text: string) => {
     const trimmed = text.trim();
@@ -487,7 +519,7 @@ export function AIChat({
     let sessionId = currentSessionId;
     if (!sessionId) {
       const session = await createSessionAction(selectedModel);
-      setSessions((prev) => [session, ...prev]);
+      setSessions((prev) => [...prev, session]);
       setCurrentSessionId(session.id);
       sessionId = session.id;
     }
@@ -600,8 +632,11 @@ export function AIChat({
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <div className="flex h-12 shrink-0 items-center border-b bg-muted/30 px-2 sm:px-4">
-        <div className="min-w-0 flex-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <header className="flex h-12 shrink-0 items-center border-b bg-muted/30 px-2 sm:px-4">
+        <div
+          ref={tabsViewportRef}
+          className="min-w-0 flex-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
           <div className="flex h-9 w-max min-w-full items-center">
             <Tabs
               value={currentSessionId ?? HOME_TAB}
@@ -643,7 +678,6 @@ export function AIChat({
                       key={session.id}
                       session={session}
                       disabled={isStreaming}
-                      onDelete={() => handleDeleteSession(session.id)}
                     />
                   ))
                 )}
@@ -656,97 +690,131 @@ export function AIChat({
             ) : null}
           </div>
         </div>
-      </div>
+        <div className="ml-2 flex shrink-0 items-center gap-1 border-l pl-2">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            onClick={createNewSession}
+            disabled={isStreaming}
+            aria-label={t("newConversation")}
+            title={t("newConversation")}
+          >
+            <MessageSquarePlus />
+          </Button>
+          {currentSessionId ? (
+            <DeleteConversationButton
+              key={currentSessionId}
+              disabled={isStreaming}
+              onDelete={() => handleDeleteSession(currentSessionId)}
+            />
+          ) : null}
+        </div>
+      </header>
 
-      {currentSessionId ? (
-        <div ref={messagesRef} className="flex-1 overflow-y-auto px-4 md:px-8">
-          {messages.length === 0 ? (
-            <EmptyState onPrompt={sendMessage} disabled={isStreaming} />
+      <AnimatePresence initial={false} mode="wait">
+        <motion.div
+          key={currentSessionId ?? HOME_TAB}
+          initial={shouldReduceMotion ? false : { opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: -10 }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.16,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="flex min-h-0 flex-1 flex-col"
+        >
+          {currentSessionId ? (
+            <div ref={messagesRef} className="flex-1 overflow-y-auto px-4 md:px-8">
+              {messages.length === 0 ? (
+                <EmptyState onPrompt={sendMessage} disabled={isStreaming} />
+              ) : (
+                <div
+                  className="mx-auto flex w-full max-w-4xl flex-col gap-9 py-8 sm:py-12"
+                  aria-live="polite"
+                >
+                  <AnimatePresence initial={false}>
+                    {messages.map((msg) => (
+                      <MessageBubble key={msg.id} message={msg} />
+                    ))}
+                  </AnimatePresence>
+                </div>
+              )}
+            </div>
           ) : (
-            <div
-              className="mx-auto flex w-full max-w-4xl flex-col gap-9 py-8 sm:py-12"
-              aria-live="polite"
-            >
-              <AnimatePresence initial={false}>
-                {messages.map((msg) => (
-                  <MessageBubble key={msg.id} message={msg} />
-                ))}
-              </AnimatePresence>
+            <div className="flex-1 overflow-y-auto px-5 md:px-8">
+              <OverviewHome
+                conversationCount={sessions.length}
+                disabled={isStreaming}
+                modelCount={initialModels.length}
+                onNewConversation={createNewSession}
+                viewerName={viewerName}
+              />
             </div>
           )}
-        </div>
-      ) : (
-        <div className="flex-1 overflow-y-auto px-5 md:px-8">
-          <OverviewHome
-            conversationCount={sessions.length}
-            disabled={isStreaming}
-            modelCount={initialModels.length}
-            onNewConversation={createNewSession}
-            viewerName={viewerName}
-          />
-        </div>
-      )}
 
-      {currentSessionId ? (
-        <div className="shrink-0 bg-background px-3 pb-3 pt-2 sm:px-5 sm:pb-5 md:px-8">
-          <div className="mx-auto w-full max-w-4xl">
-            <form onSubmit={handleSubmit}>
-              <InputGroup className="h-auto rounded-[1.5rem] border border-input bg-muted/50 shadow-[0_18px_50px_-32px_oklch(0.145_0_0_/_0.6)]">
-                <InputGroupTextarea
-                  ref={textareaRef}
-                  value={input}
-                  onChange={(event) => setInput(event.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder={t("placeholder")}
-                  rows={1}
-                  disabled={isStreaming}
-                  className="min-h-12 px-4 pt-3.5 text-sm leading-6 placeholder:text-muted-foreground/70"
-                  style={{ maxHeight: "120px" }}
-                />
-                <InputGroupAddon align="block-end" className="justify-between px-3 pb-3 pt-1">
-                  <ModelSelector
-                    models={initialModels}
-                    selected={selectedModel}
-                    onChange={setSelectedModel}
-                    disabled={isStreaming}
-                  />
-                  <div className="ml-auto flex items-center gap-2">
-                    <span className="hidden text-[10px] font-normal text-muted-foreground/45 sm:inline">
-                      {t("provider")}
-                    </span>
-                    {isStreaming ? (
-                      <InputGroupButton
-                        type="button"
-                        variant="secondary"
-                        size="icon-sm"
-                        onClick={stopStreaming}
-                        aria-label={t("stop")}
-                        title={t("stop")}
-                      >
-                        <Square />
-                      </InputGroupButton>
-                    ) : (
-                      <InputGroupButton
-                        type="submit"
-                        variant="default"
-                        size="icon-sm"
-                        disabled={!input.trim()}
-                        aria-label={t("send")}
-                        title={t("send")}
-                      >
-                        <ArrowUp />
-                      </InputGroupButton>
-                    )}
-                  </div>
-                </InputGroupAddon>
-              </InputGroup>
-            </form>
-            <p className="mt-2 px-3 text-center text-[11px] text-muted-foreground/50">
-              {t("disclaimer")}
-            </p>
-          </div>
-        </div>
-      ) : null}
+          {currentSessionId ? (
+            <div className="shrink-0 bg-background px-3 pb-3 pt-2 sm:px-5 sm:pb-5 md:px-8">
+              <div className="mx-auto w-full max-w-4xl">
+                <form onSubmit={handleSubmit}>
+                  <InputGroup className="h-auto rounded-[1.5rem] border border-input bg-muted/50 shadow-[0_18px_50px_-32px_oklch(0.145_0_0_/_0.6)]">
+                    <InputGroupTextarea
+                      ref={textareaRef}
+                      value={input}
+                      onChange={(event) => setInput(event.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder={t("placeholder")}
+                      rows={1}
+                      disabled={isStreaming}
+                      className="min-h-12 px-4 pt-3.5 text-sm leading-6 placeholder:text-muted-foreground/70"
+                      style={{ maxHeight: "120px" }}
+                    />
+                    <InputGroupAddon align="block-end" className="justify-between px-3 pb-3 pt-1">
+                      <ModelSelector
+                        models={initialModels}
+                        selected={selectedModel}
+                        onChange={setSelectedModel}
+                        disabled={isStreaming}
+                      />
+                      <div className="ml-auto flex items-center gap-2">
+                        <span className="hidden text-[10px] font-normal text-muted-foreground/45 sm:inline">
+                          {t("provider")}
+                        </span>
+                        {isStreaming ? (
+                          <InputGroupButton
+                            type="button"
+                            variant="secondary"
+                            size="icon-sm"
+                            onClick={stopStreaming}
+                            aria-label={t("stop")}
+                            title={t("stop")}
+                          >
+                            <Square />
+                          </InputGroupButton>
+                        ) : (
+                          <InputGroupButton
+                            type="submit"
+                            variant="default"
+                            size="icon-sm"
+                            disabled={!input.trim()}
+                            aria-label={t("send")}
+                            title={t("send")}
+                          >
+                            <ArrowUp />
+                          </InputGroupButton>
+                        )}
+                      </div>
+                    </InputGroupAddon>
+                  </InputGroup>
+                </form>
+                <p className="mt-2 px-3 text-center text-[11px] text-muted-foreground/50">
+                  {t("disclaimer")}
+                </p>
+              </div>
+            </div>
+          ) : null}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
