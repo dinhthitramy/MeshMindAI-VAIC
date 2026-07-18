@@ -8,6 +8,10 @@ import { useTranslations } from "next-intl";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import {
+  DropdownMenuItem,
+  DropdownMenuShortcut,
+} from "@/components/ui/dropdown-menu";
+import {
   themePreferences,
   type ThemePreference,
 } from "@/lib/theme";
@@ -58,13 +62,33 @@ function ThemeIcon({
   );
 }
 
-function ThemeSelector({ className }: ThemeSelectorProps) {
+function useThemeCycle() {
   const t = useTranslations("Theme");
   const { theme, setTheme } = useTheme();
   const currentIndex = themePreferences.indexOf(theme);
   const nextTheme = themePreferences[(currentIndex + 1) % themePreferences.length];
   const currentThemeLabel = t(theme);
   const nextThemeLabel = t(nextTheme);
+
+  return {
+    currentThemeLabel,
+    nextTheme,
+    nextThemeLabel,
+    setTheme,
+    t,
+    theme,
+  };
+}
+
+function ThemeSelector({ className }: ThemeSelectorProps) {
+  const {
+    currentThemeLabel,
+    nextTheme,
+    nextThemeLabel,
+    setTheme,
+    t,
+    theme,
+  } = useThemeCycle();
 
   return (
     <Button
@@ -87,4 +111,31 @@ function ThemeSelector({ className }: ThemeSelectorProps) {
   );
 }
 
-export { ThemeSelector };
+function ThemeMenuItem() {
+  const {
+    currentThemeLabel,
+    nextTheme,
+    nextThemeLabel,
+    setTheme,
+    t,
+    theme,
+  } = useThemeCycle();
+
+  return (
+    <DropdownMenuItem
+      aria-label={t("currentSwitch", {
+        theme: currentThemeLabel,
+        nextTheme: nextThemeLabel,
+      })}
+      onClick={() => setTheme(nextTheme)}
+    >
+      <ThemeIcon theme={theme} />
+      {t("menuLabel")}
+      <DropdownMenuShortcut className="normal-case tracking-normal">
+        {currentThemeLabel}
+      </DropdownMenuShortcut>
+    </DropdownMenuItem>
+  );
+}
+
+export { ThemeMenuItem, ThemeSelector };

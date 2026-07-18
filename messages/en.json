@@ -31,6 +31,7 @@
     "system": "System",
     "light": "Light",
     "dark": "Dark",
+    "menuLabel": "Theme",
     "currentSwitch": "Theme: {theme}. Switch to {nextTheme}."
   },
   "Landing": {
@@ -144,6 +145,7 @@
       "invalidCredentials": "Invalid email or password.",
       "signupRateLimit": "Too many signup attempts. Please try again later.",
       "accountCreationFailed": "Could not create an account with those details.",
+      "emailInUse": "An account with this email already exists. Log in or use a different email.",
       "accountCreatedLoginUnavailable": "Your account was created, but automatic sign-in is unavailable. Try logging in again shortly.",
       "loginRateLimit": "Too many login attempts. Please try again later.",
       "tooManyAttemptsRestart": "Too many attempts. Start the sign-in process again later.",
