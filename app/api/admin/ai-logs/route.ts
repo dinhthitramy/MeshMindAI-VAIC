@@ -25,7 +25,7 @@ export async function GET(request: Request) {
 
   const [traces, generations] = await Promise.all([
     langfuse.fetchTraces({ limit, userId }),
-    langfuse.fetchGenerations({ limit }),
+    langfuse.fetchObservations({ limit, type: "GENERATION" }),
   ]);
 
   return NextResponse.json({
