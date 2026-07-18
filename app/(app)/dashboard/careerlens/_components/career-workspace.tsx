@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
+import { useFormatter, useTranslations } from "next-intl";
 import {
   BrainCircuit,
   BriefcaseBusiness,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -30,12 +32,19 @@ import {
   FieldGroup,
   FieldLabel,
   FieldLegend,
-  FieldSeparator,
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -50,34 +59,36 @@ import { ProvinceCombobox } from "./province-combobox";
 const initialState: CareerLensActionState = { status: "idle" };
 
 const intentOptions = [
-  { value: "initial_guidance", label: "Khám phá hướng nghề ban đầu" },
-  { value: "switch_major", label: "Cân nhắc đổi ngành" },
-  { value: "find_jobs", label: "Tìm role và việc làm liên quan" },
-  { value: "compare_paths", label: "So sánh các hướng nghề" },
-  { value: "roadmap_detail", label: "Tạo roadmap chi tiết" },
+  "initial_guidance",
+  "switch_major",
+  "find_jobs",
+  "compare_paths",
+  "roadmap_detail",
 ] as const;
 
 const workEnvironmentOptions = [
-  { value: "hybrid", label: "Kết hợp online và tại chỗ" },
-  { value: "team_based", label: "Làm việc theo nhóm" },
-  { value: "independent", label: "Làm việc độc lập" },
-  { value: "hands_on", label: "Thực hành, thao tác trực tiếp" },
-  { value: "fieldwork", label: "Di chuyển và làm việc hiện trường" },
-  { value: "office", label: "Văn phòng" },
-  { value: "remote", label: "Từ xa" },
+  "hybrid",
+  "team_based",
+  "independent",
+  "hands_on",
+  "fieldwork",
+  "office",
+  "remote",
 ] as const;
 
 const learningStyleOptions = [
-  { value: "project_based", label: "Học qua dự án" },
-  { value: "mentor_guided", label: "Có mentor hướng dẫn" },
-  { value: "self_paced", label: "Tự học theo nhịp riêng" },
-  { value: "classroom", label: "Lớp học có cấu trúc" },
-  { value: "apprenticeship", label: "Học việc tại môi trường thật" },
+  "project_based",
+  "mentor_guided",
+  "self_paced",
+  "classroom",
+  "apprenticeship",
 ] as const;
 
 function PlanSkeleton() {
+  const t = useTranslations("Roadmap");
+
   return (
-    <section aria-label="Đang tạo lộ trình" className="flex flex-col gap-6">
+    <section aria-label={t("loading")} className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">
         <Skeleton className="h-8 w-64" />
         <Skeleton className="h-5 w-full max-w-xl" />
@@ -110,6 +121,28 @@ type CareerWorkspaceProps = {
 };
 
 export function CareerWorkspace({ models, marketOverview }: CareerWorkspaceProps) {
+  const format = useFormatter();
+  const t = useTranslations("Roadmap");
+  const educationItems = [
+    { value: "THPT", label: t("form.educationOptions.THPT") },
+    { value: "college", label: t("form.educationOptions.college") },
+    { value: "university", label: t("form.educationOptions.university") },
+    { value: "graduate", label: t("form.educationOptions.graduate") },
+    { value: "other", label: t("form.educationOptions.other") },
+  ];
+  const workEnvironmentItems = workEnvironmentOptions.map((value) => ({
+    value,
+    label: t(`form.options.workEnvironment.${value}`),
+  }));
+  const learningStyleItems = learningStyleOptions.map((value) => ({
+    value,
+    label: t(`form.options.learningStyle.${value}`),
+  }));
+  const intentItems = intentOptions.map((value) => ({
+    value,
+    label: t(`form.options.intent.${value}`),
+  }));
+  const modelItems = models.map((value) => ({ value, label: value }));
   const [state, formAction, pending] = useActionState(
     generateCareerPlanAction,
     initialState,
@@ -126,71 +159,87 @@ export function CareerWorkspace({ models, marketOverview }: CareerWorkspaceProps
     return state.fieldErrors?.[field]?.[0];
   }
 
-  return (
-    <div className="flex flex-col gap-10">
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
-        <Card>
-          <form action={formAction}>
-            <CardHeader>
-              <CardTitle>Hồ sơ cho lần phân tích này</CardTitle>
-              <CardDescription>
-                Càng cụ thể về trải nghiệm và điều kiện thực tế, lộ trình càng hữu ích.
-              </CardDescription>
-            </CardHeader>
+  const principles = [
+    { Icon: BrainCircuit, copy: t("principles.profile") },
+    { Icon: Route, copy: t("principles.roadmap") },
+    { Icon: BriefcaseBusiness, copy: t("principles.market") },
+  ];
 
-            <CardContent>
-              <FieldGroup>
-                <FieldSet>
-                  <FieldLegend>Nền tảng hiện tại</FieldLegend>
-                  <FieldDescription>
-                    Region chỉ được dùng để đối chiếu cơ hội việc làm và mức lương mẫu.
-                  </FieldDescription>
-                  <FieldGroup className="grid gap-5 md:grid-cols-2">
+  return (
+    <div className="flex flex-col gap-16">
+      <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
+        <div className="rounded-[2.25rem] bg-foreground/[0.035] p-1.5 ring-1 ring-foreground/5">
+          <Card className="overflow-clip rounded-[calc(2.25rem-0.375rem)] border-0 shadow-none">
+            <form action={formAction}>
+              <CardHeader className="gap-4 p-6 sm:p-8">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <CardTitle className="text-2xl sm:text-3xl">{t("form.title")}</CardTitle>
+                <Badge variant="secondary">{t("form.badge")}</Badge>
+              </div>
+              <CardDescription className="max-w-2xl text-base">{t("form.description")}</CardDescription>
+              </CardHeader>
+
+              <CardContent className="px-3 pb-3 sm:px-5 sm:pb-5">
+              <FieldGroup className="gap-3">
+                <FieldSet className="grid gap-5 rounded-[1.75rem] bg-muted/45 p-5 sm:p-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-x-8">
+                  <FieldLegend className="mb-0 text-lg">{t("form.foundation")}</FieldLegend>
+                  <FieldDescription className="lg:col-start-1">{t("form.foundationDescription")}</FieldDescription>
+                  <FieldGroup className="grid gap-5 md:grid-cols-2 lg:col-start-2 lg:row-span-2 lg:row-start-1">
                     <Field data-invalid={Boolean(fieldError("educationLevel")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-education">Bậc học hiện tại</FieldLabel>
+                      <FieldLabel htmlFor="careerlens-education">{t("form.educationLevel")}</FieldLabel>
                       <Select
-                        id="careerlens-education"
+                        items={educationItems}
                         name="educationLevel"
                         defaultValue="THPT"
-                        aria-invalid={Boolean(fieldError("educationLevel")) || undefined}
                         required
                       >
-                        <option value="THPT">THPT</option>
-                        <option value="college">Cao đẳng</option>
-                        <option value="university">Đại học</option>
-                        <option value="graduate">Sau đại học</option>
-                        <option value="other">Khác</option>
+                        <SelectTrigger
+                          id="careerlens-education"
+                          className="w-full"
+                          aria-invalid={Boolean(fieldError("educationLevel")) || undefined}
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent alignItemWithTrigger={false}>
+                          <SelectGroup>
+                            {educationItems.map((item) => (
+                              <SelectItem key={item.value} value={item.value}>
+                                {item.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
                       </Select>
                       <FieldError>{fieldError("educationLevel")}</FieldError>
                     </Field>
 
                     <Field data-invalid={Boolean(fieldError("languages")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-languages">Ngôn ngữ sử dụng</FieldLabel>
+                      <FieldLabel htmlFor="careerlens-languages">{t("form.languages")}</FieldLabel>
                       <Input
                         id="careerlens-languages"
                         name="languages"
-                        defaultValue="Tiếng Việt, English"
-                        placeholder="Tiếng Việt, English"
+                        defaultValue={t("form.languagesPlaceholder")}
+                        placeholder={t("form.languagesPlaceholder")}
                         aria-invalid={Boolean(fieldError("languages")) || undefined}
                         required
                       />
-                      <FieldDescription>Phân tách bằng dấu phẩy.</FieldDescription>
+                      <FieldDescription>{t("form.languagesHint")}</FieldDescription>
                       <FieldError>{fieldError("languages")}</FieldError>
                     </Field>
 
                     <Field data-invalid={Boolean(fieldError("currentRegion")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-current-region">Khu vực hiện tại</FieldLabel>
+                      <FieldLabel htmlFor="careerlens-current-region">{t("form.currentRegion")}</FieldLabel>
                       <ProvinceCombobox
                         id="careerlens-current-region"
                         name="currentRegion"
                         invalid={Boolean(fieldError("currentRegion"))}
                       />
-                      <FieldDescription>Danh mục 34 tỉnh/thành hiện hành.</FieldDescription>
+                      <FieldDescription>{t("form.regionHint")}</FieldDescription>
                       <FieldError>{fieldError("currentRegion")}</FieldError>
                     </Field>
 
                     <Field data-invalid={Boolean(fieldError("targetRegion")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-target-region">Khu vực muốn học hoặc làm</FieldLabel>
+                      <FieldLabel htmlFor="careerlens-target-region">{t("form.targetRegion")}</FieldLabel>
                       <ProvinceCombobox
                         id="careerlens-target-region"
                         name="targetRegion"
@@ -201,14 +250,10 @@ export function CareerWorkspace({ models, marketOverview }: CareerWorkspaceProps
                   </FieldGroup>
                 </FieldSet>
 
-                <FieldSeparator />
-
-                <FieldSet>
-                  <FieldLegend>Điểm mạnh và điều em quan tâm</FieldLegend>
-                  <FieldDescription>
-                    Hãy dùng trải nghiệm thật, không cần viết theo cách của hồ sơ xin việc.
-                  </FieldDescription>
-                  <FieldGroup>
+                <FieldSet className="grid gap-5 rounded-[1.75rem] bg-muted/45 p-5 sm:p-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-x-8">
+                  <FieldLegend className="mb-0 text-lg">{t("form.strengths")}</FieldLegend>
+                  <FieldDescription className="lg:col-start-1">{t("form.strengthsDescription")}</FieldDescription>
+                  <FieldGroup className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
                     <InterestProfileFields
                       subjectError={fieldError("strongSubject")}
                       scoreError={fieldError("subjectScore")}
@@ -216,12 +261,12 @@ export function CareerWorkspace({ models, marketOverview }: CareerWorkspaceProps
                     />
 
                     <Field data-invalid={Boolean(fieldError("activity")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-activity">Hoạt động hoặc dự án em từng làm</FieldLabel>
+                      <FieldLabel htmlFor="careerlens-activity">{t("form.activity")}</FieldLabel>
                       <Textarea
                         id="careerlens-activity"
                         name="activity"
                         rows={4}
-                        placeholder="Mô tả vai trò, việc em đã làm và phần khiến em thấy hứng thú hoặc gặp khó khăn."
+                        placeholder={t("form.activityPlaceholder")}
                         aria-invalid={Boolean(fieldError("activity")) || undefined}
                         required
                       />
@@ -230,13 +275,12 @@ export function CareerWorkspace({ models, marketOverview }: CareerWorkspaceProps
                   </FieldGroup>
                 </FieldSet>
 
-                <FieldSeparator />
-
-                <FieldSet>
-                  <FieldLegend>Điều kiện học tập và làm việc</FieldLegend>
-                  <FieldGroup className="grid gap-5 md:grid-cols-2">
+                <FieldSet className="grid gap-5 rounded-[1.75rem] bg-muted/45 p-5 sm:p-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-x-8">
+                  <FieldLegend className="mb-0 text-lg">{t("form.conditions")}</FieldLegend>
+                  <FieldDescription className="lg:col-start-1">{t("form.conditionsDescription")}</FieldDescription>
+                  <FieldGroup className="grid gap-5 md:grid-cols-2 lg:col-start-2 lg:row-span-2 lg:row-start-1">
                     <Field data-invalid={Boolean(fieldError("weeklyHours")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-hours">Giờ có thể học mỗi tuần</FieldLabel>
+                      <FieldLabel htmlFor="careerlens-hours">{t("form.weeklyHours")}</FieldLabel>
                       <Input
                         id="careerlens-hours"
                         name="weeklyHours"
@@ -252,104 +296,137 @@ export function CareerWorkspace({ models, marketOverview }: CareerWorkspaceProps
                     </Field>
 
                     <Field data-invalid={Boolean(fieldError("targetBudget")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-budget">Ngân sách dự kiến</FieldLabel>
+                      <FieldLabel htmlFor="careerlens-budget">{t("form.budget")}</FieldLabel>
                       <Input
                         id="careerlens-budget"
                         name="targetBudget"
-                        placeholder="Ví dụ: dưới 20 triệu đồng/năm"
+                        placeholder={t("form.budgetPlaceholder")}
                         aria-invalid={Boolean(fieldError("targetBudget")) || undefined}
                       />
                       <FieldError>{fieldError("targetBudget")}</FieldError>
                     </Field>
 
                     <Field data-invalid={Boolean(fieldError("workEnvironment")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-work-env">Môi trường làm việc mong muốn</FieldLabel>
+                      <FieldLabel htmlFor="careerlens-work-env">{t("form.workEnvironment")}</FieldLabel>
                       <Select
-                        id="careerlens-work-env"
+                        items={workEnvironmentItems}
                         name="workEnvironment"
                         defaultValue="team_based"
-                        aria-invalid={Boolean(fieldError("workEnvironment")) || undefined}
                         required
                       >
-                        {workEnvironmentOptions.map((option) => (
-                          <option key={option.value} value={option.value}>{option.label}</option>
-                        ))}
+                        <SelectTrigger
+                          id="careerlens-work-env"
+                          className="w-full"
+                          aria-invalid={Boolean(fieldError("workEnvironment")) || undefined}
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent alignItemWithTrigger={false}>
+                          <SelectGroup>
+                            {workEnvironmentItems.map((item) => (
+                              <SelectItem key={item.value} value={item.value}>
+                                {item.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
                       </Select>
                       <FieldError>{fieldError("workEnvironment")}</FieldError>
                     </Field>
 
                     <Field data-invalid={Boolean(fieldError("learningStyle")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-learning-style">Cách học phù hợp</FieldLabel>
+                      <FieldLabel htmlFor="careerlens-learning-style">{t("form.learningStyle")}</FieldLabel>
                       <Select
-                        id="careerlens-learning-style"
+                        items={learningStyleItems}
                         name="learningStyle"
                         defaultValue="project_based"
-                        aria-invalid={Boolean(fieldError("learningStyle")) || undefined}
                         required
                       >
-                        {learningStyleOptions.map((option) => (
-                          <option key={option.value} value={option.value}>{option.label}</option>
-                        ))}
+                        <SelectTrigger
+                          id="careerlens-learning-style"
+                          className="w-full"
+                          aria-invalid={Boolean(fieldError("learningStyle")) || undefined}
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent alignItemWithTrigger={false}>
+                          <SelectGroup>
+                            {learningStyleItems.map((item) => (
+                              <SelectItem key={item.value} value={item.value}>
+                                {item.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
                       </Select>
                       <FieldError>{fieldError("learningStyle")}</FieldError>
                     </Field>
                   </FieldGroup>
 
-                  <Field data-invalid={Boolean(fieldError("familyConstraints")) || undefined}>
-                    <FieldLabel htmlFor="careerlens-constraints">Ràng buộc cần cân nhắc</FieldLabel>
+                  <Field className="lg:col-start-2" data-invalid={Boolean(fieldError("familyConstraints")) || undefined}>
+                    <FieldLabel htmlFor="careerlens-constraints">{t("form.constraints")}</FieldLabel>
                     <Textarea
                       id="careerlens-constraints"
                       name="familyConstraints"
                       rows={3}
-                      placeholder="Ví dụ: cần học gần nhà, cần vừa học vừa làm. Có thể để trống."
+                      placeholder={t("form.constraintsPlaceholder")}
                       aria-invalid={Boolean(fieldError("familyConstraints")) || undefined}
                     />
-                    <FieldDescription>
-                      Không nhập giới tính, tôn giáo, dân tộc hoặc thông tin nhận dạng không cần thiết.
-                    </FieldDescription>
+                    <FieldDescription>{t("form.constraintsHint")}</FieldDescription>
                     <FieldError>{fieldError("familyConstraints")}</FieldError>
                   </Field>
                 </FieldSet>
 
-                <FieldSeparator />
-
-                <FieldSet>
-                  <FieldLegend>Mục tiêu của lần tư vấn</FieldLegend>
-                  <FieldGroup>
+                <FieldSet className="grid gap-5 rounded-[1.75rem] bg-muted/45 p-5 sm:p-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-x-8">
+                  <FieldLegend className="mb-0 text-lg">{t("form.goal")}</FieldLegend>
+                  <FieldDescription className="lg:col-start-1">{t("form.goalDescription")}</FieldDescription>
+                  <FieldGroup className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
                     <Field data-invalid={Boolean(fieldError("intent")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-intent">Em muốn giải quyết điều gì?</FieldLabel>
+                      <FieldLabel htmlFor="careerlens-intent">{t("form.intent")}</FieldLabel>
                       <Select
-                        id="careerlens-intent"
+                        items={intentItems}
                         name="intent"
                         defaultValue="initial_guidance"
-                        aria-invalid={Boolean(fieldError("intent")) || undefined}
                         required
                       >
-                        {intentOptions.map((option) => (
-                          <option key={option.value} value={option.value}>{option.label}</option>
-                        ))}
+                        <SelectTrigger
+                          id="careerlens-intent"
+                          className="w-full"
+                          aria-invalid={Boolean(fieldError("intent")) || undefined}
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent alignItemWithTrigger={false}>
+                          <SelectGroup>
+                            {intentItems.map((item) => (
+                              <SelectItem key={item.value} value={item.value}>
+                                {item.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
                       </Select>
                       <FieldError>{fieldError("intent")}</FieldError>
                     </Field>
 
                     <Field data-invalid={Boolean(fieldError("targetCareer")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-target-career">Ngành hoặc nghề đang cân nhắc</FieldLabel>
+                      <FieldLabel htmlFor="careerlens-target-career">{t("form.targetCareer")}</FieldLabel>
                       <Input
                         id="careerlens-target-career"
                         name="targetCareer"
-                        placeholder="Ví dụ: thiết kế sản phẩm, an toàn thông tin. Có thể để trống."
+                        placeholder={t("form.targetCareerPlaceholder")}
                         aria-invalid={Boolean(fieldError("targetCareer")) || undefined}
                       />
                       <FieldError>{fieldError("targetCareer")}</FieldError>
                     </Field>
 
                     <Field data-invalid={Boolean(fieldError("question")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-question">Câu hỏi quan trọng nhất của em</FieldLabel>
+                      <FieldLabel htmlFor="careerlens-question">{t("form.question")}</FieldLabel>
                       <Textarea
                         id="careerlens-question"
                         name="question"
                         rows={4}
-                        placeholder="Ví dụ: Em muốn biết hướng nào phù hợp với điểm mạnh hiện tại nhưng vẫn có lộ trình học trong ngân sách."
+                        placeholder={t("form.questionPlaceholder")}
                         aria-invalid={Boolean(fieldError("question")) || undefined}
                         required
                       />
@@ -357,19 +434,31 @@ export function CareerWorkspace({ models, marketOverview }: CareerWorkspaceProps
                     </Field>
 
                     <Field data-invalid={Boolean(fieldError("model")) || undefined}>
-                      <FieldLabel htmlFor="careerlens-model">Model phân tích</FieldLabel>
+                      <FieldLabel htmlFor="careerlens-model">{t("form.model")}</FieldLabel>
                       <Select
-                        id="careerlens-model"
+                        items={modelItems}
                         name="model"
                         defaultValue={models[0]}
-                        aria-invalid={Boolean(fieldError("model")) || undefined}
                         required
                       >
-                        {models.map((model) => (
-                          <option key={model} value={model}>{model}</option>
-                        ))}
+                        <SelectTrigger
+                          id="careerlens-model"
+                          className="w-full"
+                          aria-invalid={Boolean(fieldError("model")) || undefined}
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent alignItemWithTrigger={false}>
+                          <SelectGroup>
+                            {modelItems.map((item) => (
+                              <SelectItem key={item.value} value={item.value}>
+                                {item.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
                       </Select>
-                      <FieldDescription>Model được gọi qua FPT Cloud AI.</FieldDescription>
+                      <FieldDescription>{t("form.modelHint")}</FieldDescription>
                       <FieldError>{fieldError("model")}</FieldError>
                     </Field>
 
@@ -386,98 +475,96 @@ export function CareerWorkspace({ models, marketOverview }: CareerWorkspaceProps
                       />
                       <FieldContent>
                         <FieldLabel htmlFor="careerlens-consent">
-                          Tôi đồng ý dùng dữ liệu trong form để tạo lộ trình hướng nghiệp.
+                          {t("form.consent")}
                         </FieldLabel>
-                        <FieldDescription>
-                          AI chỉ đưa gợi ý tham khảo và không quyết định thay người học.
-                        </FieldDescription>
+                        <FieldDescription>{t("form.consentHint")}</FieldDescription>
                         <FieldError>{fieldError("consent")}</FieldError>
                       </FieldContent>
                     </Field>
                   </FieldGroup>
                 </FieldSet>
               </FieldGroup>
-            </CardContent>
+              </CardContent>
 
-            <CardFooter className="flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <CardFooter className="sticky bottom-0 flex-col items-stretch gap-4 bg-card/95 px-6 py-5 shadow-[0_-18px_40px_-32px_oklch(0.145_0_0_/_0.45)] supports-[backdrop-filter]:backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:px-8">
               <div className="min-h-6" aria-live="polite">
                 {state.status === "error" ? (
                   <p className="text-sm text-destructive">{state.message}</p>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Mỗi lần tạo sẽ sinh ba lựa chọn có giải thích.
-                  </p>
+                  <p className="text-sm text-muted-foreground">{t("form.footerHint")}</p>
                 )}
               </div>
               <Button type="submit" size="lg" disabled={pending || models.length === 0}>
                 {pending ? <Spinner data-icon="inline-start" /> : <Sparkles data-icon="inline-start" />}
-                {pending ? "Đang tạo lộ trình" : "Tạo lộ trình"}
+                {pending ? t("form.submitting") : t("form.submit")}
               </Button>
-            </CardFooter>
-          </form>
-        </Card>
+              </CardFooter>
+            </form>
+          </Card>
+        </div>
 
-        <aside className="flex flex-col gap-6 xl:sticky xl:top-6">
-          <Card>
-            <CardHeader>
-              <Database aria-hidden="true" className="size-5 text-primary" strokeWidth={1.8} />
-              <CardTitle>Dữ liệu thị trường mẫu</CardTitle>
-              <CardDescription>
-                POC chưa dùng crawler production. Các con số dưới đây chỉ mô tả bộ seed hiện tại.
-              </CardDescription>
+        <aside className="flex flex-col gap-5 xl:sticky xl:top-8">
+          <Card className="overflow-hidden border-0 bg-foreground text-background shadow-none">
+            <CardHeader className="gap-4 p-6">
+              <div className="flex items-center justify-between gap-4">
+                <Database aria-hidden="true" className="size-5 text-background/60" strokeWidth={1.6} />
+                <Badge variant="secondary">{t("market.badge")}</Badge>
+              </div>
+              <CardTitle className="text-xl text-background">{t("market.title")}</CardTitle>
+              <CardDescription className="text-background/55">{t("market.description")}</CardDescription>
             </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-5">
-              <div>
-                <p className="font-mono text-3xl font-semibold">
-                  {new Intl.NumberFormat("vi-VN").format(marketOverview.postingCount)}
+            <CardContent className="flex flex-col gap-0 px-6 pb-6">
+              <div className="pb-6">
+                <p className="font-mono text-5xl font-semibold tracking-[-0.05em]">
+                  {format.number(marketOverview.postingCount)}
                 </p>
-                <p className="mt-1 text-sm text-muted-foreground">job postings</p>
+                <p className="mt-2 text-sm text-background/55">{t("market.postings")}</p>
               </div>
-              <div>
-                <p className="font-mono text-3xl font-semibold">{marketOverview.regionCount}</p>
-                <p className="mt-1 text-sm text-muted-foreground">tỉnh/thành</p>
+              <Separator className="bg-background/10" />
+              <div className="grid grid-cols-3 gap-3 py-5">
+                {[
+                  [marketOverview.regionCount, t("market.regions")],
+                  [marketOverview.roleCountPerRegion, t("market.roles")],
+                  [marketOverview.industryCount, t("market.industries")],
+                ].map(([value, label]) => (
+                  <div key={label}>
+                    <p className="font-mono text-xl font-semibold">{value}</p>
+                    <p className="mt-1 text-xs leading-4 text-background/50">{label}</p>
+                  </div>
+                ))}
               </div>
-              <div>
-                <p className="font-mono text-3xl font-semibold">
-                  {marketOverview.roleCountPerRegion}
-                </p>
-                <p className="mt-1 text-sm text-muted-foreground">nghề mỗi tỉnh</p>
-              </div>
-              <div>
-                <p className="font-mono text-3xl font-semibold">
-                  {marketOverview.industryCount}
-                </p>
-                <p className="mt-1 text-sm text-muted-foreground">nhóm ngành</p>
-              </div>
-              <div className="col-span-2 flex items-center gap-2 text-sm text-muted-foreground">
+              <Separator className="bg-background/10" />
+              <div className="flex items-center gap-2 pt-5 text-xs text-background/50">
                 <FileSearch aria-hidden="true" className="size-4" strokeWidth={1.8} />
-                Nguồn mẫu ngày {marketOverview.sourceDate}
+                {t("market.sourceDate", { date: marketOverview.sourceDate })}
               </div>
             </CardContent>
           </Card>
 
           <Alert>
             <LockKeyhole aria-hidden="true" />
-            <AlertTitle>Quyền riêng tư được lọc trước</AlertTitle>
-            <AlertDescription>
-              Gender, hometown, ethnicity và religion không nằm trong payload gửi tới model.
-            </AlertDescription>
+            <AlertTitle>{t("privacy.title")}</AlertTitle>
+            <AlertDescription>{t("privacy.description")}</AlertDescription>
           </Alert>
 
-          <div className="grid gap-3 text-sm text-muted-foreground">
-            <div className="flex items-start gap-3">
-              <BrainCircuit aria-hidden="true" className="mt-0.5 size-4 shrink-0" strokeWidth={1.8} />
-              <p>AI kết hợp học lực, sở thích, cách học và tín hiệu thị trường.</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <Route aria-hidden="true" className="mt-0.5 size-4 shrink-0" strokeWidth={1.8} />
-              <p>Mỗi hướng có skill gap và các chặng thực hành kiểm chứng được.</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <BriefcaseBusiness aria-hidden="true" className="mt-0.5 size-4 shrink-0" strokeWidth={1.8} />
-              <p>Role và salary chỉ lấy từ market seed được cung cấp cho lần chạy.</p>
-            </div>
-          </div>
+          <Card className="shadow-none">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-base">{t("principles.title")}</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-5">
+              {principles.map(({ Icon, copy }, index) => (
+                <div key={copy} className="grid grid-cols-[1.75rem_1fr] gap-3 text-sm text-muted-foreground">
+                  <span className="flex size-7 items-center justify-center rounded-full bg-muted text-foreground">
+                    <Icon aria-hidden="true" className="size-3.5" strokeWidth={1.6} />
+                  </span>
+                  <p className="leading-6">
+                    <span className="mr-2 font-mono text-xs text-foreground/40">0{index + 1}</span>
+                    {copy}
+                  </p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
         </aside>
       </div>
 

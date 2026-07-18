@@ -16,6 +16,11 @@ vi.mock("@/lib/auth/dal", () => ({
   }),
 }));
 
+vi.mock("next-intl/server", () => ({
+  getLocale: vi.fn().mockResolvedValue("vi"),
+  getTranslations: vi.fn().mockResolvedValue((key: string) => key),
+}));
+
 function createValidFormData() {
   const formData = new FormData();
   const values = {

@@ -10,6 +10,12 @@ describe("CareerLens profile helpers", () => {
     );
   });
 
+  it("localizes suggestions for English input", () => {
+    expect(getInterestSuggestions("Math and programming", "en")).toEqual(
+      expect.arrayContaining(["Data analysis", "Software development", "AI and machine learning"]),
+    );
+  });
+
   it("keeps the official province list complete and unique", () => {
     expect(VIETNAM_PROVINCES).toHaveLength(34);
     expect(new Set(VIETNAM_PROVINCES)).toHaveLength(34);

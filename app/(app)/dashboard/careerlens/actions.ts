@@ -1,5 +1,7 @@
 "use server";
 
+import { getLocale, getTranslations } from "next-intl/server";
+
 import { AVAILABLE_MODELS } from "@/lib/ai";
 import { generateCareerGuidance, type CareerGuidanceOutput } from "@/lib/careerlens";
 import { requirePermission } from "@/lib/auth/dal";
@@ -18,11 +20,12 @@ export async function generateCareerPlanAction(
   formData: FormData,
 ): Promise<CareerLensActionState> {
   const viewer = await requirePermission(PERMISSIONS.DASHBOARD_ACCESS);
+  const [t, locale] = await Promise.all([getTranslations("Roadmap"), getLocale()]);
 
   if (viewer.actor.kind !== "user") {
     return {
       status: "error",
-      message: "Tính năng tạo lộ trình chỉ khả dụng cho tài khoản người học.",
+      message: t("actions.userOnly"),
     };
   }
 
@@ -50,33 +53,33 @@ export async function generateCareerPlanAction(
   if (!parsed.success) {
     const invalidFields = parsed.error.flatten().fieldErrors;
     const fieldMessages: Record<string, string> = {
-      activity: "Hãy mô tả một hoạt động hoặc dự án bằng ít nhất 10 ký tự.",
-      consent: "Cần có sự đồng ý trước khi phân tích dữ liệu.",
-      currentRegion: "Hãy chọn khu vực hiện tại.",
-      educationLevel: "Hãy chọn bậc học hiện tại.",
-      familyConstraints: "Nội dung ràng buộc đang quá dài.",
-      interests: "Hãy nhập ít nhất một sở thích.",
-      intent: "Hãy chọn mục tiêu tư vấn.",
-      languages: "Hãy nhập ít nhất một ngôn ngữ.",
-      learningStyle: "Hãy chọn cách học phù hợp.",
-      model: "Hãy chọn model phân tích.",
-      question: "Câu hỏi cần có ít nhất 10 ký tự.",
-      strongSubject: "Hãy nhập một môn hoặc kỹ năng nổi bật.",
-      subjectScore: "Điểm tự đánh giá phải nằm trong khoảng 0-10.",
-      targetBudget: "Nội dung ngân sách đang quá dài.",
-      targetCareer: "Tên ngành hoặc nghề đang quá dài.",
-      targetRegion: "Hãy chọn khu vực mục tiêu.",
-      weeklyHours: "Số giờ học phải nằm trong khoảng 1-80.",
-      workEnvironment: "Hãy chọn môi trường làm việc mong muốn.",
+      activity: t("actions.fields.activity"),
+      consent: t("actions.fields.consent"),
+      currentRegion: t("actions.fields.currentRegion"),
+      educationLevel: t("actions.fields.educationLevel"),
+      familyConstraints: t("actions.fields.familyConstraints"),
+      interests: t("actions.fields.interests"),
+      intent: t("actions.fields.intent"),
+      languages: t("actions.fields.languages"),
+      learningStyle: t("actions.fields.learningStyle"),
+      model: t("actions.fields.model"),
+      question: t("actions.fields.question"),
+      strongSubject: t("actions.fields.strongSubject"),
+      subjectScore: t("actions.fields.subjectScore"),
+      targetBudget: t("actions.fields.targetBudget"),
+      targetCareer: t("actions.fields.targetCareer"),
+      targetRegion: t("actions.fields.targetRegion"),
+      weeklyHours: t("actions.fields.weeklyHours"),
+      workEnvironment: t("actions.fields.workEnvironment"),
     };
 
     return {
       status: "error",
-      message: "Hãy kiểm tra lại các trường được đánh dấu.",
+      message: t("actions.checkFields"),
       fieldErrors: Object.fromEntries(
         Object.keys(invalidFields).map((field) => [
           field,
-          [fieldMessages[field] ?? "Giá trị chưa hợp lệ."],
+          [fieldMessages[field] ?? t("actions.invalidValue")],
         ]),
       ),
     };
@@ -85,12 +88,16 @@ export async function generateCareerPlanAction(
   if (!AVAILABLE_MODELS.includes(parsed.data.model)) {
     return {
       status: "error",
-      message: "Model đã chọn không khả dụng.",
-      fieldErrors: { model: ["Hãy chọn một model trong danh sách."] },
+      message: t("actions.modelUnavailable"),
+      fieldErrors: { model: [t("actions.chooseModel")] },
     };
   }
 
-  const input = buildCareerGuidanceInput(parsed.data, viewer.actor.userId);
+  const input = buildCareerGuidanceInput(
+    parsed.data,
+    viewer.actor.userId,
+    locale === "en" ? "en" : "vi",
+  );
 
   try {
     const output = await generateCareerGuidance(input, {
@@ -100,7 +107,7 @@ export async function generateCareerPlanAction(
 
     return {
       status: "success",
-      message: "Lộ trình đã sẵn sàng. Em có thể so sánh và mở từng roadmap bên dưới.",
+      message: t("actions.success"),
       output,
     };
   } catch (error) {
@@ -111,7 +118,7 @@ export async function generateCareerPlanAction(
 
     return {
       status: "error",
-      message: "Chưa thể tạo lộ trình lúc này. Vui lòng thử lại sau ít phút.",
+      message: t("actions.failed"),
     };
   }
 }

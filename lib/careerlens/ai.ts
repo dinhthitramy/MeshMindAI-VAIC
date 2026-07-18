@@ -11,10 +11,28 @@ import {
 } from "./schemas";
 import { CAREERLENS_SYSTEM_PROMPT } from "./system-prompt";
 
-const DISCLAIMER =
-  "Kết quả này là gợi ý tham khảo, không thay thế quyết định của em hoặc tư vấn trực tiếp từ counselor.";
-const AUTONOMY_NOTE =
-  "Em có thể chấp nhận, từ chối, xem lại hoặc đổi hướng; nên kiểm chứng lựa chọn với counselor và người đang làm nghề.";
+const REQUIRED_OUTPUT_COPY = {
+  vi: {
+    disclaimer:
+      "Kết quả này là gợi ý tham khảo, không thay thế quyết định của em hoặc tư vấn trực tiếp từ counselor.",
+    autonomyNote:
+      "Em có thể chấp nhận, từ chối, xem lại hoặc đổi hướng; nên kiểm chứng lựa chọn với counselor và người đang làm nghề.",
+    consentConstraint: "Chưa có sự đồng ý xử lý dữ liệu cá nhân.",
+    consentQuestion:
+      "Em có đồng ý để CareerLens xử lý dữ liệu hồ sơ nhằm cá nhân hóa gợi ý không?",
+    mockDisclaimer: "Đây là dữ liệu mock deterministic vì dịch vụ LLM chưa được cấu hình.",
+  },
+  en: {
+    disclaimer:
+      "This result is a suggestion for consideration and does not replace your decision or direct guidance from a counselor.",
+    autonomyNote:
+      "You can accept, reject, revisit, or change direction; validate your choice with a counselor and people working in the field.",
+    consentConstraint: "Consent to process personal data has not been provided.",
+    consentQuestion:
+      "Do you agree to let CareerLens process your profile data to personalise its suggestions?",
+    mockDisclaimer: "This is deterministic mock data because the LLM service is not configured.",
+  },
+} as const;
 
 const OUTPUT_CONTRACT = {
   disclaimer: "string",
@@ -174,21 +192,21 @@ export function buildCareerGuidanceUserPrompt(input: CareerGuidanceInput): strin
   ].join("\n");
 }
 
-function createConsentRequiredOutput(): CareerGuidanceOutput {
+function createConsentRequiredOutput(language: "vi" | "en"): CareerGuidanceOutput {
+  const copy = REQUIRED_OUTPUT_COPY[language];
+
   return {
-    disclaimer: DISCLAIMER,
+    disclaimer: copy.disclaimer,
     profile_summary: {
       strengths: [],
       interests: [],
       personal_signals: [],
-      constraints: ["Chưa có sự đồng ý xử lý dữ liệu cá nhân."],
+      constraints: [copy.consentConstraint],
       data_confidence: "low",
     },
     market_summary: { rising_careers: [], short_supply_skills: [] },
     recommendations: [],
-    questions_to_improve_recommendation: [
-      "Em có đồng ý để CareerLens xử lý dữ liệu hồ sơ nhằm cá nhân hóa gợi ý không?",
-    ],
+    questions_to_improve_recommendation: [copy.consentQuestion],
     memory_update: {
       stable_interests: [],
       stable_abilities: [],
@@ -363,6 +381,7 @@ function createRoadmap({
 }
 
 function createMockCareerGuidance(input: CareerGuidanceInput): CareerGuidanceOutput {
+  const outputCopy = REQUIRED_OUTPUT_COPY[input.user_request.preferred_output_language];
   const { student_profile: profile, labor_market_signals: market, user_request: request } = input;
   const interests = unique([
     ...profile.personal_interests.map((interest) => interest.name),
@@ -458,7 +477,7 @@ function createMockCareerGuidance(input: CareerGuidanceInput): CareerGuidanceOut
             },
           ]
         : [],
-      autonomy_note: AUTONOMY_NOTE,
+      autonomy_note: outputCopy.autonomyNote,
     } satisfies CareerRecommendation;
   });
 
@@ -488,7 +507,7 @@ function createMockCareerGuidance(input: CareerGuidanceInput): CareerGuidanceOut
   }));
 
   return careerGuidanceOutputSchema.parse({
-    disclaimer: `${DISCLAIMER} Đây là dữ liệu mock deterministic vì dịch vụ LLM chưa được cấu hình.`,
+    disclaimer: `${outputCopy.disclaimer} ${outputCopy.mockDisclaimer}`,
     profile_summary: {
       strengths,
       interests,
@@ -522,13 +541,18 @@ function createMockCareerGuidance(input: CareerGuidanceInput): CareerGuidanceOut
   });
 }
 
-function applyMandatoryGuardrails(output: CareerGuidanceOutput): CareerGuidanceOutput {
+function applyMandatoryGuardrails(
+  output: CareerGuidanceOutput,
+  language: "vi" | "en",
+): CareerGuidanceOutput {
+  const copy = REQUIRED_OUTPUT_COPY[language];
+
   return careerGuidanceOutputSchema.parse({
     ...output,
-    disclaimer: DISCLAIMER,
+    disclaimer: copy.disclaimer,
     recommendations: output.recommendations.map((recommendation) => ({
       ...recommendation,
-      autonomy_note: AUTONOMY_NOTE,
+      autonomy_note: copy.autonomyNote,
     })),
   });
 }
@@ -544,7 +568,7 @@ export async function generateCareerGuidance(
   const input = sanitizeCareerGuidanceInput(rawInput);
 
   if (!input.student_profile.consent_data_usage) {
-    return createConsentRequiredOutput();
+    return createConsentRequiredOutput(input.user_request.preferred_output_language);
   }
 
   if (!process.env.FPT_AI_API_KEY) {
@@ -575,7 +599,10 @@ export async function generateCareerGuidance(
     );
   }
 
-  return applyMandatoryGuardrails(parsedOutput.data);
+  return applyMandatoryGuardrails(
+    parsedOutput.data,
+    input.user_request.preferred_output_language,
+  );
 }
 
 export { CAREERLENS_SYSTEM_PROMPT } from "./system-prompt";

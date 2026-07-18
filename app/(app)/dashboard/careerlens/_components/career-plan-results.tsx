@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
   BookOpenCheck,
   BriefcaseBusiness,
@@ -19,6 +20,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -29,15 +31,6 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { CareerGuidanceOutput } from "@/lib/careerlens/schemas";
-
-const categoryLabels: Record<CareerGuidanceOutput["recommendations"][number]["path_category"], string> = {
-  university: "Đại học",
-  college: "Cao đẳng",
-  vocational: "Học nghề",
-  certificate: "Chứng chỉ",
-  apprenticeship: "Học việc",
-  self_learning: "Tự học có hướng dẫn",
-};
 
 function cleanText(value: string) {
   return value.replace(/[–—]/g, "-");
@@ -62,35 +55,60 @@ type CareerPlanResultsProps = {
 };
 
 export function CareerPlanResults({ output, successMessage }: CareerPlanResultsProps) {
+  const t = useTranslations("Roadmap.results");
+
   return (
-    <section aria-labelledby="career-plan-results" className="flex flex-col gap-8">
-      <header className="max-w-3xl">
-        <p className="text-sm font-medium text-primary">Kết quả phân tích</p>
-        <h2 id="career-plan-results" className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-          Ba hướng để em kiểm chứng
-        </h2>
-        <p className="mt-3 text-base leading-7 text-muted-foreground">
-          {cleanText(successMessage ?? "So sánh mức phù hợp, skill gap và công sức cần đầu tư trước khi chọn.")}
-        </p>
+    <section aria-labelledby="career-plan-results" className="flex flex-col gap-12">
+      <header className="grid overflow-hidden rounded-[2.25rem] bg-foreground text-background lg:grid-cols-[minmax(0,1fr)_18rem]">
+        <div className="p-7 sm:p-10 lg:p-12">
+          <p className="font-mono text-xs uppercase tracking-[0.16em] text-background/50">
+            {t("eyebrow")}
+          </p>
+          <h2
+            id="career-plan-results"
+            className="mt-5 max-w-3xl text-3xl font-semibold tracking-[-0.04em] text-balance sm:text-5xl"
+          >
+            {t("title")}
+          </h2>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-background/60">
+            {cleanText(successMessage ?? t("description"))}
+          </p>
+        </div>
+        <div className="grid grid-cols-2 border-t border-background/10 lg:grid-cols-1 lg:border-t-0 lg:border-l">
+          <div className="flex flex-col justify-end p-6 sm:p-8">
+            <p className="font-mono text-5xl font-semibold tracking-[-0.06em]">
+              {output.recommendations.length}
+            </p>
+            <p className="mt-2 text-sm text-background/50">{t("directionCount")}</p>
+          </div>
+          <div className="flex flex-col justify-end border-l border-background/10 p-6 sm:p-8 lg:border-t lg:border-l-0">
+            <p className="font-mono text-lg font-semibold uppercase">
+              {t(`confidence.${output.profile_summary.data_confidence}`)}
+            </p>
+            <p className="mt-2 text-sm text-background/50">{t("confidenceLabel")}</p>
+          </div>
+        </div>
       </header>
 
-      <Alert>
+      <Alert className="rounded-2xl bg-muted/45">
         <Compass aria-hidden="true" />
-        <AlertTitle>Đây là gợi ý tham khảo</AlertTitle>
+        <AlertTitle>{t("disclaimerTitle")}</AlertTitle>
         <AlertDescription>{cleanText(output.disclaimer)}</AlertDescription>
       </Alert>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,0.75fr)]">
-        <Card>
-          <CardHeader>
-            <CardTitle>Hồ sơ AI đã đọc</CardTitle>
+      <div className="grid overflow-hidden rounded-[2rem] border bg-card lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.65fr)]">
+        <Card className="rounded-none border-0 shadow-none">
+          <CardHeader className="p-6 sm:p-8">
+            <CardTitle>{t("profileTitle")}</CardTitle>
             <CardDescription>
-              Độ tin cậy dữ liệu: {output.profile_summary.data_confidence}
+              {t("profileDescription", {
+                confidence: t(`confidence.${output.profile_summary.data_confidence}`),
+              })}
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-6 sm:grid-cols-2">
+          <CardContent className="grid gap-8 px-6 pb-8 sm:grid-cols-2 sm:px-8">
             <div>
-              <h3 className="text-sm font-medium">Điểm mạnh</h3>
+              <h3 className="text-sm font-medium">{t("strengths")}</h3>
               {output.profile_summary.strengths.length > 0 ? (
                 <ul className="mt-3 flex flex-col gap-2 text-sm text-muted-foreground">
                   {output.profile_summary.strengths.map((strength) => (
@@ -101,11 +119,11 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
                   ))}
                 </ul>
               ) : (
-                <p className="mt-3 text-sm text-muted-foreground">Chưa đủ dữ liệu để kết luận.</p>
+                <p className="mt-3 text-sm text-muted-foreground">{t("noStrengths")}</p>
               )}
             </div>
             <div>
-              <h3 className="text-sm font-medium">Sở thích và tín hiệu</h3>
+              <h3 className="text-sm font-medium">{t("interests")}</h3>
               {output.profile_summary.interests.length + output.profile_summary.personal_signals.length > 0 ? (
                 <ul className="mt-3 flex flex-col gap-2 text-sm text-muted-foreground">
                   {[...output.profile_summary.interests, ...output.profile_summary.personal_signals]
@@ -118,23 +136,23 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
                     ))}
                 </ul>
               ) : (
-                <p className="mt-3 text-sm text-muted-foreground">Chưa có tín hiệu cá nhân rõ ràng.</p>
+                <p className="mt-3 text-sm text-muted-foreground">{t("noInterests")}</p>
               )}
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Tín hiệu thị trường</CardTitle>
-            <CardDescription>Các kỹ năng thiếu hụt nổi bật trong market seed.</CardDescription>
+        <Card className="rounded-none border-x-0 border-y-0 bg-muted/45 shadow-none lg:border-l">
+          <CardHeader className="p-6 sm:p-8">
+            <CardTitle>{t("marketTitle")}</CardTitle>
+            <CardDescription>{t("marketDescription")}</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-6 pb-8 sm:px-8">
             {output.market_summary.short_supply_skills.length > 0 ? (
               <ul className="flex flex-col gap-4">
                 {output.market_summary.short_supply_skills.slice(0, 4).map((item) => (
-                  <li key={`${item.skill}-${item.region}`}>
-                    <p className="font-medium">{cleanText(item.skill)}</p>
+                  <li key={`${item.skill}-${item.region}`} className="border-t pt-4 first:border-t-0 first:pt-0">
+                    <p className="text-base font-medium">{cleanText(item.skill)}</p>
                     <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
                       <MapPin aria-hidden="true" className="size-4" />
                       {cleanText(item.region)}
@@ -143,41 +161,47 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-muted-foreground">
-                Chưa đủ dữ liệu để xác định kỹ năng thiếu hụt.
-              </p>
+              <p className="text-sm text-muted-foreground">{t("noMarket")}</p>
             )}
           </CardContent>
         </Card>
       </div>
 
-      <div className="flex flex-col gap-7">
+      <div className="flex flex-col gap-8">
         {output.recommendations.map((recommendation, recommendationIndex) => (
-          <Card key={`${recommendation.path_title}-${recommendationIndex}`}>
-            <CardHeader className="gap-5 lg:grid-cols-[minmax(0,1fr)_9rem] lg:items-start">
+          <Card
+            key={`${recommendation.path_title}-${recommendationIndex}`}
+            className="overflow-hidden rounded-[2rem] border-0 bg-muted/35 shadow-none ring-1 ring-foreground/5"
+          >
+            <CardHeader className="gap-7 p-6 sm:p-8 lg:grid-cols-[5rem_minmax(0,1fr)_10rem] lg:items-start">
+              <p className="font-mono text-5xl font-medium tracking-[-0.06em] text-foreground/20">
+                0{recommendationIndex + 1}
+              </p>
               <div>
-                <p className="text-sm font-medium text-primary">
-                  {categoryLabels[recommendation.path_category]}
-                </p>
-                <CardTitle className="mt-1">{cleanText(recommendation.path_title)}</CardTitle>
-                <CardDescription className="mt-2 max-w-3xl">
+                <Badge variant="outline" className="border-primary/25 text-primary">
+                  {t(`category.${recommendation.path_category}`)}
+                </Badge>
+                <CardTitle className="mt-4 text-2xl tracking-[-0.025em] sm:text-3xl">
+                  {cleanText(recommendation.path_title)}
+                </CardTitle>
+                <CardDescription className="mt-3 max-w-3xl text-sm leading-6 sm:text-base sm:leading-7">
                   {cleanText(recommendation.fit_explanation)}
                 </CardDescription>
               </div>
-              <div className="lg:text-right">
-                <p className="font-mono text-4xl font-semibold tracking-tight">
+              <div className="rounded-2xl bg-background p-5 ring-1 ring-foreground/5 lg:text-right">
+                <p className="font-mono text-4xl font-semibold tracking-[-0.05em]">
                   {recommendation.fit_score}
                 </p>
-                <p className="mt-1 text-sm text-muted-foreground">điểm phù hợp tham khảo</p>
+                <p className="mt-1 text-sm text-muted-foreground">{t("fitLabel")}</p>
               </div>
             </CardHeader>
 
-            <CardContent className="flex flex-col gap-7">
-              <div className="grid gap-6 lg:grid-cols-2">
-                <div>
+            <CardContent className="flex flex-col gap-8 bg-card px-6 py-8 sm:px-8">
+              <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+                <div className="border-t pt-5">
                   <h3 className="flex items-center gap-2 text-sm font-medium">
                     <Target aria-hidden="true" className="size-4 text-primary" />
-                    Vì sao hướng này đáng thử
+                    {t("matchedTitle")}
                   </h3>
                   <ul className="mt-3 flex flex-col gap-2 text-sm text-muted-foreground">
                     {recommendation.matched_profile_signals.slice(0, 5).map((signal) => (
@@ -189,10 +213,10 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
                   </ul>
                 </div>
 
-                <div>
+                <div className="border-t pt-5">
                   <h3 className="flex items-center gap-2 text-sm font-medium">
                     <Gauge aria-hidden="true" className="size-4 text-primary" />
-                    Bằng chứng thị trường
+                    {t("evidenceTitle")}
                   </h3>
                   <ul className="mt-3 flex flex-col gap-2 text-sm text-muted-foreground">
                     {recommendation.market_evidence.slice(0, 5).map((evidence) => (
@@ -202,16 +226,20 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
                 </div>
               </div>
 
-              <Separator />
-
               <div>
-                <h3 className="text-base font-semibold">Skill gap cần ưu tiên</h3>
+                <div className="flex items-center gap-4">
+                  <h3 className="shrink-0 text-base font-semibold">{t("skillGapsTitle")}</h3>
+                  <Separator />
+                </div>
                 <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {recommendation.skill_gaps.map((gap) => (
-                    <div key={gap.skill} className="rounded-xl bg-muted/60 p-4">
+                    <div key={gap.skill} className="rounded-2xl bg-muted/60 p-5">
                       <p className="font-medium">{cleanText(gap.skill)}</p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {gap.current_level} đến {gap.target_level}
+                        {t("levelRange", {
+                          current: gap.current_level,
+                          target: gap.target_level,
+                        })}
                       </p>
                       <p className="mt-3 text-sm leading-6 text-muted-foreground">
                         {cleanText(gap.why_needed)}
@@ -222,9 +250,9 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
               </div>
 
               <div>
-                <h3 className="mb-4 flex items-center gap-2 text-base font-semibold">
+                <h3 className="mb-4 flex items-center gap-2 border-t pt-6 text-base font-semibold">
                   <BookOpenCheck aria-hidden="true" className="size-4 text-primary" />
-                  Roadmap thực hành
+                  {t("roadmapTitle")}
                 </h3>
                 <Accordion>
                   {recommendation.roadmap.map((stage) => (
@@ -240,24 +268,26 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
                       <AccordionContent>
                         {stage.stage_type === "learning" ? (
                           <div className="flex flex-col gap-6">
-                            <div className="rounded-xl bg-muted/60 p-4">
-                              <p className="text-sm font-medium">Ngành hoặc hướng chuyên sâu</p>
+                            <div className="rounded-2xl bg-muted/60 p-5">
+                              <p className="text-sm font-medium">{t("learning.track")}</p>
                               <p className="mt-2 text-sm leading-6 text-muted-foreground">
                                 {cleanText(stage.major_or_track)}
                               </p>
                             </div>
 
                             <div>
-                              <p className="font-medium">Môn và nội dung cần học</p>
+                              <p className="font-medium">{t("learning.subjects")}</p>
                               <div className="mt-3 grid gap-3 md:grid-cols-2">
                                 {stage.subjects.map((subject) => (
-                                  <div key={subject.subject_name} className="rounded-xl border p-4">
+                                  <div key={subject.subject_name} className="rounded-2xl border p-5">
                                     <p className="font-medium">{cleanText(subject.subject_name)}</p>
                                     <p className="mt-2 text-sm leading-6 text-muted-foreground">
                                       {cleanText(subject.focus)}
                                     </p>
                                     <p className="mt-3 text-xs leading-5 text-muted-foreground">
-                                      Bằng chứng: {cleanText(subject.evidence_of_completion)}
+                                      {t("learning.evidence", {
+                                        value: cleanText(subject.evidence_of_completion),
+                                      })}
                                     </p>
                                   </div>
                                 ))}
@@ -266,16 +296,18 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
 
                             {stage.certificates.length > 0 ? (
                               <div>
-                                <p className="font-medium">Chứng chỉ nên cân nhắc</p>
+                                <p className="font-medium">{t("learning.certificates")}</p>
                                 <div className="mt-3 grid gap-3 md:grid-cols-2">
                                   {stage.certificates.map((certificate) => (
-                                    <div key={certificate.certificate_name} className="rounded-xl bg-muted/60 p-4">
+                                    <div key={certificate.certificate_name} className="rounded-2xl bg-muted/60 p-5">
                                       <p className="font-medium">{cleanText(certificate.certificate_name)}</p>
                                       <p className="mt-2 text-sm leading-6 text-muted-foreground">
                                         {cleanText(certificate.purpose)}
                                       </p>
                                       <p className="mt-2 text-xs text-muted-foreground">
-                                        Thời điểm: {cleanText(certificate.target_time)}
+                                        {t("learning.certificateTiming", {
+                                          value: cleanText(certificate.target_time),
+                                        })}
                                       </p>
                                     </div>
                                   ))}
@@ -284,16 +316,18 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
                             ) : null}
 
                             <div>
-                              <p className="font-medium">Nghiên cứu khoa học, cuộc thi và dự án CLB</p>
+                              <p className="font-medium">{t("learning.activities")}</p>
                               <div className="mt-3 flex flex-col gap-3">
                                 {stage.research_and_competitions.map((activity) => (
-                                  <div key={`${activity.activity_type}-${activity.activity_name}`} className="rounded-xl border p-4">
+                                  <div key={`${activity.activity_type}-${activity.activity_name}`} className="rounded-2xl border p-5">
                                     <p className="font-medium">{cleanText(activity.activity_name)}</p>
                                     <p className="mt-2 text-sm leading-6 text-muted-foreground">
                                       {cleanText(activity.goal)}
                                     </p>
                                     <p className="mt-2 text-xs leading-5 text-muted-foreground">
-                                      Bằng chứng: {cleanText(activity.evidence_of_completion)}
+                                      {t("learning.evidence", {
+                                        value: cleanText(activity.evidence_of_completion),
+                                      })}
                                     </p>
                                   </div>
                                 ))}
@@ -301,17 +335,17 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
                             </div>
 
                             <div>
-                              <p className="font-medium">Mốc hoàn thành</p>
+                              <p className="font-medium">{t("learning.milestones")}</p>
                               <DetailList items={stage.milestones} />
                             </div>
                           </div>
                         ) : stage.stage_type === "internship" ? (
                           <div className="flex flex-col gap-6">
                             <div>
-                              <p className="font-medium">Nên tìm cơ hội ở đâu</p>
+                              <p className="font-medium">{t("internship.where")}</p>
                               <div className="mt-3 grid gap-3 md:grid-cols-2">
                                 {stage.target_organizations.map((target) => (
-                                  <div key={`${target.organization}-${target.region}`} className="rounded-xl border p-4">
+                                  <div key={`${target.organization}-${target.region}`} className="rounded-2xl border p-5">
                                     <p className="font-medium">{cleanText(target.organization)}</p>
                                     <p className="mt-1 text-sm text-primary">{cleanText(target.region)}</p>
                                     <p className="mt-3 text-sm leading-6 text-muted-foreground">
@@ -323,20 +357,20 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
                             </div>
 
                             <div className="grid gap-5 md:grid-cols-2">
-                              <div className="rounded-xl bg-muted/60 p-4">
-                                <p className="font-medium">Chuẩn bị CV và portfolio</p>
+                              <div className="rounded-2xl bg-muted/60 p-5">
+                                <p className="font-medium">{t("internship.cv")}</p>
                                 <DetailList items={stage.cv_preparation} />
                               </div>
-                              <div className="rounded-xl bg-muted/60 p-4">
-                                <p className="font-medium">Kiến thức cần áp dụng</p>
+                              <div className="rounded-2xl bg-muted/60 p-5">
+                                <p className="font-medium">{t("internship.knowledge")}</p>
                                 <DetailList items={stage.applied_knowledge} />
                               </div>
-                              <div className="rounded-xl bg-muted/60 p-4">
-                                <p className="font-medium">Chuẩn bị vòng phỏng vấn</p>
+                              <div className="rounded-2xl bg-muted/60 p-5">
+                                <p className="font-medium">{t("internship.interview")}</p>
                                 <DetailList items={stage.interview_preparation} />
                               </div>
-                              <div className="rounded-xl bg-muted/60 p-4">
-                                <p className="font-medium">Kết quả cần đạt sau kỳ intern</p>
+                              <div className="rounded-2xl bg-muted/60 p-5">
+                                <p className="font-medium">{t("internship.success")}</p>
                                 <DetailList items={stage.success_metrics} />
                               </div>
                             </div>
@@ -344,46 +378,50 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
                         ) : (
                           <div className="flex flex-col gap-6">
                             <div>
-                              <p className="font-medium">Công việc và cách đánh giá offer</p>
+                              <p className="font-medium">{t("fullTime.roles")}</p>
                               <div className="mt-3 flex flex-col gap-4">
                                 {stage.target_roles.map((role) => (
-                                  <div key={role.role_name} className="rounded-xl border p-4">
+                                  <div key={role.role_name} className="rounded-2xl border p-5">
                                     <p className="font-medium">{cleanText(role.role_name)}</p>
                                     <div className="mt-4 grid gap-5 md:grid-cols-2">
                                       <div>
-                                        <p className="text-sm font-medium">Trách nhiệm chính</p>
+                                        <p className="text-sm font-medium">{t("fullTime.responsibilities")}</p>
                                         <DetailList items={role.responsibilities} />
                                       </div>
                                       <div>
-                                        <p className="text-sm font-medium">Lương, thưởng và phúc lợi</p>
+                                        <p className="text-sm font-medium">{t("fullTime.salary")}</p>
                                         <DetailList items={role.salary_and_benefits_basis} />
                                       </div>
                                     </div>
                                     <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                                      Tín hiệu sẵn sàng: {cleanText(role.readiness_signal)}
+                                      {t("fullTime.readiness", {
+                                        value: cleanText(role.readiness_signal),
+                                      })}
                                     </p>
                                   </div>
                                 ))}
                               </div>
                             </div>
 
-                            <div className="rounded-xl bg-muted/60 p-4">
-                              <p className="font-medium">Kế hoạch 90 ngày đầu</p>
+                            <div className="rounded-2xl bg-muted/60 p-5">
+                              <p className="font-medium">{t("fullTime.first90")}</p>
                               <DetailList items={stage.first_90_days} />
                             </div>
 
                             <div>
-                              <p className="font-medium">Đường phát triển lên vị trí cao hơn</p>
+                              <p className="font-medium">{t("fullTime.promotion")}</p>
                               <div className="mt-3 grid gap-3 md:grid-cols-2">
                                 {stage.promotion_path.map((step) => (
-                                  <div key={step.target_position} className="rounded-xl border p-4">
+                                  <div key={step.target_position} className="rounded-2xl border p-5">
                                     <p className="font-medium">{cleanText(step.target_position)}</p>
                                     <p className="mt-1 text-sm text-primary">
                                       {cleanText(step.expected_timeline)}
                                     </p>
                                     <DetailList items={step.capabilities_to_build} />
                                     <p className="mt-3 text-xs leading-5 text-muted-foreground">
-                                      Bằng chứng sẵn sàng: {cleanText(step.proof_of_readiness)}
+                                      {t("fullTime.readinessProof", {
+                                        value: cleanText(step.proof_of_readiness),
+                                      })}
                                     </p>
                                   </div>
                                 ))}
@@ -399,13 +437,13 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
 
               {recommendation.related_jobs.length > 0 ? (
                 <div>
-                  <h3 className="mb-4 flex items-center gap-2 text-base font-semibold">
+                  <h3 className="mb-4 flex items-center gap-2 border-t pt-6 text-base font-semibold">
                     <BriefcaseBusiness aria-hidden="true" className="size-4 text-primary" />
-                    Việc làm liên quan
+                    {t("relatedJobsTitle")}
                   </h3>
                   <div className="grid gap-4 md:grid-cols-2">
                     {recommendation.related_jobs.slice(0, 4).map((job) => (
-                      <div key={`${job.job_title}-${job.region}`} className="rounded-xl border p-4">
+                      <div key={`${job.job_title}-${job.region}`} className="rounded-2xl border p-5">
                         <p className="font-medium">{cleanText(job.job_title)}</p>
                         <p className="mt-1 text-sm text-muted-foreground">
                           {cleanText(job.region)} | {cleanText(job.salary_band)}
@@ -420,7 +458,7 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
               ) : null}
             </CardContent>
 
-            <CardFooter className="gap-3">
+            <CardFooter className="gap-3 border-t bg-card px-6 py-5 sm:px-8">
               <CircleHelp aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
               <p className="text-sm leading-6 text-muted-foreground">
                 {cleanText(recommendation.autonomy_note)}
@@ -431,16 +469,16 @@ export function CareerPlanResults({ output, successMessage }: CareerPlanResultsP
       </div>
 
       {output.questions_to_improve_recommendation.length > 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Câu hỏi cho lần tư vấn tiếp theo</CardTitle>
-            <CardDescription>Trả lời thêm các câu này để thu hẹp skill gap và chi phí.</CardDescription>
+        <Card className="rounded-[2rem] shadow-none">
+          <CardHeader className="p-6 sm:p-8">
+            <CardTitle>{t("followUpTitle")}</CardTitle>
+            <CardDescription>{t("followUpDescription")}</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-6 pb-8 sm:px-8">
             <ol className="flex flex-col gap-3 text-sm text-muted-foreground">
               {output.questions_to_improve_recommendation.map((question, index) => (
-                <li key={question} className="flex gap-3">
-                  <span className="font-mono text-foreground">{index + 1}.</span>
+                <li key={question} className="grid grid-cols-[2rem_1fr] gap-3 border-t pt-4 first:border-t-0 first:pt-0">
+                  <span className="font-mono text-foreground/45">0{index + 1}</span>
                   {cleanText(question)}
                 </li>
               ))}
