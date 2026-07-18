@@ -46,12 +46,16 @@ const recordKindSchema = z.enum([
 ]);
 const recordIdSchema = z.string().uuid();
 
-type Translation = Awaited<ReturnType<typeof getTranslations>>;
+function getProfileRecordTranslations() {
+  return getTranslations("Profile.extended");
+}
+
+type Translation = Awaited<ReturnType<typeof getProfileRecordTranslations>>;
 
 async function getUserContext() {
   const [viewer, t] = await Promise.all([
     requireViewer(),
-    getTranslations("Profile.extended"),
+    getProfileRecordTranslations(),
   ]);
 
   if (viewer.actor.kind !== "user") {

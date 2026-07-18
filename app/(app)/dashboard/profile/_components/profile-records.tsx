@@ -67,7 +67,7 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
@@ -295,9 +295,9 @@ function PeriodFields({ record, currentYear }: { record?: PeriodValue; currentYe
           <FieldLegend variant="label">{t("common.startDate")}</FieldLegend>
           <FieldGroup className="grid grid-cols-2 gap-3">
             <FormField field="startMonth" label={t("common.month")}>
-              <Select id="profile-record-startMonth" name="startMonth" defaultValue={record?.startMonth ?? 1} required>
+              <NativeSelect id="profile-record-startMonth" name="startMonth" defaultValue={record?.startMonth ?? 1} required>
                 {monthNumbers.map((month) => <option key={month} value={month}>{profileT(`months.${month}`)}</option>)}
-              </Select>
+              </NativeSelect>
             </FormField>
             <FormField field="startYear" label={t("common.year")}>
               <Input id="profile-record-startYear" name="startYear" type="number" min={1900} max={yearMax} defaultValue={record?.startYear ?? currentYear} required />
@@ -308,9 +308,9 @@ function PeriodFields({ record, currentYear }: { record?: PeriodValue; currentYe
           <FieldLegend variant="label">{t("common.endDate")}</FieldLegend>
           <FieldGroup className="grid grid-cols-2 gap-3">
             <FormField field="endMonth" label={t("common.month")}>
-              <Select id="profile-record-endMonth" name="endMonth" defaultValue={record?.endMonth ?? 12} required>
+              <NativeSelect id="profile-record-endMonth" name="endMonth" defaultValue={record?.endMonth ?? 12} required>
                 {monthNumbers.map((month) => <option key={month} value={month}>{profileT(`months.${month}`)}</option>)}
-              </Select>
+              </NativeSelect>
             </FormField>
             <FormField field="endYear" label={t("common.year")}>
               <Input id="profile-record-endYear" name="endYear" type="number" min={1900} max={yearMax} defaultValue={record?.endYear ?? currentYear} required />
@@ -344,11 +344,11 @@ function EducationFields({ record, currentYear }: { record?: EducationRecordDto;
     <FieldGroup>
       {record ? <input type="hidden" name="id" value={record.id} /> : null}
       <FormField field="level" label={t("education.level")}>
-        <Select id="profile-record-level" name="level" value={level} onChange={(event) => setLevel(event.target.value as typeof level)} required>
+        <NativeSelect id="profile-record-level" name="level" value={level} onChange={(event) => setLevel(event.target.value as typeof level)} required>
           {EDUCATION_LEVELS.map((educationLevel) => (
             <option key={educationLevel} value={educationLevel}>{t(`education.levels.${educationLevel}`)}</option>
           ))}
-        </Select>
+        </NativeSelect>
       </FormField>
       <FormField field="institutionName" label={t("education.institutionName")}>
         <Input id="profile-record-institutionName" name="institutionName" defaultValue={record?.institutionName} maxLength={200} required />
@@ -380,10 +380,10 @@ function EducationFields({ record, currentYear }: { record?: EducationRecordDto;
       ) : (
         <>
           <FormField field="scoreScale" label={t("education.scoreScale")} description={t("education.scoreScaleHint")}>
-            <Select id="profile-record-scoreScale" name="scoreScale" value={scoreScale} onChange={(event) => setScoreScale(Number(event.target.value) as 4 | 10)} required>
+            <NativeSelect id="profile-record-scoreScale" name="scoreScale" value={scoreScale} onChange={(event) => setScoreScale(Number(event.target.value) as 4 | 10)} required>
               <option value="4">{t("education.scale4")}</option>
               <option value="10">{t("education.scale10")}</option>
-            </Select>
+            </NativeSelect>
           </FormField>
           <FieldSet>
             <FieldLegend>{t("education.transcriptImport")}</FieldLegend>
@@ -485,7 +485,7 @@ function WorkExperienceFields({ record, currentYear }: { record?: WorkExperience
       <FieldSet>
         <FieldLegend variant="label">{t("work.startDate")}</FieldLegend>
         <FieldGroup className="grid gap-4 sm:grid-cols-2">
-          <FormField field="startMonth" label={t("work.month")}><Select id="profile-record-startMonth" name="startMonth" defaultValue={record?.startMonth ?? 1} required>{monthNumbers.map((month) => <option key={month} value={month}>{profileT(`months.${month}`)}</option>)}</Select></FormField>
+          <FormField field="startMonth" label={t("work.month")}><NativeSelect id="profile-record-startMonth" name="startMonth" defaultValue={record?.startMonth ?? 1} required>{monthNumbers.map((month) => <option key={month} value={month}>{profileT(`months.${month}`)}</option>)}</NativeSelect></FormField>
           <FormField field="startYear" label={t("work.year")}><Input id="profile-record-startYear" name="startYear" type="number" min={1900} max={yearMax} defaultValue={record?.startYear ?? currentYear} required /></FormField>
         </FieldGroup>
       </FieldSet>
@@ -496,7 +496,7 @@ function WorkExperienceFields({ record, currentYear }: { record?: WorkExperience
       <FieldSet disabled={isCurrent}>
         <FieldLegend variant="label">{t("work.endDate")}</FieldLegend>
         <FieldGroup className="grid gap-4 sm:grid-cols-2">
-          <FormField field="endMonth" label={t("work.month")}><Select id="profile-record-endMonth" name="endMonth" defaultValue={record?.endMonth ?? ""} required={!isCurrent} disabled={isCurrent}><option value="">{t("common.optional")}</option>{monthNumbers.map((month) => <option key={month} value={month}>{profileT(`months.${month}`)}</option>)}</Select></FormField>
+          <FormField field="endMonth" label={t("work.month")}><NativeSelect id="profile-record-endMonth" name="endMonth" defaultValue={record?.endMonth ?? ""} required={!isCurrent} disabled={isCurrent}><option value="">{t("common.optional")}</option>{monthNumbers.map((month) => <option key={month} value={month}>{profileT(`months.${month}`)}</option>)}</NativeSelect></FormField>
           <FormField field="endYear" label={t("work.year")}><Input id="profile-record-endYear" name="endYear" type="number" min={1900} max={yearMax} defaultValue={record?.endYear ?? ""} required={!isCurrent} disabled={isCurrent} /></FormField>
         </FieldGroup>
         <FormFieldError field="endDate" />

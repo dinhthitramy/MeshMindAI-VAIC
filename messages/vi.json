@@ -174,9 +174,9 @@
     }
   },
   "Dashboard": {
-    "metadataTitle": "Bảng điều khiển",
+    "metadataTitle": "Tổng quan",
     "menuMetadataTitle": "Menu",
-    "homeHeading": "Trang chính bảng điều khiển",
+    "homeHeading": "Tổng quan",
     "menuHeading": "Menu",
     "home": "Trang chính",
     "startingPoint": "Điểm Xuất Phát",
@@ -190,7 +190,263 @@
     "openUserMenu": "Mở menu tài khoản của {name}",
     "profile": "Thông tin cá nhân",
     "logout": "Đăng xuất",
-    "logoutUser": "Đăng xuất {name}"
+    "logoutUser": "Đăng xuất {name}",
+    "careerRoadmap": "Lộ trình AI"
+  },
+  "Roadmap": {
+    "metadataTitle": "Lộ trình AI",
+    "eyebrow": "CareerLens Guidance AI",
+    "title": "Từ hiểu mình đến chọn hướng đi",
+    "description": "Kết nối sở thích, trải nghiệm và điều kiện thực tế với tín hiệu tuyển dụng mẫu tại Việt Nam.",
+    "brief": {
+      "status": "Quy trình phân tích",
+      "title": "Bản định hướng, không phải phán quyết",
+      "description": "CareerLens chuyển thông tin em chia sẻ thành ba hướng đi để so sánh và kiểm chứng."
+    },
+    "steps": {
+      "profile": {
+        "title": "Hồ sơ của em",
+        "description": "Chia sẻ nền tảng, sở thích và điều kiện hiện tại."
+      },
+      "signals": {
+        "title": "Tín hiệu thị trường",
+        "description": "Đối chiếu với dữ liệu nghề và kỹ năng mẫu theo khu vực."
+      },
+      "plan": {
+        "title": "Ba hướng để thử",
+        "description": "So sánh skill gap, roadmap và bằng chứng cần tạo."
+      }
+    },
+    "form": {
+      "badge": "Phân tích riêng cho lần này",
+      "title": "Hồ sơ cho lần phân tích này",
+      "description": "Càng cụ thể về trải nghiệm và điều kiện thực tế, lộ trình càng hữu ích.",
+      "foundation": "Nền tảng hiện tại",
+      "foundationDescription": "Khu vực chỉ được dùng để đối chiếu cơ hội việc làm và mức lương mẫu.",
+      "educationLevel": "Bậc học hiện tại",
+      "educationOptions": {
+        "THPT": "THPT",
+        "college": "Cao đẳng",
+        "university": "Đại học",
+        "graduate": "Sau đại học",
+        "other": "Khác"
+      },
+      "languages": "Ngôn ngữ sử dụng",
+      "languagesPlaceholder": "Tiếng Việt, English",
+      "languagesHint": "Phân tách bằng dấu phẩy.",
+      "currentRegion": "Khu vực hiện tại",
+      "targetRegion": "Khu vực muốn học hoặc làm",
+      "regionHint": "Danh mục 34 tỉnh/thành hiện hành.",
+      "regionPlaceholder": "Gõ để tìm tỉnh/thành",
+      "regionEmpty": "Không tìm thấy tỉnh/thành phù hợp.",
+      "strengths": "Điểm mạnh và điều em quan tâm",
+      "strengthsDescription": "Hãy dùng trải nghiệm thật, không cần viết theo cách của hồ sơ xin việc.",
+      "subject": "Môn hoặc kỹ năng nổi bật",
+      "subjectPlaceholder": "Ví dụ: Toán, viết nội dung, sửa điện",
+      "score": "Điểm tự đánh giá",
+      "interests": "Sở thích và chủ đề quan tâm",
+      "interestsPlaceholder": "Công nghệ, bóng đá, thiết kế, kinh doanh",
+      "interestsHint": "Nhập các mục cách nhau bằng dấu phẩy, hoặc thêm nhanh từ gợi ý theo môn/kỹ năng.",
+      "suggestionsLabel": "Gợi ý chủ đề quan tâm",
+      "activity": "Hoạt động hoặc dự án em từng làm",
+      "activityPlaceholder": "Mô tả vai trò, việc em đã làm và phần khiến em thấy hứng thú hoặc gặp khó khăn.",
+      "conditions": "Điều kiện học tập và làm việc",
+      "conditionsDescription": "Xác định thời gian, ngân sách và môi trường để mỗi hướng đi phù hợp thực tế.",
+      "weeklyHours": "Giờ có thể học mỗi tuần",
+      "budget": "Ngân sách dự kiến",
+      "budgetPlaceholder": "Ví dụ: dưới 20 triệu đồng/năm",
+      "workEnvironment": "Môi trường làm việc mong muốn",
+      "learningStyle": "Cách học phù hợp",
+      "constraints": "Ràng buộc cần cân nhắc",
+      "constraintsPlaceholder": "Ví dụ: cần học gần nhà, cần vừa học vừa làm. Có thể để trống.",
+      "constraintsHint": "Không nhập giới tính, tôn giáo, dân tộc hoặc thông tin nhận dạng không cần thiết.",
+      "goal": "Mục tiêu của lần tư vấn",
+      "goalDescription": "Nêu quyết định em cần đưa ra và câu hỏi mà bản phân tích cần trả lời.",
+      "intent": "Em muốn giải quyết điều gì?",
+      "targetCareer": "Ngành hoặc nghề đang cân nhắc",
+      "targetCareerPlaceholder": "Ví dụ: thiết kế sản phẩm, an toàn thông tin. Có thể để trống.",
+      "question": "Câu hỏi quan trọng nhất của em",
+      "questionPlaceholder": "Ví dụ: Hướng nào phù hợp với điểm mạnh hiện tại nhưng vẫn có lộ trình học trong ngân sách?",
+      "model": "Model phân tích",
+      "modelHint": "Model được gọi qua FPT Cloud AI.",
+      "consent": "Tôi đồng ý dùng dữ liệu trong form để tạo lộ trình hướng nghiệp.",
+      "consentHint": "AI chỉ đưa gợi ý tham khảo và không quyết định thay người học.",
+      "footerHint": "Mỗi lần tạo sẽ sinh ba lựa chọn có giải thích.",
+      "submit": "Tạo lộ trình",
+      "submitting": "Đang tạo lộ trình",
+      "options": {
+        "intent": {
+          "initial_guidance": "Khám phá hướng nghề ban đầu",
+          "switch_major": "Cân nhắc đổi ngành",
+          "find_jobs": "Tìm role và việc làm liên quan",
+          "compare_paths": "So sánh các hướng nghề",
+          "roadmap_detail": "Tạo roadmap chi tiết"
+        },
+        "workEnvironment": {
+          "hybrid": "Kết hợp online và tại chỗ",
+          "team_based": "Làm việc theo nhóm",
+          "independent": "Làm việc độc lập",
+          "hands_on": "Thực hành, thao tác trực tiếp",
+          "fieldwork": "Di chuyển và làm việc hiện trường",
+          "office": "Văn phòng",
+          "remote": "Từ xa"
+        },
+        "learningStyle": {
+          "project_based": "Học qua dự án",
+          "mentor_guided": "Có mentor hướng dẫn",
+          "self_paced": "Tự học theo nhịp riêng",
+          "classroom": "Lớp học có cấu trúc",
+          "apprenticeship": "Học việc tại môi trường thật"
+        }
+      }
+    },
+    "actions": {
+      "userOnly": "Tính năng tạo lộ trình chỉ khả dụng cho tài khoản người học.",
+      "checkFields": "Hãy kiểm tra lại các trường được đánh dấu.",
+      "invalidValue": "Giá trị chưa hợp lệ.",
+      "modelUnavailable": "Model đã chọn không khả dụng.",
+      "chooseModel": "Hãy chọn một model trong danh sách.",
+      "success": "Lộ trình đã sẵn sàng. Em có thể so sánh và mở từng roadmap bên dưới.",
+      "failed": "Chưa thể tạo lộ trình lúc này. Vui lòng thử lại sau ít phút.",
+      "fields": {
+        "activity": "Hãy mô tả một hoạt động hoặc dự án bằng ít nhất 10 ký tự.",
+        "consent": "Cần có sự đồng ý trước khi phân tích dữ liệu.",
+        "currentRegion": "Hãy chọn khu vực hiện tại.",
+        "educationLevel": "Hãy chọn bậc học hiện tại.",
+        "familyConstraints": "Nội dung ràng buộc đang quá dài.",
+        "interests": "Hãy nhập ít nhất một sở thích.",
+        "intent": "Hãy chọn mục tiêu tư vấn.",
+        "languages": "Hãy nhập ít nhất một ngôn ngữ.",
+        "learningStyle": "Hãy chọn cách học phù hợp.",
+        "model": "Hãy chọn model phân tích.",
+        "question": "Câu hỏi cần có ít nhất 10 ký tự.",
+        "strongSubject": "Hãy nhập một môn hoặc kỹ năng nổi bật.",
+        "subjectScore": "Điểm tự đánh giá phải nằm trong khoảng 0-10.",
+        "targetBudget": "Nội dung ngân sách đang quá dài.",
+        "targetCareer": "Tên ngành hoặc nghề đang quá dài.",
+        "targetRegion": "Hãy chọn khu vực mục tiêu.",
+        "weeklyHours": "Số giờ học phải nằm trong khoảng 1-80.",
+        "workEnvironment": "Hãy chọn môi trường làm việc mong muốn."
+      }
+    },
+    "market": {
+      "badge": "Dữ liệu seed",
+      "title": "Dữ liệu thị trường mẫu",
+      "description": "POC chưa dùng crawler production. Các con số dưới đây chỉ mô tả bộ seed hiện tại.",
+      "postings": "tin tuyển dụng",
+      "regions": "tỉnh/thành",
+      "roles": "nghề mỗi tỉnh",
+      "industries": "nhóm ngành",
+      "sourceDate": "Nguồn mẫu ngày {date}"
+    },
+    "privacy": {
+      "title": "Quyền riêng tư được lọc trước",
+      "description": "Giới tính, quê quán, dân tộc và tôn giáo không nằm trong payload gửi tới model."
+    },
+    "principles": {
+      "title": "Cách bản phân tích được tạo",
+      "profile": "AI kết hợp học lực, sở thích, cách học và tín hiệu thị trường.",
+      "roadmap": "Mỗi hướng có skill gap và các chặng thực hành kiểm chứng được.",
+      "market": "Role và salary chỉ lấy từ market seed được cung cấp cho lần chạy."
+    },
+    "loading": "Đang tạo lộ trình",
+    "results": {
+      "eyebrow": "Kết quả phân tích",
+      "title": "Ba hướng để em kiểm chứng",
+      "description": "So sánh mức phù hợp, skill gap và công sức cần đầu tư trước khi chọn.",
+      "directionCount": "hướng để so sánh",
+      "confidenceLabel": "độ tin cậy hồ sơ",
+      "disclaimerTitle": "Đây là gợi ý tham khảo",
+      "profileTitle": "Hồ sơ AI đã đọc",
+      "profileDescription": "Độ tin cậy dữ liệu: {confidence}",
+      "strengths": "Điểm mạnh",
+      "interests": "Sở thích và tín hiệu",
+      "noStrengths": "Chưa đủ dữ liệu để kết luận.",
+      "noInterests": "Chưa có tín hiệu cá nhân rõ ràng.",
+      "marketTitle": "Tín hiệu thị trường",
+      "marketDescription": "Các kỹ năng thiếu hụt nổi bật trong market seed.",
+      "noMarket": "Chưa đủ dữ liệu để xác định kỹ năng thiếu hụt.",
+      "fitLabel": "điểm phù hợp tham khảo",
+      "matchedTitle": "Vì sao hướng này đáng thử",
+      "evidenceTitle": "Bằng chứng thị trường",
+      "skillGapsTitle": "Skill gap cần ưu tiên",
+      "levelRange": "{current} đến {target}",
+      "roadmapTitle": "Roadmap thực hành",
+      "relatedJobsTitle": "Việc làm liên quan",
+      "followUpTitle": "Câu hỏi cho lần tư vấn tiếp theo",
+      "followUpDescription": "Trả lời thêm các câu này để thu hẹp skill gap và chi phí.",
+      "autonomy": "Bạn có thể chọn, thử lại hoặc đổi hướng sau khi kiểm chứng thêm.",
+      "category": {
+        "university": "Đại học",
+        "college": "Cao đẳng",
+        "vocational": "Học nghề",
+        "certificate": "Chứng chỉ",
+        "apprenticeship": "Học việc",
+        "self_learning": "Tự học có hướng dẫn"
+      },
+      "confidence": {
+        "low": "thấp",
+        "medium": "trung bình",
+        "high": "cao"
+      },
+      "learning": {
+        "track": "Ngành hoặc hướng chuyên sâu",
+        "subjects": "Môn và nội dung cần học",
+        "evidence": "Bằng chứng: {value}",
+        "certificates": "Chứng chỉ nên cân nhắc",
+        "certificateTiming": "Thời điểm: {value}",
+        "activities": "Nghiên cứu, cuộc thi và dự án CLB",
+        "milestones": "Mốc hoàn thành"
+      },
+      "internship": {
+        "where": "Nên tìm cơ hội ở đâu",
+        "cv": "Chuẩn bị CV và portfolio",
+        "knowledge": "Kiến thức cần áp dụng",
+        "interview": "Chuẩn bị vòng phỏng vấn",
+        "success": "Kết quả cần đạt sau kỳ intern",
+        "evidence": "Bằng chứng: {value}"
+      },
+      "fullTime": {
+        "roles": "Công việc và cách đánh giá offer",
+        "responsibilities": "Trách nhiệm chính",
+        "salary": "Lương, thưởng và phúc lợi",
+        "readiness": "Tín hiệu sẵn sàng: {value}",
+        "first90": "Kế hoạch 90 ngày đầu",
+        "promotion": "Đường phát triển lên vị trí cao hơn",
+        "readinessProof": "Bằng chứng sẵn sàng: {value}"
+      }
+    }
+  },
+  "Assistant": {
+    "home": "Tổng quan",
+    "welcome": "Chào mừng trở lại, {name}",
+    "overviewDescription": "Tiếp tục hội thoại gần đây, bắt đầu một phiên tư vấn tập trung hoặc xây dựng lộ trình nghề nghiệp.",
+    "openRoadmap": "Mở Lộ trình AI",
+    "workspaceSnapshot": "Tổng quan không gian",
+    "conversationCount": "hội thoại đã lưu",
+    "modelCount": "model AI khả dụng",
+    "newChat": "Cuộc trò chuyện mới",
+    "newConversation": "Tạo cuộc trò chuyện",
+    "conversations": "Cuộc trò chuyện",
+    "delete": "Xóa cuộc trò chuyện",
+    "confirmDelete": "Bấm lần nữa để xác nhận xóa",
+    "model": "Model",
+    "provider": "FPT Cloud AI",
+    "placeholder": "Hỏi về học tập, lộ trình, ngành nghề...",
+    "send": "Gửi tin nhắn",
+    "stop": "Dừng trả lời",
+    "disclaimer": "MeshMind AI hỗ trợ các câu hỏi về giáo dục và định hướng nghề nghiệp.",
+    "emptyTitle": "Bắt đầu một câu hỏi",
+    "emptyDescription": "Mình có thể giúp em khám phá ngành học, xây lộ trình và chuẩn bị cho cơ hội đầu tiên.",
+    "sessionsError": "Không thể tải danh sách cuộc trò chuyện.",
+    "messageError": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "prompts": {
+      "major": "Làm thế nào để chọn ngành học phù hợp với sở thích và năng lực?",
+      "coding": "Lộ trình học lập trình từ con số 0 cho người mới bắt đầu?",
+      "university": "Cần chuẩn bị gì để thi đỗ vào đại học top đầu Việt Nam?",
+      "skills": "Những kỹ năng quan trọng nhất sinh viên cần có trong thời đại AI?",
+      "scholarship": "Học bổng du học Nhật Bản và Hàn Quốc dành cho sinh viên Việt Nam?"
+    }
   },
   "StartingPoint": {
     "metadataTitle": "Điểm Xuất Phát",

@@ -24,7 +24,7 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 
@@ -149,7 +149,7 @@ function ProfileForm({ currentYear, profile }: ProfileFormProps) {
                   <FieldLabel htmlFor="profile-birth-month">
                     {t("form.birthMonth")}
                   </FieldLabel>
-                  <Select
+                  <NativeSelect
                     id="profile-birth-month"
                     name="birthMonth"
                     autoComplete="bday-month"
@@ -166,7 +166,7 @@ function ProfileForm({ currentYear, profile }: ProfileFormProps) {
                         {t(`months.${month}`)}
                       </option>
                     ))}
-                  </Select>
+                  </NativeSelect>
                   <FieldError>{fieldError("birthMonth")}</FieldError>
                 </Field>
 

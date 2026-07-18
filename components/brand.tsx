@@ -22,7 +22,7 @@ function BrandMark({ className }: BrandMarkProps) {
     <span
       aria-hidden="true"
       className={cn(
-        "relative block h-7 w-12 shrink-0 drop-shadow-[0_3px_6px_rgb(0_0_0_/_0.45)]",
+        "relative block h-7 w-12 shrink-0 drop-shadow-[0_3px_6px_rgb(0_0_0_/_0.45)] dark:drop-shadow-[0_3px_7px_rgb(128_128_128_/_0.3)]",
         className,
       )}
     >

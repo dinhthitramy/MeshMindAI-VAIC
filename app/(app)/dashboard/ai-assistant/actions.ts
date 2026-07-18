@@ -1,6 +1,7 @@
 "use server";
 
 import { desc, eq, and } from "drizzle-orm";
+import { getTranslations } from "next-intl/server";
 
 import { requireViewer } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db";
@@ -27,11 +28,12 @@ export async function getSessionsAction(): Promise<ChatSession[]> {
 export async function createSessionAction(model: string): Promise<ChatSession> {
   const viewer = await requireViewer();
   if (viewer.actor.kind !== "user") throw new Error("Forbidden");
+  const t = await getTranslations("Assistant");
 
   const db = getDb();
   const [session] = await db
     .insert(chatSessions)
-    .values({ userId: viewer.actor.userId, title: "New Chat", model })
+    .values({ userId: viewer.actor.userId, title: t("newChat"), model })
     .returning();
 
   return session;

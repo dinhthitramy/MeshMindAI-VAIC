@@ -174,9 +174,9 @@
     }
   },
   "Dashboard": {
-    "metadataTitle": "Dashboard",
+    "metadataTitle": "Overview",
     "menuMetadataTitle": "Menu",
-    "homeHeading": "Dashboard home",
+    "homeHeading": "Overview",
     "menuHeading": "Menu",
     "home": "Home",
     "startingPoint": "Starting Point",
@@ -190,7 +190,263 @@
     "openUserMenu": "Open the account menu for {name}",
     "profile": "Personal information",
     "logout": "Log out",
-    "logoutUser": "Log out {name}"
+    "logoutUser": "Log out {name}",
+    "careerRoadmap": "AI Roadmap"
+  },
+  "Roadmap": {
+    "metadataTitle": "AI Roadmap",
+    "eyebrow": "CareerLens Guidance AI",
+    "title": "Turn self-knowledge into a next step",
+    "description": "Connect interests, experience, and real constraints with sample hiring signals from Vietnam.",
+    "brief": {
+      "status": "Analysis protocol",
+      "title": "A decision brief, not a verdict",
+      "description": "CareerLens turns the information you share into three directions you can compare and test."
+    },
+    "steps": {
+      "profile": {
+        "title": "Your profile",
+        "description": "Share your current foundation, interests, and constraints."
+      },
+      "signals": {
+        "title": "Market signals",
+        "description": "Compare sample roles and skills by region."
+      },
+      "plan": {
+        "title": "Three directions",
+        "description": "Compare skill gaps, roadmaps, and proof to build."
+      }
+    },
+    "form": {
+      "badge": "Personalised for this run",
+      "title": "Profile for this analysis",
+      "description": "The more specific your experience and constraints, the more useful the roadmap becomes.",
+      "foundation": "Current foundation",
+      "foundationDescription": "Region is used only to compare job opportunities and sample salary data.",
+      "educationLevel": "Current education level",
+      "educationOptions": {
+        "THPT": "High school",
+        "college": "College",
+        "university": "University",
+        "graduate": "Graduate school",
+        "other": "Other"
+      },
+      "languages": "Languages",
+      "languagesPlaceholder": "Vietnamese, English",
+      "languagesHint": "Separate languages with commas.",
+      "currentRegion": "Current region",
+      "targetRegion": "Where you want to study or work",
+      "regionHint": "Current list of 34 provinces and cities.",
+      "regionPlaceholder": "Search for a province or city",
+      "regionEmpty": "No matching province or city found.",
+      "strengths": "Strengths and interests",
+      "strengthsDescription": "Use real experiences. You do not need to write like a resume.",
+      "subject": "Notable subject or skill",
+      "subjectPlaceholder": "Example: maths, content writing, electrical repair",
+      "score": "Self-assessed score",
+      "interests": "Interests and topics",
+      "interestsPlaceholder": "Technology, football, design, business",
+      "interestsHint": "Separate items with commas, or add a suggestion based on your subject or skill.",
+      "suggestionsLabel": "Suggested topics",
+      "activity": "Activities or projects you have done",
+      "activityPlaceholder": "Describe your role, what you did, and what felt interesting or difficult.",
+      "conditions": "Learning and work conditions",
+      "conditionsDescription": "Set the time, budget, and environment that make a direction realistic.",
+      "weeklyHours": "Hours available to learn each week",
+      "budget": "Expected budget",
+      "budgetPlaceholder": "Example: under VND 20 million per year",
+      "workEnvironment": "Preferred work environment",
+      "learningStyle": "Learning style that fits you",
+      "constraints": "Constraints to consider",
+      "constraintsPlaceholder": "Example: need to study near home or work while studying. Optional.",
+      "constraintsHint": "Do not include gender, religion, ethnicity, or unnecessary identifying information.",
+      "goal": "Goal for this session",
+      "goalDescription": "Define the decision you need to make and the question the analysis should answer.",
+      "intent": "What do you want to solve?",
+      "targetCareer": "Career or major you are considering",
+      "targetCareerPlaceholder": "Example: product design, information security. Optional.",
+      "question": "Your most important question",
+      "questionPlaceholder": "Example: Which direction fits my strengths while staying within my learning budget?",
+      "model": "Analysis model",
+      "modelHint": "The model is called through FPT Cloud AI.",
+      "consent": "I agree to use the form data to create career guidance.",
+      "consentHint": "AI provides suggestions for consideration and does not decide for the learner.",
+      "footerHint": "Each run creates three explained options.",
+      "submit": "Create roadmap",
+      "submitting": "Creating roadmap",
+      "options": {
+        "intent": {
+          "initial_guidance": "Explore an initial career direction",
+          "switch_major": "Consider changing majors",
+          "find_jobs": "Find related roles and jobs",
+          "compare_paths": "Compare career directions",
+          "roadmap_detail": "Create a detailed roadmap"
+        },
+        "workEnvironment": {
+          "hybrid": "A mix of online and on-site",
+          "team_based": "Team-based work",
+          "independent": "Independent work",
+          "hands_on": "Hands-on work",
+          "fieldwork": "Travel and fieldwork",
+          "office": "Office",
+          "remote": "Remote"
+        },
+        "learningStyle": {
+          "project_based": "Project-based learning",
+          "mentor_guided": "Mentor-guided learning",
+          "self_paced": "Self-paced learning",
+          "classroom": "Structured classes",
+          "apprenticeship": "Learning in a real workplace"
+        }
+      }
+    },
+    "actions": {
+      "userOnly": "Roadmap creation is available only for learner accounts.",
+      "checkFields": "Check the highlighted fields and try again.",
+      "invalidValue": "This value is not valid.",
+      "modelUnavailable": "The selected model is not available.",
+      "chooseModel": "Choose a model from the list.",
+      "success": "Your roadmap is ready. Compare the options and open each roadmap below.",
+      "failed": "We could not create the roadmap right now. Please try again in a few minutes.",
+      "fields": {
+        "activity": "Describe an activity or project in at least 10 characters.",
+        "consent": "Consent is required before analysing the data.",
+        "currentRegion": "Choose your current region.",
+        "educationLevel": "Choose your current education level.",
+        "familyConstraints": "The constraints text is too long.",
+        "interests": "Enter at least one interest.",
+        "intent": "Choose a guidance goal.",
+        "languages": "Enter at least one language.",
+        "learningStyle": "Choose a learning style.",
+        "model": "Choose an analysis model.",
+        "question": "Your question must be at least 10 characters.",
+        "strongSubject": "Enter a notable subject or skill.",
+        "subjectScore": "The self-assessed score must be between 0 and 10.",
+        "targetBudget": "The budget text is too long.",
+        "targetCareer": "The career or major name is too long.",
+        "targetRegion": "Choose your target region.",
+        "weeklyHours": "Learning time must be between 1 and 80 hours.",
+        "workEnvironment": "Choose a preferred work environment."
+      }
+    },
+    "market": {
+      "badge": "Seed snapshot",
+      "title": "Sample market data",
+      "description": "This POC does not use a production crawler. These figures describe the current seed only.",
+      "postings": "job postings",
+      "regions": "provinces/cities",
+      "roles": "roles per region",
+      "industries": "industry groups",
+      "sourceDate": "Sample source dated {date}"
+    },
+    "privacy": {
+      "title": "Privacy filtered first",
+      "description": "Gender, hometown, ethnicity, and religion are not included in the payload sent to the model."
+    },
+    "principles": {
+      "title": "How the analysis works",
+      "profile": "AI combines academic signals, interests, learning style, and market signals.",
+      "roadmap": "Each direction includes skill gaps and verifiable practice stages.",
+      "market": "Roles and salary signals come only from the market seed provided for this run."
+    },
+    "loading": "Creating roadmap",
+    "results": {
+      "eyebrow": "Analysis results",
+      "title": "Three directions to test",
+      "description": "Compare fit, skill gaps, and the investment required before choosing.",
+      "directionCount": "directions to compare",
+      "confidenceLabel": "profile confidence",
+      "disclaimerTitle": "Suggestions for consideration",
+      "profileTitle": "Profile read by AI",
+      "profileDescription": "Data confidence: {confidence}",
+      "strengths": "Strengths",
+      "interests": "Interests and signals",
+      "noStrengths": "There is not enough data to conclude yet.",
+      "noInterests": "There are no clear personal signals yet.",
+      "marketTitle": "Market signals",
+      "marketDescription": "Notable short-supply skills in the market seed.",
+      "noMarket": "There is not enough data to identify short-supply skills.",
+      "fitLabel": "fit score for reference",
+      "matchedTitle": "Why this direction is worth trying",
+      "evidenceTitle": "Market evidence",
+      "skillGapsTitle": "Priority skill gaps",
+      "levelRange": "{current} to {target}",
+      "roadmapTitle": "Practice roadmap",
+      "relatedJobsTitle": "Related jobs",
+      "followUpTitle": "Questions for the next session",
+      "followUpDescription": "Answer these to narrow the skill gap and cost.",
+      "autonomy": "You can choose, test again, or change direction after further validation.",
+      "category": {
+        "university": "University",
+        "college": "College",
+        "vocational": "Vocational training",
+        "certificate": "Certificate",
+        "apprenticeship": "Apprenticeship",
+        "self_learning": "Guided self-learning"
+      },
+      "confidence": {
+        "low": "low",
+        "medium": "medium",
+        "high": "high"
+      },
+      "learning": {
+        "track": "Specialisation or track",
+        "subjects": "Subjects and topics to learn",
+        "evidence": "Evidence: {value}",
+        "certificates": "Certificates to consider",
+        "certificateTiming": "Timing: {value}",
+        "activities": "Research, competitions, and club projects",
+        "milestones": "Completion milestones"
+      },
+      "internship": {
+        "where": "Where to look for opportunities",
+        "cv": "CV and portfolio preparation",
+        "knowledge": "Knowledge to apply",
+        "interview": "Interview preparation",
+        "success": "Success measures after the internship",
+        "evidence": "Evidence: {value}"
+      },
+      "fullTime": {
+        "roles": "Roles and how to evaluate an offer",
+        "responsibilities": "Core responsibilities",
+        "salary": "Salary, bonus, and benefits",
+        "readiness": "Readiness signal: {value}",
+        "first90": "First 90-day plan",
+        "promotion": "Path toward a more senior role",
+        "readinessProof": "Proof of readiness: {value}"
+      }
+    }
+  },
+  "Assistant": {
+    "home": "Overview",
+    "welcome": "Welcome back, {name}",
+    "overviewDescription": "Continue a recent conversation, start a focused guidance session, or build your career roadmap.",
+    "openRoadmap": "Open AI Roadmap",
+    "workspaceSnapshot": "Workspace snapshot",
+    "conversationCount": "saved conversations",
+    "modelCount": "available AI models",
+    "newChat": "New conversation",
+    "newConversation": "Create conversation",
+    "conversations": "Conversations",
+    "delete": "Delete conversation",
+    "confirmDelete": "Click again to confirm deletion",
+    "model": "Model",
+    "provider": "FPT Cloud AI",
+    "placeholder": "Ask about learning, roadmaps, or careers...",
+    "send": "Send message",
+    "stop": "Stop response",
+    "disclaimer": "MeshMind AI supports questions about education and career guidance.",
+    "emptyTitle": "Start with a question",
+    "emptyDescription": "Explore majors, build a roadmap, or prepare for your first opportunity.",
+    "sessionsError": "Could not load conversations.",
+    "messageError": "Something went wrong. Please try again.",
+    "prompts": {
+      "major": "How do I choose a major that fits my interests and strengths?",
+      "coding": "What is a beginner-friendly programming roadmap from zero?",
+      "university": "How should I prepare for a top university entrance exam in Vietnam?",
+      "skills": "Which skills matter most for students in the age of AI?",
+      "scholarship": "What scholarships in Japan and South Korea are available to Vietnamese students?"
+    }
   },
   "StartingPoint": {
     "metadataTitle": "Starting Point",

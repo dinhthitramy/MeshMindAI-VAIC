@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import {
   Combobox,
@@ -28,6 +29,7 @@ export function ProvinceCombobox({
   defaultValue = "Thành phố Hồ Chí Minh",
   invalid = false,
 }: ProvinceComboboxProps) {
+  const t = useTranslations("Roadmap.form");
   const [value, setValue] = useState<string | null>(defaultValue);
 
   return (
@@ -41,12 +43,12 @@ export function ProvinceCombobox({
         <ComboboxInput
           id={id}
           className="w-full"
-          placeholder="Gõ để tìm tỉnh/thành"
+          placeholder={t("regionPlaceholder")}
           aria-invalid={invalid || undefined}
           showClear
         />
         <ComboboxContent>
-          <ComboboxEmpty>Không tìm thấy tỉnh/thành phù hợp.</ComboboxEmpty>
+          <ComboboxEmpty>{t("regionEmpty")}</ComboboxEmpty>
           <ComboboxList>
             {(province) => (
               <ComboboxItem key={province} value={province}>

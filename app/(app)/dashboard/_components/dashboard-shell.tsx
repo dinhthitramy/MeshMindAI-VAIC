@@ -26,7 +26,6 @@ import {
   LogOut,
   UserRound,
   X,
-  Bot,
   ShieldCheck,
 } from "lucide-react";
 
@@ -181,8 +180,7 @@ function SidebarPanel({
           },
         ]
       : []),
-    { href: "/dashboard/careerlens", label: "Lộ trình AI", icon: Route, exact: false },
-    { href: "/dashboard/ai-assistant", label: "AI Assistant", icon: Bot, exact: false },
+    { href: "/dashboard/careerlens", label: t("careerRoadmap"), icon: Route, exact: false },
     ...(viewer.isAdmin
       ? [{ href: "/dashboard/admin", label: "Admin", icon: ShieldCheck, exact: false }]
       : []),
@@ -265,11 +263,7 @@ function SidebarPanel({
           <LanguageSwitcher
             align="start"
             compact={collapsed}
-            className={
-              collapsed
-                ? "text-sidebar-foreground hover:bg-sidebar-accent"
-                : "w-full text-sidebar-foreground hover:bg-sidebar-accent"
-            }
+            className="w-full text-sidebar-foreground hover:bg-sidebar-accent"
           />
           <DropdownMenu>
             <DropdownMenuTrigger

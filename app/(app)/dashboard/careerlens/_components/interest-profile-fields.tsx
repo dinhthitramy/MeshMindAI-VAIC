@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -32,9 +33,11 @@ export function InterestProfileFields({
   scoreError,
   interestsError,
 }: InterestProfileFieldsProps) {
+  const locale = useLocale() === "en" ? "en" : "vi";
+  const t = useTranslations("Roadmap.form");
   const [subject, setSubject] = useState("");
   const [interests, setInterests] = useState("");
-  const suggestions = useMemo(() => getInterestSuggestions(subject), [subject]);
+  const suggestions = useMemo(() => getInterestSuggestions(subject, locale), [locale, subject]);
 
   function addSuggestion(suggestion: string) {
     const current = splitInterests(interests);
@@ -49,13 +52,13 @@ export function InterestProfileFields({
     <>
       <FieldGroup className="grid gap-5 md:grid-cols-[minmax(0,1fr)_9rem]">
         <Field data-invalid={Boolean(subjectError) || undefined}>
-          <FieldLabel htmlFor="careerlens-subject">Môn hoặc kỹ năng nổi bật</FieldLabel>
+          <FieldLabel htmlFor="careerlens-subject">{t("subject")}</FieldLabel>
           <Input
             id="careerlens-subject"
             name="strongSubject"
             value={subject}
             onChange={(event) => setSubject(event.target.value)}
-            placeholder="Ví dụ: Toán, viết nội dung, sửa điện"
+            placeholder={t("subjectPlaceholder")}
             aria-invalid={Boolean(subjectError) || undefined}
             required
           />
@@ -63,7 +66,7 @@ export function InterestProfileFields({
         </Field>
 
         <Field data-invalid={Boolean(scoreError) || undefined}>
-          <FieldLabel htmlFor="careerlens-score">Điểm tự đánh giá</FieldLabel>
+          <FieldLabel htmlFor="careerlens-score">{t("score")}</FieldLabel>
           <Input
             id="careerlens-score"
             name="subjectScore"
@@ -81,20 +84,18 @@ export function InterestProfileFields({
       </FieldGroup>
 
       <Field data-invalid={Boolean(interestsError) || undefined}>
-        <FieldLabel htmlFor="careerlens-interests">Sở thích và chủ đề quan tâm</FieldLabel>
+        <FieldLabel htmlFor="careerlens-interests">{t("interests")}</FieldLabel>
         <Input
           id="careerlens-interests"
           name="interests"
           value={interests}
           onChange={(event) => setInterests(event.target.value)}
-          placeholder="Công nghệ, bóng đá, thiết kế, kinh doanh"
+          placeholder={t("interestsPlaceholder")}
           aria-invalid={Boolean(interestsError) || undefined}
           required
         />
-        <FieldDescription>
-          Nhập các mục cách nhau bằng dấu phẩy, hoặc thêm nhanh từ gợi ý theo môn/kỹ năng.
-        </FieldDescription>
-        <div className="flex flex-wrap gap-2" aria-label="Gợi ý chủ đề quan tâm">
+        <FieldDescription>{t("interestsHint")}</FieldDescription>
+        <div className="flex flex-wrap gap-2" aria-label={t("suggestionsLabel")}>
           {suggestions.map((suggestion) => (
             <Button
               key={suggestion}
@@ -113,4 +114,3 @@ export function InterestProfileFields({
     </>
   );
 }
-
