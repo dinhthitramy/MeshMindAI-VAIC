@@ -32,6 +32,7 @@ function BrandMark({ className }: BrandMarkProps) {
           alt=""
           width={686}
           height={686}
+          loading="eager"
           className="absolute left-0 top-1/2 h-auto w-full -translate-y-1/2"
         />
       </span>

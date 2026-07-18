@@ -7,11 +7,9 @@ import { useTranslations } from "next-intl";
 
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
-  DropdownMenuItem,
-  DropdownMenuShortcut,
-} from "@/components/ui/dropdown-menu";
-import {
+  isThemePreference,
   themePreferences,
   type ThemePreference,
 } from "@/lib/theme";
@@ -111,31 +109,53 @@ function ThemeSelector({ className }: ThemeSelectorProps) {
   );
 }
 
-function ThemeMenuItem() {
-  const {
-    currentThemeLabel,
-    nextTheme,
-    nextThemeLabel,
-    setTheme,
-    t,
-    theme,
-  } = useThemeCycle();
+function ThemeMenuToggleGroup() {
+  const t = useTranslations("Theme");
+  const { theme, setTheme } = useTheme();
 
   return (
-    <DropdownMenuItem
-      aria-label={t("currentSwitch", {
-        theme: currentThemeLabel,
-        nextTheme: nextThemeLabel,
-      })}
-      onClick={() => setTheme(nextTheme)}
-    >
-      <ThemeIcon theme={theme} />
-      {t("menuLabel")}
-      <DropdownMenuShortcut className="normal-case tracking-normal">
-        {currentThemeLabel}
-      </DropdownMenuShortcut>
-    </DropdownMenuItem>
+    <div className="px-2 py-1.5">
+      <p className="mb-2 text-xs font-medium text-muted-foreground">
+        {t("menuLabel")}
+      </p>
+      <ToggleGroup
+        value={[theme]}
+        onValueChange={(value) => {
+          const nextTheme = value[0];
+
+          if (isThemePreference(nextTheme)) {
+            setTheme(nextTheme);
+          }
+        }}
+        variant="outline"
+        size="sm"
+        spacing={0}
+        aria-label={t("menuLabel")}
+        className="w-full"
+      >
+        {themePreferences.map((preference) => {
+          const Icon = themeOptions[preference].icon;
+
+          return (
+            <ToggleGroupItem
+              key={preference}
+              value={preference}
+              aria-label={t(preference)}
+              title={t(preference)}
+              className={
+                preference === "system"
+                  ? "flex-[1.35] px-2 text-xs"
+                  : "flex-1 px-2 text-xs"
+              }
+            >
+              <Icon data-icon="inline-start" aria-hidden="true" strokeWidth={1.8} />
+              {t(preference)}
+            </ToggleGroupItem>
+          );
+        })}
+      </ToggleGroup>
+    </div>
   );
 }
 
-export { ThemeMenuItem, ThemeSelector };
+export { ThemeMenuToggleGroup, ThemeSelector };

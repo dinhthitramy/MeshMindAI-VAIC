@@ -35,12 +35,250 @@
     "currentSwitch": "Theme: {theme}. Switch to {nextTheme}."
   },
   "Landing": {
+    "meta": {
+      "title": "AI career guidance for students",
+      "description": "CareerLens connects strengths, aspirations, and market signals into an actionable career roadmap."
+    },
     "primaryNavigation": "Primary navigation",
-    "category1": "Category 01",
-    "category2": "Category 02",
-    "category3": "Category 03",
-    "categories": "Categories",
-    "account": "Account"
+    "navigation": {
+      "features": "Features",
+      "journey": "Journey",
+      "market": "Market data",
+      "menu": "Explore"
+    },
+    "account": "Account",
+    "hero": {
+      "badge": "The CareerLens vision",
+      "titleLine1": "Understand who you are.",
+      "titleLine2": "Build where you go next.",
+      "description": "Turn strengths, aspirations, and career signals into a roadmap you can act on.",
+      "primary": "Start exploring",
+      "primaryAuthenticated": "Open my roadmap",
+      "secondary": "See how it works",
+      "imageAlt": "A group of students talking together on campus",
+      "preview": {
+        "title": "Career agent",
+        "status": "Cross-checking new sources",
+        "badge": "Preview",
+        "searching": "Finding skills and career signals that match your profile",
+        "sourcesLabel": "Sources being compared",
+        "result": "Three directions to compare and test"
+      }
+    },
+    "intelligence": {
+      "title": "One profile. Three layers of insight.",
+      "description": "CareerLens does not lock you into a single test. It connects personal signals, real progress, and a changing world of work.",
+      "profile": {
+        "title": "Understand yourself",
+        "description": "Combine strengths, interests, learning style, and real constraints instead of relying on one personality label."
+      },
+      "growth": {
+        "title": "See your progress",
+        "description": "Keep milestones, projects, and decisions across years so every session begins with your real journey."
+      },
+      "market": {
+        "title": "Read the market",
+        "description": "Compare your profile with careers, skills, job signals, and global developments backed by visible sources."
+      }
+    },
+    "assessment": {
+      "title": "Assess to understand, never to judge.",
+      "description": "Objective scenarios help reveal academic strengths, motivation, and social skills that deserve closer observation.",
+      "signals": {
+        "aptitude": "Thinking and foundational ability",
+        "social": "Communication and collaboration",
+        "motivation": "Motivation and learning style"
+      },
+      "states": {
+        "observe": "Observe",
+        "practice": "Practise",
+        "develop": "Develop"
+      },
+      "preview": {
+        "badge": "Objective scenario",
+        "question": "When a group project falls behind, where do you usually begin?",
+        "options": {
+          "one": "Finish the missing work yourself",
+          "two": "Clarify the issue and reset responsibilities",
+          "three": "Wait for the group leader to decide"
+        },
+        "reading": "Signals in view",
+        "note": "Results begin a conversation and real-world experiments. They are never a fixed verdict."
+      }
+    },
+    "journey": {
+      "badge": "A long-term growth profile",
+      "title": "Stay supported through every change of direction.",
+      "description": "Each milestone adds new evidence so AI can adapt its guidance instead of holding you to your first choice.",
+      "steps": {
+        "explore": {
+          "stage": "High school",
+          "title": "Explore",
+          "description": "Notice strengths, try different environments, and narrow the career areas worth investigating."
+        },
+        "learn": {
+          "stage": "University / training",
+          "title": "Build foundations",
+          "description": "Choose subjects, projects, and skills that create evidence for the direction you are considering."
+        },
+        "experience": {
+          "stage": "Internship",
+          "title": "Test assumptions",
+          "description": "Compare expectations with real work, real feedback, and real hiring requirements."
+        },
+        "grow": {
+          "stage": "First role",
+          "title": "Keep growing",
+          "description": "Update your goal, skill gaps, and next move using the outcomes you have already created."
+        }
+      }
+    },
+    "roadmap": {
+      "title": "Know which skill should come first.",
+      "description": "AI turns skill gaps into clear priorities, milestones, and evidence you can use to test your progress.",
+      "skills": {
+        "foundation": "Foundational skills for your chosen direction",
+        "project": "Practice through projects with tangible outcomes",
+        "social": "Communication in real collaborative settings"
+      },
+      "priority": {
+        "label": "Skill priority",
+        "title": "A sequence for growth",
+        "now": "Start now",
+        "next": "Next step",
+        "maintain": "Build alongside",
+        "note": "Priorities adapt when your profile, goals, or the market changes."
+      },
+      "paths": {
+        "title": "Three paths to test",
+        "description": "Compare fit, learning cost, and proof to build before committing."
+      },
+      "adaptive": {
+        "title": "A roadmap that adapts",
+        "description": "Every check-in is a chance to adjust your goal without starting over.",
+        "checkIn": "Check-in",
+        "adjust": "Adjust"
+      }
+    },
+    "market": {
+      "badge": "Hybrid realtime + background agent",
+      "title": "Read the market while the world keeps moving.",
+      "description": "An agent searches the web in real time, cross-checks sources, and combines background monitoring to detect new signals.",
+      "sources": {
+        "labor": "Labour indicators",
+        "macro": "Macro context",
+        "skills": "Careers and skills",
+        "future": "Future outlook"
+      },
+      "agent": {
+        "title": "Market intelligence agent",
+        "status": "Searching, reading, and comparing",
+        "live": "Realtime",
+        "query": "Which skills are appearing more often in entry-level roles?",
+        "web": "News and reports",
+        "jobs": "Public job listings",
+        "reports": "Statistical sources"
+      },
+      "forecast": {
+        "label": "3-5 year scenarios",
+        "title": "An outlook, not a prophecy",
+        "description": "Every signal includes its scope, time horizon, sources, and confidence level.",
+        "states": {
+          "growing": {
+            "title": "Growing signal",
+            "description": "Independent sources point in the same direction."
+          },
+          "stable": {
+            "title": "Stable signal",
+            "description": "Demand exists without a clear shift yet."
+          },
+          "uncertain": {
+            "title": "Not enough evidence",
+            "description": "AI says when the available data cannot support a conclusion."
+          }
+        },
+        "note": "CareerLens separates observed, estimated, and forecast data. It never invents an accuracy percentage."
+      }
+    },
+    "cv": {
+      "imageAlt": "A group of students working together around a table",
+      "photoCard": {
+        "title": "Turn experience into evidence",
+        "description": "Projects, responsibilities, and concrete outcomes"
+      },
+      "title": "Turn what you have done into a stronger CV.",
+      "description": "AI helps structure your story, find vague claims, and compare your CV with the opportunity you are pursuing.",
+      "review": {
+        "title": "CV review assistant",
+        "status": "Reading in the context of the role",
+        "badge": "Vision",
+        "items": {
+          "evidence": {
+            "title": "Add evidence",
+            "description": "Clarify what you owned, what you produced, and what you learned."
+          },
+          "clarity": {
+            "title": "Make the impact clear",
+            "description": "Replace generic descriptions with outcomes that can be verified."
+          },
+          "match": {
+            "title": "Match the opportunity",
+            "description": "Prioritise relevant experience without stuffing keywords."
+          }
+        }
+      }
+    },
+    "trust": {
+      "title": "Responsible AI should show you why.",
+      "description": "Every recommendation should trace back to evidence, limitations, and the learner's right to decide.",
+      "citations": {
+        "title": "Sources you can open",
+        "description": "Market, career, and skill claims include a URL, publication date, and retrieval time."
+      },
+      "privacy": {
+        "title": "Privacy from the start",
+        "description": "Unnecessary sensitive information is removed before a payload is sent to the model."
+      },
+      "explain": {
+        "title": "Guidance with reasons",
+        "description": "See the strengths, skill gaps, and evidence behind every suggested direction."
+      },
+      "autonomy": {
+        "title": "Learners stay in control",
+        "description": "CareerLens suggests paths to test. It never chooses your future for you."
+      },
+      "scope": {
+        "title": "Current scope",
+        "description": "AI chat and the three-path roadmap work today as a POC. Long-term assessment, CV review, and realtime web data are part of the product vision now being built.",
+        "badge": "Public roadmap"
+      }
+    },
+    "faq": {
+      "title": "What to know before you begin.",
+      "description": "CareerLens is a tool for reflection and experimentation, not a machine that scores your future.",
+      "items": {
+        "one": {
+          "question": "Will CareerLens choose a career for me?",
+          "answer": "No. It gives you directions to compare, questions to test, and practical next steps. The final decision always remains yours."
+        },
+        "two": {
+          "question": "Is market information always realtime?",
+          "answer": "The product vision combines on-demand web research with scheduled background monitoring. Every result will show its source, publication date, and retrieval time so you can judge freshness."
+        },
+        "three": {
+          "question": "Does a test result permanently define my profile?",
+          "answer": "No. A result is one signal in a growing profile. New experience, projects, and feedback can change how the system understands you."
+        },
+        "four": {
+          "question": "Can I change direction after receiving a roadmap?",
+          "answer": "Yes. The roadmap is designed to adapt to new goals, constraints, and evidence without forcing you to start again."
+        }
+      }
+    },
+    "finalCta": {
+      "title": "Your future does not need a rushed answer.",
+      "description": "Start by understanding yourself, test one small direction, and let real evidence guide the next move."
+    }
   },
   "Auth": {
     "common": {
@@ -178,7 +416,7 @@
     "menuMetadataTitle": "Menu",
     "homeHeading": "Overview",
     "menuHeading": "Menu",
-    "home": "Overview",
+    "home": "Home",
     "menu": "Menu",
     "navigation": "Dashboard navigation",
     "closeNavigation": "Close navigation",
@@ -428,7 +666,6 @@
     "newConversation": "Create conversation",
     "conversations": "Conversations",
     "delete": "Delete conversation",
-    "confirmDelete": "Click again to confirm deletion",
     "model": "Model",
     "provider": "FPT Cloud AI",
     "placeholder": "Ask about learning, roadmaps, or careers...",
