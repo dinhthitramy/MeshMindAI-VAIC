@@ -9,6 +9,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 FROM dependencies AS build
+ENV FPT_AI_MODEL=Qwen3.6-27B,DeepSeek-V4-Flash,SaoLa3.1-medium
 
 COPY . .
 RUN npm run build

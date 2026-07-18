@@ -428,7 +428,6 @@ export default async function LandingPage() {
             </LandingReveal>
 
             <div className="relative mt-16 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-              <div className="absolute left-0 right-0 top-6 hidden h-px bg-background/12 lg:block" aria-hidden="true" />
               {journeySteps.map((item, index) => {
                 const Icon = item.icon;
 
