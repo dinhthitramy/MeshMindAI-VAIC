@@ -16,6 +16,11 @@ import { Input } from "@/components/ui/input";
 import { getInterestSuggestions } from "@/lib/careerlens/interest-suggestions";
 
 type InterestProfileFieldsProps = {
+  defaultInterests?: string;
+  defaultScore?: number | null;
+  defaultSubject?: string;
+  showInterests?: boolean;
+  showSubject?: boolean;
   subjectError?: string;
   scoreError?: string;
   interestsError?: string;
@@ -29,14 +34,19 @@ function splitInterests(value: string): string[] {
 }
 
 export function InterestProfileFields({
+  defaultInterests = "",
+  defaultScore = null,
+  defaultSubject = "",
+  showInterests = true,
+  showSubject = true,
   subjectError,
   scoreError,
   interestsError,
 }: InterestProfileFieldsProps) {
   const locale = useLocale() === "en" ? "en" : "vi";
   const t = useTranslations("Roadmap.form");
-  const [subject, setSubject] = useState("");
-  const [interests, setInterests] = useState("");
+  const [subject, setSubject] = useState(defaultSubject);
+  const [interests, setInterests] = useState(defaultInterests);
   const suggestions = useMemo(() => getInterestSuggestions(subject, locale), [locale, subject]);
 
   function addSuggestion(suggestion: string) {
@@ -50,7 +60,8 @@ export function InterestProfileFields({
 
   return (
     <>
-      <FieldGroup className="grid gap-5 md:grid-cols-[minmax(0,1fr)_9rem]">
+      {showSubject ? (
+        <FieldGroup className="grid gap-5 md:grid-cols-[minmax(0,1fr)_9rem]">
         <Field data-invalid={Boolean(subjectError) || undefined}>
           <FieldLabel htmlFor="careerlens-subject">{t("subject")}</FieldLabel>
           <Input
@@ -60,7 +71,6 @@ export function InterestProfileFields({
             onChange={(event) => setSubject(event.target.value)}
             placeholder={t("subjectPlaceholder")}
             aria-invalid={Boolean(subjectError) || undefined}
-            required
           />
           <FieldError>{subjectError}</FieldError>
         </Field>
@@ -75,15 +85,16 @@ export function InterestProfileFields({
             min="0"
             max="10"
             step="0.1"
-            defaultValue="8"
+            defaultValue={defaultScore ?? undefined}
             aria-invalid={Boolean(scoreError) || undefined}
-            required
           />
           <FieldError>{scoreError}</FieldError>
         </Field>
-      </FieldGroup>
+        </FieldGroup>
+      ) : null}
 
-      <Field data-invalid={Boolean(interestsError) || undefined}>
+      {showInterests ? (
+        <Field data-invalid={Boolean(interestsError) || undefined}>
         <FieldLabel htmlFor="careerlens-interests">{t("interests")}</FieldLabel>
         <Input
           id="careerlens-interests"
@@ -92,7 +103,6 @@ export function InterestProfileFields({
           onChange={(event) => setInterests(event.target.value)}
           placeholder={t("interestsPlaceholder")}
           aria-invalid={Boolean(interestsError) || undefined}
-          required
         />
         <FieldDescription>{t("interestsHint")}</FieldDescription>
         <div className="flex flex-wrap gap-2" aria-label={t("suggestionsLabel")}>
@@ -110,7 +120,8 @@ export function InterestProfileFields({
           ))}
         </div>
         <FieldError>{interestsError}</FieldError>
-      </Field>
+        </Field>
+      ) : null}
     </>
   );
 }

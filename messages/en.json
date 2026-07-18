@@ -427,6 +427,7 @@
     "userMenu": "Account menu",
     "openUserMenu": "Open the account menu for {name}",
     "profile": "Personal information",
+    "settings": "Settings",
     "logout": "Log out",
     "logoutUser": "Log out {name}",
     "careerRoadmap": "AI Roadmap"
@@ -477,6 +478,7 @@
       "regionHint": "Current list of 34 provinces and cities.",
       "regionPlaceholder": "Search for a province or city",
       "regionEmpty": "No matching province or city found.",
+      "optionalSelect": "Not provided",
       "strengths": "Strengths and interests",
       "strengthsDescription": "Use real experiences. You do not need to write like a resume.",
       "subject": "Notable subject or skill",
@@ -487,7 +489,7 @@
       "interestsHint": "Separate items with commas, or add a suggestion based on your subject or skill.",
       "suggestionsLabel": "Suggested topics",
       "activity": "Activities or projects you have done",
-      "activityPlaceholder": "Describe your role, what you did, and what felt interesting or difficult.",
+      "activityPlaceholder": "Describe your role, what you did, and what felt interesting or difficult. You can leave this blank.",
       "conditions": "Learning and work conditions",
       "conditionsDescription": "Set the time, budget, and environment that make a direction realistic.",
       "weeklyHours": "Hours available to learn each week",
@@ -499,14 +501,10 @@
       "constraintsPlaceholder": "Example: need to study near home or work while studying. Optional.",
       "constraintsHint": "Do not include gender, religion, ethnicity, or unnecessary identifying information.",
       "goal": "Goal for this session",
-      "goalDescription": "Define the decision you need to make and the question the analysis should answer.",
+      "goalDescription": "Share what you want the analysis to prioritise. You can leave this blank.",
       "intent": "What do you want to solve?",
-      "targetCareer": "Career or major you are considering",
-      "targetCareerPlaceholder": "Example: product design, information security. Optional.",
-      "question": "Your most important question",
-      "questionPlaceholder": "Example: Which direction fits my strengths while staying within my learning budget?",
-      "model": "Analysis model",
-      "modelHint": "The model is called through FPT Cloud AI.",
+      "question": "What do you want most?",
+      "questionPlaceholder": "Example: I want a direction that fits my strengths and learning budget. You can leave this blank.",
       "consent": "I agree to use the form data to create career guidance.",
       "consentHint": "AI provides suggestions for consideration and does not decide for the learner.",
       "footerHint": "Each run creates three explained options.",
@@ -542,29 +540,25 @@
       "userOnly": "Roadmap creation is available only for learner accounts.",
       "checkFields": "Check the highlighted fields and try again.",
       "invalidValue": "This value is not valid.",
-      "modelUnavailable": "The selected model is not available.",
-      "chooseModel": "Choose a model from the list.",
       "success": "Your roadmap is ready. Compare the options and open each roadmap below.",
       "failed": "We could not create the roadmap right now. Please try again in a few minutes.",
       "fields": {
-        "activity": "Describe an activity or project in at least 10 characters.",
+        "activity": "The activity or project description is too long.",
         "consent": "Consent is required before analysing the data.",
-        "currentRegion": "Choose your current region.",
-        "educationLevel": "Choose your current education level.",
+        "currentRegion": "The current region is not valid.",
+        "educationLevel": "The current education level is not valid.",
         "familyConstraints": "The constraints text is too long.",
-        "interests": "Enter at least one interest.",
-        "intent": "Choose a guidance goal.",
-        "languages": "Enter at least one language.",
-        "learningStyle": "Choose a learning style.",
-        "model": "Choose an analysis model.",
-        "question": "Your question must be at least 10 characters.",
-        "strongSubject": "Enter a notable subject or skill.",
+        "interests": "The interests text is too long.",
+        "intent": "The guidance goal is not valid.",
+        "languages": "The languages text is too long.",
+        "learningStyle": "The learning style is not valid.",
+        "question": "Your response is too long.",
+        "strongSubject": "The notable subject or skill text is too long.",
         "subjectScore": "The self-assessed score must be between 0 and 10.",
         "targetBudget": "The budget text is too long.",
-        "targetCareer": "The career or major name is too long.",
-        "targetRegion": "Choose your target region.",
-        "weeklyHours": "Learning time must be between 1 and 80 hours.",
-        "workEnvironment": "Choose a preferred work environment."
+        "targetRegion": "The target region is not valid.",
+        "weeklyHours": "Learning time must be between 0 and 80 hours.",
+        "workEnvironment": "The work environment is not valid."
       }
     },
     "market": {
@@ -588,6 +582,86 @@
       "market": "Roles and salary signals come only from the market seed provided for this run."
     },
     "loading": "Creating roadmap",
+    "wizard": {
+      "editBadge": "Edit roadmap",
+      "newBadge": "New roadmap",
+      "title": "Build a guidance roadmap",
+      "description": "Review existing data, add context, and define the decision you want help with.",
+      "cancel": "Back to roadmap",
+      "progressLabel": "Roadmap creation progress",
+      "back": "Back",
+      "next": "Continue",
+      "reviewErrors": "Review invalid section",
+      "confirm": {
+        "title": "Confirm your Starting Point",
+        "description": "Review the information available before using it to personalise your roadmap.",
+        "hint": "If anything is incorrect, update your Starting Point and return here.",
+        "consent": "I confirm the information above and agree to use it to create this roadmap.",
+        "consentHint": "AI provides suggestions for consideration and does not decide for the learner.",
+        "editStartingPoint": "Update Starting Point"
+      },
+      "foundation": {
+        "title": "Current foundation",
+        "description": "Add your education level, location, languages, and notable abilities.",
+        "hint": "These answers complement your saved transcript and experience."
+      },
+      "interests": {
+        "title": "Interests and topics",
+        "description": "Share topics you actively explore or want to spend more time learning.",
+        "hint": "You can enter multiple topics separated by commas."
+      },
+      "conditions": {
+        "title": "Learning and work conditions",
+        "description": "Set realistic time, budget, learning style, and work environment preferences.",
+        "hint": "Include only constraints that directly affect education or work decisions."
+      },
+      "goal": {
+        "title": "Goal for this session",
+        "description": "Describe the decision or problem this roadmap should help you address.",
+        "hint": "You do not need to choose a career or major first. Focus on the question you need answered."
+      }
+    },
+    "saved": {
+      "badge": "Selected roadmap",
+      "defaultTitle": "Career roadmap",
+      "updatedAt": "Updated {date}",
+      "edit": "Edit",
+      "createNew": "Build a new roadmap",
+      "listTitle": "Saved roadmaps",
+      "listDescription": "Choose a roadmap to review or continue editing.",
+      "current": "Viewing",
+      "newTitle": "Need another perspective?",
+      "newDescription": "You can build a new roadmap without losing the current one."
+    },
+    "startingPoint": {
+      "title": "Starting Point information",
+      "description": "Your saved information has been integrated into this analysis in a concise format.",
+      "emptyTitle": "No Starting Point information yet",
+      "emptyDescription": "You can still continue and provide information in the following steps.",
+      "personality": "Personality result",
+      "education": "Education, grades, and research",
+      "certificates": "Certificates",
+      "experience": "Work experience",
+      "competitions": "Competitions and awards",
+      "activities": "Other activities",
+      "notProvided": "No information provided.",
+      "current": "Present",
+      "hasEvidence": "evidence attached",
+      "skills": "Skills: {value}",
+      "learnings": "Learnings: {value}",
+      "average": "{stage}: {value}",
+      "levels": {
+        "HIGH_SCHOOL": "High school",
+        "UNDERGRADUATE": "University",
+        "GRADUATE": "Graduate school"
+      },
+      "stages": {
+        "GRADE_10": "Grade 10 average",
+        "GRADE_11": "Grade 11 average",
+        "GRADE_12": "Grade 12 average",
+        "CUMULATIVE": "Cumulative grade"
+      }
+    },
     "results": {
       "eyebrow": "Analysis results",
       "title": "Three directions to test",
@@ -605,11 +679,18 @@
       "marketDescription": "Notable short-supply skills in the market seed.",
       "noMarket": "There is not enough data to identify short-supply skills.",
       "fitLabel": "fit score for reference",
+      "fitValue": "Fit score: {value}",
+      "selected": "Selected",
+      "otherDirectionsTitle": "Other directions from this session",
+      "otherDirectionsDescription": "Change the selected direction if another option fits better after comparison.",
+      "chooseDirection": "Choose this direction",
       "matchedTitle": "Why this direction is worth trying",
       "evidenceTitle": "Market evidence",
       "skillGapsTitle": "Priority skill gaps",
       "levelRange": "{current} to {target}",
       "roadmapTitle": "Practice roadmap",
+      "roadmapDiagramDescription": "Select each stage in the diagram to review its goals, tasks, and completion evidence.",
+      "roadmapClickHint": "Select to view stage details",
       "relatedJobsTitle": "Related jobs",
       "followUpTitle": "Questions for the next session",
       "followUpDescription": "Answer these to narrow the skill gap and cost.",
@@ -927,6 +1008,42 @@
       "saved": "Your result has been saved to your profile.",
       "failed": "Something went wrong while saving. Please try again.",
       "unavailable": "This account cannot save a personality test result."
+    }
+  },
+  "Settings": {
+    "metadataTitle": "Settings",
+    "title": "Settings",
+    "description": "Manage how AI features work for your account.",
+    "career": {
+      "title": "Roadmap analysis",
+      "description": "This model is used automatically when creating or updating a roadmap.",
+      "model": "Guidance model",
+      "modelHint": "Change the model here instead of selecting it during every guidance session.",
+      "footerHint": "Changes apply to future roadmap generations.",
+      "save": "Save settings",
+      "saving": "Saving"
+    },
+    "roadmapData": {
+      "title": "Roadmap data",
+      "description": "Choose how information is prefilled when you build a new roadmap.",
+      "reuseLabel": "Use data from the latest roadmap",
+      "reuseHint": "When creating a new roadmap, the system prefills every answer and selection from the latest one. You can still edit each field before generating.",
+      "footerHint": "This setting does not change data stored with existing roadmaps.",
+      "save": "Save data settings",
+      "saving": "Saving",
+      "resetTitle": "Refresh roadmap data",
+      "resetDescription": "Start the next roadmap with a fresh form.",
+      "resetHint": "This only clears the current prefill source. Saved roadmaps and the data used to edit each roadmap are not deleted.",
+      "resetFooterHint": "After refreshing, the first new roadmap will not reuse data from older roadmaps.",
+      "reset": "Refresh data",
+      "resetting": "Refreshing"
+    },
+    "actions": {
+      "userOnly": "This setting is available only for learner accounts.",
+      "invalidModel": "Choose an available model.",
+      "saved": "Roadmap settings saved.",
+      "roadmapDataSaved": "New-roadmap data settings saved.",
+      "roadmapDataReset": "Roadmap prefill data refreshed."
     }
   }
 }

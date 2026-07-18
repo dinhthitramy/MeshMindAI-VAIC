@@ -180,6 +180,7 @@ export function buildCareerGuidanceUserPrompt(input: CareerGuidanceInput): strin
     "Hãy tạo kết quả hướng nghiệp từ dữ liệu đã được xác thực dưới đây.",
     "Trả đúng JSON contract, không thêm markdown hoặc giải thích ngoài JSON.",
     "Nếu dữ liệu đủ, recommendations phải có đúng 3 phần tử theo thứ tự: an toàn, tăng trưởng cao, khám phá.",
+    "Dùng đầy đủ student_profile.starting_point khi tổng hợp tính cách, học vấn, bảng điểm, nghiên cứu, chứng chỉ, cuộc thi, hoạt động và kinh nghiệm làm việc; không tự suy diễn dữ liệu còn thiếu.",
     "Mỗi recommendation phải có đúng ba roadmap stage theo thứ tự: Học tập, Intern, Công việc chính thức; điền đầy đủ chi tiết riêng cho nghề đó.",
     "",
     "<output_contract>",
@@ -459,7 +460,11 @@ function createMockCareerGuidance(input: CareerGuidanceInput): CareerGuidanceOut
       roadmap: createRoadmap({
         pathTitle: title,
         skill: firstSkill,
-        region: posting?.region ?? profile.target_regions[0] ?? profile.current_region,
+        region:
+          posting?.region ||
+          profile.target_regions[0] ||
+          profile.current_region ||
+          "Việt Nam",
         industry: posting?.industry ?? "lĩnh vực mục tiêu",
         salaryBand: posting
           ? formatSalary(posting.avg_salary.min, posting.avg_salary.max)

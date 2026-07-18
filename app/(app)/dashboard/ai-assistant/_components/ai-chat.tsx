@@ -407,7 +407,7 @@ export function AIChat({
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [input, setInput] = useState("");
-  const [selectedModel, setSelectedModel] = useState(initialModels[0] ?? "DeepSeek-V4-Flash");
+  const [selectedModel, setSelectedModel] = useState(initialModels[0] ?? "Qwen3.6-27B");
   const [isStreaming, setIsStreaming] = useState(false);
   const [, startTransition] = useTransition();
   const messagesRef = useRef<HTMLDivElement>(null);

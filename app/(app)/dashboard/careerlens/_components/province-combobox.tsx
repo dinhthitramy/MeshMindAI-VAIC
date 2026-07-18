@@ -26,11 +26,11 @@ type ProvinceComboboxProps = {
 export function ProvinceCombobox({
   id,
   name,
-  defaultValue = "Thành phố Hồ Chí Minh",
+  defaultValue,
   invalid = false,
 }: ProvinceComboboxProps) {
   const t = useTranslations("Roadmap.form");
-  const [value, setValue] = useState<string | null>(defaultValue);
+  const [value, setValue] = useState<string | null>(defaultValue ?? null);
 
   return (
     <>

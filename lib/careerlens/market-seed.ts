@@ -395,7 +395,7 @@ export function selectCareerLensMarketSignals({
   targetRegions: string[];
   keywords: string[];
 }): LaborMarketSignals {
-  const regions = [...new Set([...targetRegions, currentRegion])];
+  const regions = [...new Set([...targetRegions, currentRegion].filter(Boolean))];
   const selectedPostings = regions.flatMap((region) => {
     const regionPostings = CAREERLENS_MARKET_SEED.postings.filter(
       (posting) => posting.region === region,
