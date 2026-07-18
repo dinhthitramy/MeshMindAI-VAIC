@@ -273,22 +273,49 @@ export function CareerPlanResults({
               </div>
 
               <div>
-                <h3 className="mb-4 flex items-center gap-2 border-t pt-6 text-base font-semibold">
+                <h3 className="flex items-center gap-2 border-t pt-6 text-base font-semibold">
                   <BookOpenCheck aria-hidden="true" className="size-4 text-primary" />
                   {t("roadmapTitle")}
                 </h3>
-                <Accordion>
-                  {recommendation.roadmap.map((stage) => (
-                    <AccordionItem key={`${stage.stage_order}-${stage.stage_name}`} value={String(stage.stage_order)}>
-                      <AccordionTrigger>
-                        <span>
-                          {cleanText(stage.stage_name)}
-                          <span className="ml-2 font-normal text-muted-foreground">
-                            {cleanText(stage.time_limit)}
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {t("roadmapDiagramDescription")}
+                </p>
+                <Accordion className="mt-5 gap-0 overflow-visible rounded-none border-0">
+                  {recommendation.roadmap.map((stage, stageIndex) => (
+                    <AccordionItem
+                      key={`${stage.stage_order}-${stage.stage_name}`}
+                      value={String(stage.stage_order)}
+                      className="relative border-0 bg-transparent pb-6 pl-14 last:pb-0 data-open:bg-transparent"
+                    >
+                      {stageIndex < recommendation.roadmap.length - 1 ? (
+                        <span
+                          aria-hidden="true"
+                          className="absolute top-12 -bottom-3 left-5 border-l-2 border-dashed border-border"
+                        />
+                      ) : null}
+                      <span
+                        aria-hidden="true"
+                        className="absolute top-3 left-0 flex size-10 items-center justify-center rounded-full border-2 bg-background font-mono text-sm font-semibold"
+                      >
+                        {String(stage.stage_order).padStart(2, "0")}
+                      </span>
+                      <div className="overflow-hidden rounded-2xl border bg-background">
+                        <AccordionTrigger className="p-5 hover:no-underline sm:p-6">
+                          <span className="flex min-w-0 flex-1 flex-col gap-2">
+                            <span className="flex flex-wrap items-center gap-2">
+                              <span className="text-base font-semibold">
+                                {cleanText(stage.stage_name)}
+                              </span>
+                              <Badge variant="secondary">
+                                {cleanText(stage.time_limit)}
+                              </Badge>
+                            </span>
+                            <span className="text-xs font-normal text-muted-foreground">
+                              {t("roadmapClickHint")}
+                            </span>
                           </span>
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-1 pb-1 sm:px-2 sm:pb-2">
                         {stage.stage_type === "learning" ? (
                           <div className="flex flex-col gap-6">
                             <div className="rounded-2xl bg-muted/60 p-5">
@@ -452,7 +479,8 @@ export function CareerPlanResults({
                             </div>
                           </div>
                         )}
-                      </AccordionContent>
+                        </AccordionContent>
+                      </div>
                     </AccordionItem>
                   ))}
                 </Accordion>

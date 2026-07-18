@@ -204,7 +204,7 @@ export const studentProfileSchema = z.object({
   consent_data_usage: z.boolean(),
   bias_exclusion_flag: z.boolean(),
   education_level: z.enum(["THPT", "college", "university", "graduate", "other"]),
-  current_region: z.string().trim().min(1).max(200),
+  current_region: z.string().trim().max(200),
   target_regions: z.array(nonEmptyText).max(20),
   languages: z.array(nonEmptyText).max(20),
   academic_records: z.array(academicRecordSchema).max(500),
@@ -272,7 +272,7 @@ export const careerGuidanceRequestSchema = z.object({
     "compare_paths",
     "roadmap_detail",
   ]),
-  question: z.string().trim().min(1).max(4_000),
+  question: z.string().trim().max(4_000),
   target_career_or_major: optionalText,
   preferred_output_language: z.enum(["vi", "en"]).default("vi"),
 });

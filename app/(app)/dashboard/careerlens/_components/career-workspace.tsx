@@ -14,6 +14,7 @@ import {
   ArrowRight,
   BriefcaseBusiness,
   Check,
+  CircleAlert,
   Database,
   FileSearch,
   LockKeyhole,
@@ -23,7 +24,12 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Alert,
+  AlertAction,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -191,6 +197,18 @@ function RoadmapWizard({
   const format = useFormatter();
   const t = useTranslations("Roadmap");
   const [step, setStep] = useState(0);
+  const [educationLevel, setEducationLevel] = useState<string | null>(
+    defaults?.educationLevel ?? null,
+  );
+  const [workEnvironment, setWorkEnvironment] = useState<string | null>(
+    defaults?.workEnvironment ?? "team_based",
+  );
+  const [learningStyle, setLearningStyle] = useState<string | null>(
+    defaults?.learningStyle ?? "project_based",
+  );
+  const [intent, setIntent] = useState<string | null>(
+    defaults?.intent ?? null,
+  );
   const [state, formAction, pending] = useActionState(
     generateCareerPlanAction,
     initialState,
@@ -265,6 +283,9 @@ function RoadmapWizard({
   const firstErrorStep = firstErrorField
     ? fieldStep[firstErrorField] ?? 0
     : undefined;
+  const errorMessages = state.fieldErrors
+    ? [...new Set(Object.values(state.fieldErrors).flat())]
+    : [];
 
   return (
     <div className="flex flex-col gap-8">
@@ -313,6 +334,20 @@ function RoadmapWizard({
             </CardHeader>
 
             <CardContent>
+              {state.status === "error" && errorMessages.length > 0 ? (
+                <Alert variant="destructive" className="mb-6">
+                  <CircleAlert aria-hidden="true" />
+                  <AlertTitle>{state.message}</AlertTitle>
+                  <AlertDescription>
+                    <ul className="flex list-disc flex-col gap-1 pl-4">
+                      {errorMessages.map((message) => (
+                        <li key={message}>{message}</li>
+                      ))}
+                    </ul>
+                  </AlertDescription>
+                </Alert>
+              ) : null}
+
               <FieldSet hidden={step !== 0}>
                 <FieldLegend>{t("wizard.confirm.title")}</FieldLegend>
                 <FieldDescription>{t("wizard.confirm.hint")}</FieldDescription>
@@ -355,11 +390,11 @@ function RoadmapWizard({
                     <Select
                       items={educationItems}
                       name="educationLevel"
-                      defaultValue={defaults?.educationLevel ?? "THPT"}
-                      required
+                      value={educationLevel}
+                      onValueChange={setEducationLevel}
                     >
                       <SelectTrigger id="careerlens-education" className="w-full" aria-invalid={Boolean(fieldError("educationLevel")) || undefined}>
-                        <SelectValue />
+                        <SelectValue placeholder={t("form.optionalSelect")} />
                       </SelectTrigger>
                       <SelectContent alignItemWithTrigger={false}>
                         <SelectGroup>
@@ -377,10 +412,9 @@ function RoadmapWizard({
                     <Input
                       id="careerlens-languages"
                       name="languages"
-                      defaultValue={defaults?.languages ?? t("form.languagesPlaceholder")}
+                      defaultValue={defaults?.languages ?? ""}
                       placeholder={t("form.languagesPlaceholder")}
                       aria-invalid={Boolean(fieldError("languages")) || undefined}
-                      required
                     />
                     <FieldDescription>{t("form.languagesHint")}</FieldDescription>
                     <FieldError>{fieldError("languages")}</FieldError>
@@ -391,7 +425,7 @@ function RoadmapWizard({
                     <ProvinceCombobox
                       id="careerlens-current-region"
                       name="currentRegion"
-                      defaultValue={defaults?.currentRegion}
+                      defaultValue={defaults?.currentRegion || undefined}
                       invalid={Boolean(fieldError("currentRegion"))}
                     />
                     <FieldError>{fieldError("currentRegion")}</FieldError>
@@ -402,7 +436,7 @@ function RoadmapWizard({
                     <ProvinceCombobox
                       id="careerlens-target-region"
                       name="targetRegion"
-                      defaultValue={defaults?.targetRegion}
+                      defaultValue={defaults?.targetRegion || undefined}
                       invalid={Boolean(fieldError("targetRegion"))}
                     />
                     <FieldError>{fieldError("targetRegion")}</FieldError>
@@ -429,7 +463,6 @@ function RoadmapWizard({
                       defaultValue={defaults?.activity}
                       placeholder={t("form.activityPlaceholder")}
                       aria-invalid={Boolean(fieldError("activity")) || undefined}
-                      required
                     />
                     <FieldError>{fieldError("activity")}</FieldError>
                   </Field>
@@ -462,11 +495,10 @@ function RoadmapWizard({
                       id="careerlens-hours"
                       name="weeklyHours"
                       type="number"
-                      min="1"
+                      min="0"
                       max="80"
                       defaultValue={defaults?.weeklyHours ?? 10}
                       aria-invalid={Boolean(fieldError("weeklyHours")) || undefined}
-                      required
                     />
                     <FieldError>{fieldError("weeklyHours")}</FieldError>
                   </Field>
@@ -485,9 +517,14 @@ function RoadmapWizard({
 
                   <Field data-invalid={Boolean(fieldError("workEnvironment")) || undefined}>
                     <FieldLabel htmlFor="careerlens-work-env">{t("form.workEnvironment")}</FieldLabel>
-                    <Select items={workEnvironmentItems} name="workEnvironment" defaultValue={defaults?.workEnvironment ?? "team_based"} required>
+                    <Select
+                      items={workEnvironmentItems}
+                      name="workEnvironment"
+                      value={workEnvironment}
+                      onValueChange={setWorkEnvironment}
+                    >
                       <SelectTrigger id="careerlens-work-env" className="w-full" aria-invalid={Boolean(fieldError("workEnvironment")) || undefined}>
-                        <SelectValue />
+                        <SelectValue placeholder={t("form.optionalSelect")} />
                       </SelectTrigger>
                       <SelectContent alignItemWithTrigger={false}>
                         <SelectGroup>
@@ -502,9 +539,14 @@ function RoadmapWizard({
 
                   <Field data-invalid={Boolean(fieldError("learningStyle")) || undefined}>
                     <FieldLabel htmlFor="careerlens-learning-style">{t("form.learningStyle")}</FieldLabel>
-                    <Select items={learningStyleItems} name="learningStyle" defaultValue={defaults?.learningStyle ?? "project_based"} required>
+                    <Select
+                      items={learningStyleItems}
+                      name="learningStyle"
+                      value={learningStyle}
+                      onValueChange={setLearningStyle}
+                    >
                       <SelectTrigger id="careerlens-learning-style" className="w-full" aria-invalid={Boolean(fieldError("learningStyle")) || undefined}>
-                        <SelectValue />
+                        <SelectValue placeholder={t("form.optionalSelect")} />
                       </SelectTrigger>
                       <SelectContent alignItemWithTrigger={false}>
                         <SelectGroup>
@@ -538,9 +580,14 @@ function RoadmapWizard({
                 <FieldGroup className="mt-5">
                   <Field data-invalid={Boolean(fieldError("intent")) || undefined}>
                     <FieldLabel htmlFor="careerlens-intent">{t("form.intent")}</FieldLabel>
-                    <Select items={intentItems} name="intent" defaultValue={defaults?.intent ?? "initial_guidance"} required>
+                    <Select
+                      items={intentItems}
+                      name="intent"
+                      value={intent}
+                      onValueChange={setIntent}
+                    >
                       <SelectTrigger id="careerlens-intent" className="w-full" aria-invalid={Boolean(fieldError("intent")) || undefined}>
-                        <SelectValue />
+                        <SelectValue placeholder={t("form.optionalSelect")} />
                       </SelectTrigger>
                       <SelectContent alignItemWithTrigger={false}>
                         <SelectGroup>
@@ -562,7 +609,6 @@ function RoadmapWizard({
                       defaultValue={defaults?.question}
                       placeholder={t("form.questionPlaceholder")}
                       aria-invalid={Boolean(fieldError("question")) || undefined}
-                      required
                     />
                     <FieldError>{fieldError("question")}</FieldError>
                   </Field>
@@ -572,7 +618,7 @@ function RoadmapWizard({
 
             <CardFooter className="flex flex-wrap items-center justify-between gap-4">
               <div className="min-h-6" aria-live="polite">
-                {state.status === "error" ? (
+                {state.status === "error" && errorMessages.length === 0 ? (
                   <p className="text-sm text-destructive">{state.message}</p>
                 ) : (
                   <p className="text-sm text-muted-foreground">{t("form.footerHint")}</p>
@@ -597,12 +643,25 @@ function RoadmapWizard({
                   </Button>
                 ) : null}
                 {step < stepItems.length - 1 ? (
-                  <Button type="button" onClick={() => setStep((current) => current + 1)}>
+                  <Button
+                    key="wizard-next"
+                    type="button"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      setStep((current) => current + 1);
+                    }}
+                  >
                     {t("wizard.next")}
                     <ArrowRight data-icon="inline-end" />
                   </Button>
                 ) : (
-                  <Button type="submit" disabled={pending}>
+                  <Button
+                    key="wizard-submit"
+                    type="submit"
+                    name="submitAction"
+                    value="generate"
+                    disabled={pending}
+                  >
                     {pending ? <Spinner data-icon="inline-start" /> : <Sparkles data-icon="inline-start" />}
                     {pending ? t("form.submitting") : t("form.submit")}
                   </Button>
@@ -795,6 +854,7 @@ export function CareerWorkspace({
                     <span className="mt-1 block text-xs font-normal text-muted-foreground">
                       {format.dateTime(new Date(roadmap.updatedAt), {
                         dateStyle: "medium",
+                        timeStyle: "short",
                       })}
                     </span>
                   </span>
@@ -829,10 +889,16 @@ export function CareerWorkspace({
         selectedRecommendationIndex={activePlan.selectedRecommendationIndex}
       />
 
-      <Alert>
+      <Alert className="sm:pr-52">
         <Route aria-hidden="true" />
         <AlertTitle>{t("saved.newTitle")}</AlertTitle>
         <AlertDescription>{t("saved.newDescription")}</AlertDescription>
+        <AlertAction className="static col-start-2 mt-3 sm:absolute sm:mt-0">
+          <Button type="button" size="sm" onClick={() => setMode("new")}>
+            <Plus data-icon="inline-start" />
+            {t("saved.createNew")}
+          </Button>
+        </AlertAction>
       </Alert>
     </div>
   );

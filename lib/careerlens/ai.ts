@@ -460,7 +460,11 @@ function createMockCareerGuidance(input: CareerGuidanceInput): CareerGuidanceOut
       roadmap: createRoadmap({
         pathTitle: title,
         skill: firstSkill,
-        region: posting?.region ?? profile.target_regions[0] ?? profile.current_region,
+        region:
+          posting?.region ||
+          profile.target_regions[0] ||
+          profile.current_region ||
+          "Việt Nam",
         industry: posting?.industry ?? "lĩnh vực mục tiêu",
         salaryBand: posting
           ? formatSalary(posting.avg_salary.min, posting.avg_salary.max)

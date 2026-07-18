@@ -48,6 +48,10 @@ export async function generateCareerPlanAction(
     };
   }
 
+  if (formData.get("submitAction") !== "generate") {
+    return { status: "idle" };
+  }
+
   const parsed = careerLensFormSchema.safeParse({
     educationLevel: formData.get("educationLevel"),
     currentRegion: formData.get("currentRegion"),

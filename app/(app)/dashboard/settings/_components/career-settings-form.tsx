@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Save } from "lucide-react";
 
@@ -49,6 +49,7 @@ export function CareerSettingsForm({
     saveCareerSettingsAction,
     initialState,
   );
+  const [model, setModel] = useState<string | null>(preferredModel);
   const items = models.map((model) => ({ label: model, value: model }));
   const modelError = state.fieldErrors?.model?.[0];
 
@@ -66,7 +67,8 @@ export function CareerSettingsForm({
               <Select
                 items={items}
                 name="model"
-                defaultValue={preferredModel}
+                value={model}
+                onValueChange={setModel}
                 required
               >
                 <SelectTrigger

@@ -17,7 +17,7 @@ import { getInterestSuggestions } from "@/lib/careerlens/interest-suggestions";
 
 type InterestProfileFieldsProps = {
   defaultInterests?: string;
-  defaultScore?: number;
+  defaultScore?: number | null;
   defaultSubject?: string;
   showInterests?: boolean;
   showSubject?: boolean;
@@ -35,7 +35,7 @@ function splitInterests(value: string): string[] {
 
 export function InterestProfileFields({
   defaultInterests = "",
-  defaultScore = 8,
+  defaultScore = null,
   defaultSubject = "",
   showInterests = true,
   showSubject = true,
@@ -71,7 +71,6 @@ export function InterestProfileFields({
             onChange={(event) => setSubject(event.target.value)}
             placeholder={t("subjectPlaceholder")}
             aria-invalid={Boolean(subjectError) || undefined}
-            required
           />
           <FieldError>{subjectError}</FieldError>
         </Field>
@@ -86,9 +85,8 @@ export function InterestProfileFields({
             min="0"
             max="10"
             step="0.1"
-            defaultValue={defaultScore}
+            defaultValue={defaultScore ?? undefined}
             aria-invalid={Boolean(scoreError) || undefined}
-            required
           />
           <FieldError>{scoreError}</FieldError>
         </Field>
@@ -105,7 +103,6 @@ export function InterestProfileFields({
           onChange={(event) => setInterests(event.target.value)}
           placeholder={t("interestsPlaceholder")}
           aria-invalid={Boolean(interestsError) || undefined}
-          required
         />
         <FieldDescription>{t("interestsHint")}</FieldDescription>
         <div className="flex flex-wrap gap-2" aria-label={t("suggestionsLabel")}>

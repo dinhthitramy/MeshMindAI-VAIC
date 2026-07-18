@@ -64,6 +64,7 @@ function createValidFormData() {
     intent: "initial_guidance",
     question: "Em nên bắt đầu kiểm chứng hướng nghề nào trong ba tháng tới?",
     consent: "on",
+    submitAction: "generate",
   };
 
   for (const [key, value] of Object.entries(values)) {
@@ -107,6 +108,80 @@ describe("CareerLens form integration", () => {
     if (!parsed.success) {
       expect(parsed.error.flatten().fieldErrors.consent).toBeDefined();
     }
+  });
+
+  it("returns specific field messages for an invalid submission", async () => {
+    const formData = createValidFormData();
+    formData.set("currentRegion", "Tỉnh không tồn tại");
+    formData.set("activity", "x".repeat(2_001));
+
+    const state = await generateCareerPlanAction(
+      { status: "idle" },
+      formData,
+    );
+
+    expect(state.status).toBe("error");
+    expect(state.message).toBe("actions.checkFields");
+    expect(state.fieldErrors).toMatchObject({
+      activity: ["actions.fields.activity"],
+      currentRegion: ["actions.fields.currentRegion"],
+    });
+  });
+
+  it("accepts all guidance fields as blank", async () => {
+    vi.stubEnv("FPT_AI_API_KEY", "");
+    const formData = new FormData();
+    formData.set("consent", "on");
+    formData.set("submitAction", "generate");
+
+    const state = await generateCareerPlanAction(
+      { status: "idle" },
+      formData,
+    );
+
+    expect(state.status).toBe("success");
+    expect(state.formValues).toMatchObject({
+      activity: "",
+      currentRegion: "",
+      educationLevel: null,
+      interests: "",
+      question: "",
+      targetRegion: "",
+      weeklyHours: null,
+    });
+  });
+
+  it("does not add a blank activity or academic record", () => {
+    const formData = new FormData();
+    formData.set("consent", "on");
+    const parsed = careerLensFormSchema.parse(Object.fromEntries(formData));
+
+    const input = buildCareerGuidanceInput(parsed, "student-001");
+
+    expect(input.student_profile.academic_records).toEqual([]);
+    expect(input.student_profile.self_reported_activities).toEqual([]);
+  });
+
+  it("does not generate until the explicit submit button is used", async () => {
+    const formData = createValidFormData();
+    formData.delete("submitAction");
+
+    const state = await generateCareerPlanAction(
+      { status: "idle" },
+      formData,
+    );
+
+    expect(state).toEqual({ status: "idle" });
+  });
+
+  it("accepts an empty desired outcome", () => {
+    const rawValues = Object.fromEntries(createValidFormData());
+    rawValues.question = "";
+
+    const parsed = careerLensFormSchema.parse(rawValues);
+    const input = buildCareerGuidanceInput(parsed, "student-001");
+
+    expect(input.user_request.question).toBe("");
   });
 
   it("integrates the complete Starting Point snapshot into the guidance input", () => {
@@ -235,5 +310,19 @@ describe("CareerLens form integration", () => {
       "internship",
       "full_time",
     ]);
+  });
+
+  it("creates a roadmap when the desired outcome is left blank", async () => {
+    vi.stubEnv("FPT_AI_API_KEY", "");
+    const formData = createValidFormData();
+    formData.set("question", "");
+
+    const state = await generateCareerPlanAction(
+      { status: "idle" },
+      formData,
+    );
+
+    expect(state.status).toBe("success");
+    expect(state.formValues?.question).toBe("");
   });
 });
