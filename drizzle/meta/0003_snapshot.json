@@ -1,5 +1,5 @@
 {
-  "id": "101435a4-56f1-41d5-bfc7-a989c65a4753",
+  "id": "55f8914e-9aa6-4efd-b92b-55f21fd71712",
   "prevId": "a9a77138-9004-46e3-a415-85857f4e5e02",
   "version": "7",
   "dialect": "postgresql",
@@ -645,15 +645,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "birth_year": {
-          "name": "birth_year",
-          "type": "smallint",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "birth_month": {
-          "name": "birth_month",
-          "type": "smallint",
+        "birth_date": {
+          "name": "birth_date",
+          "type": "date",
           "primaryKey": false,
           "notNull": true
         },
@@ -713,13 +707,9 @@
           "name": "users_session_version_positive",
           "value": "\"users\".\"session_version\" > 0"
         },
-        "users_birth_year_positive": {
-          "name": "users_birth_year_positive",
-          "value": "\"users\".\"birth_year\" > 0"
-        },
-        "users_birth_month_valid": {
-          "name": "users_birth_month_valid",
-          "value": "\"users\".\"birth_month\" between 1 and 12"
+        "users_birth_date_valid": {
+          "name": "users_birth_date_valid",
+          "value": "\"users\".\"birth_date\" between date '1900-01-01' and current_date"
         }
       },
       "isRLSEnabled": false

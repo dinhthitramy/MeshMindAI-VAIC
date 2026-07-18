@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import { ArrowLeft, KeyRound, LogIn } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -21,6 +22,7 @@ import { resetPasswordAction, type AuthActionState } from "../actions";
 const initialState: AuthActionState = { status: "idle" };
 
 function ResetPasswordForm({ token }: { token: string }) {
+  const t = useTranslations("Auth");
   const [error, setError] = useState("");
   const [state, action, pending] = useActionState(
     resetPasswordAction,
@@ -41,7 +43,7 @@ function ResetPasswordForm({ token }: { token: string }) {
 
     if (password !== confirmation) {
       event.preventDefault();
-      setError("Passwords do not match.");
+      setError(t("common.passwordMismatch"));
     }
   }
 
@@ -66,7 +68,7 @@ function ResetPasswordForm({ token }: { token: string }) {
                 tabIndex={-1}
                 className="font-medium outline-none"
               >
-                Password reset complete
+                {t("reset.successTitle")}
               </h2>
               <p className="mt-1 text-muted-foreground">{state.message}</p>
             </div>
@@ -75,7 +77,7 @@ function ResetPasswordForm({ token }: { token: string }) {
               className={cn(buttonVariants({ size: "lg" }), "w-full")}
             >
               <LogIn data-icon="inline-start" aria-hidden="true" />
-              Continue to login
+              {t("reset.continueToLogin")}
             </Link>
           </PresencePanel>
         ) : (
@@ -96,7 +98,7 @@ function ResetPasswordForm({ token }: { token: string }) {
               <PasswordField
                 id="reset-password"
                 name="password"
-                label="New password"
+                label={t("reset.newPassword")}
                 autoComplete="new-password"
                 minLength={12}
                 aria-invalid={error ? true : undefined}
@@ -107,7 +109,7 @@ function ResetPasswordForm({ token }: { token: string }) {
               <PasswordField
                 id="reset-password-confirmation"
                 name="passwordConfirmation"
-                label="Confirm new password"
+                label={t("reset.confirmNewPassword")}
                 autoComplete="new-password"
                 minLength={12}
                 aria-invalid={error ? true : undefined}
@@ -132,7 +134,7 @@ function ResetPasswordForm({ token }: { token: string }) {
               </AnimatePresence>
               <Button type="submit" size="lg" className="w-full" disabled={pending}>
                 <KeyRound data-icon="inline-start" aria-hidden="true" />
-                {pending ? "Resetting..." : "Reset password"}
+                {pending ? t("reset.submitting") : t("reset.submit")}
               </Button>
               <Link
                 href="/login"
@@ -142,7 +144,7 @@ function ResetPasswordForm({ token }: { token: string }) {
                   aria-hidden="true"
                   className="mr-1 inline size-3.5 align-[-0.15em]"
                 />
-                Back to login
+                {t("common.backToLogin")}
               </Link>
             </form>
           </PresencePanel>

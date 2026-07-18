@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowLeft, Mail } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import { PresencePanel } from "./presence-panel";
 const initialState: AuthActionState = { status: "idle" };
 
 function ForgotPasswordForm() {
+  const t = useTranslations("Auth");
   const [state, action, pending] = useActionState(
     forgotPasswordAction,
     initialState,
@@ -48,7 +50,7 @@ function ForgotPasswordForm() {
                 tabIndex={-1}
                 className="font-medium outline-none"
               >
-                Check your inbox
+                {t("forgot.successTitle")}
               </h2>
               <p className="mt-1 text-muted-foreground">{state.message}</p>
             </div>
@@ -60,7 +62,7 @@ function ForgotPasswordForm() {
               )}
             >
               <ArrowLeft data-icon="inline-start" aria-hidden="true" />
-              Back to login
+              {t("common.backToLogin")}
             </Link>
           </PresencePanel>
         ) : (
@@ -73,13 +75,13 @@ function ForgotPasswordForm() {
           >
             <form action={action} className="space-y-5">
               <div className="grid gap-2">
-                <Label htmlFor="recovery-email">Email</Label>
+                <Label htmlFor="recovery-email">{t("common.email")}</Label>
                 <Input
                   id="recovery-email"
                   name="email"
                   type="email"
                   autoComplete="email"
-                  placeholder="you@example.com"
+                  placeholder={t("common.emailPlaceholder")}
                   required
                   autoFocus
                 />
@@ -101,7 +103,7 @@ function ForgotPasswordForm() {
               </AnimatePresence>
               <Button type="submit" size="lg" className="w-full" disabled={pending}>
                 <Mail data-icon="inline-start" aria-hidden="true" />
-                {pending ? "Sending..." : "Send reset link"}
+                {pending ? t("forgot.submitting") : t("forgot.submit")}
               </Button>
               <Link
                 href="/login"
@@ -111,7 +113,7 @@ function ForgotPasswordForm() {
                   aria-hidden="true"
                   className="mr-1 inline size-3.5 align-[-0.15em]"
                 />
-                Back to login
+                {t("common.backToLogin")}
               </Link>
             </form>
           </PresencePanel>

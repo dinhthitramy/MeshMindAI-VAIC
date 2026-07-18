@@ -3,13 +3,13 @@ import {
   type AnyPgColumn,
   boolean,
   check,
+  date,
   index,
   integer,
   jsonb,
   pgEnum,
   pgTable,
   primaryKey,
-  smallint,
   text,
   timestamp,
   uniqueIndex,
@@ -30,8 +30,7 @@ export const users = pgTable(
     fullName: text("full_name").notNull(),
     email: text("email").notNull(),
     passwordHash: text("password_hash").notNull(),
-    birthYear: smallint("birth_year").notNull(),
-    birthMonth: smallint("birth_month").notNull(),
+    birthDate: date("birth_date", { mode: "string" }).notNull(),
     status: userStatus("status").default("ACTIVE").notNull(),
     sessionVersion: integer("session_version").default(1).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -44,10 +43,9 @@ export const users = pgTable(
   (table) => [
     uniqueIndex("users_email_unique").on(lower(table.email)),
     check("users_session_version_positive", sql`${table.sessionVersion} > 0`),
-    check("users_birth_year_positive", sql`${table.birthYear} > 0`),
     check(
-      "users_birth_month_valid",
-      sql`${table.birthMonth} between 1 and 12`,
+      "users_birth_date_valid",
+      sql`${table.birthDate} between date '1900-01-01' and current_date`,
     ),
   ],
 );

@@ -1,0 +1,239 @@
+{
+  "Common": {
+    "skipToContent": "Đi đến nội dung",
+    "homeAria": "Trang chủ MeshMind",
+    "language": {
+      "english": "Tiếng Anh",
+      "vietnamese": "Tiếng Việt",
+      "currentSwitch": "Ngôn ngữ: {language}. Chuyển sang {nextLanguage}.",
+      "switchTo": "Chuyển sang {language}",
+      "shortEnglish": "EN",
+      "shortVietnamese": "VI"
+    }
+  },
+  "Preloader": {
+    "loading": "Đang chuẩn bị MeshMind",
+    "progressLabel": "Tiến trình tải",
+    "percent": "{percent}%",
+    "messages": {
+      "semanticPathways": "Đang tải thêm RAM...",
+      "opinionatedAlgorithms": "Đang thương lượng với đám mây...",
+      "filingCabinets": "Đang gom các điểm ảnh đi lạc...",
+      "distributedThoughts": "Đang đánh thức hamster máy chủ...",
+      "tinyGears": "Đang tắt đi bật lại...",
+      "knowledgeThreads": "Đang uốn spline thần kinh..."
+    }
+  },
+  "Theme": {
+    "system": "Hệ thống",
+    "light": "Sáng",
+    "dark": "Tối",
+    "preference": "Tùy chọn giao diện",
+    "currentSwitch": "Giao diện: {theme}. Chuyển sang chế độ {nextTheme}."
+  },
+  "Landing": {
+    "primaryNavigation": "Điều hướng chính",
+    "category1": "Danh mục 01",
+    "category2": "Danh mục 02",
+    "category3": "Danh mục 03",
+    "categories": "Danh mục",
+    "account": "Tài khoản"
+  },
+  "Auth": {
+    "common": {
+      "email": "Email",
+      "emailPlaceholder": "ban@example.com",
+      "password": "Mật khẩu",
+      "backToLogin": "Quay lại đăng nhập",
+      "continue": "Tiếp tục",
+      "passwordMismatch": "Mật khẩu xác nhận không khớp.",
+      "showField": "Hiện {field}",
+      "hideField": "Ẩn {field}"
+    },
+    "login": {
+      "metadataTitle": "Đăng nhập",
+      "title": "Chào mừng bạn trở lại",
+      "description": "Nhập thông tin của bạn để tiếp tục đến MeshMind.",
+      "forgotPassword": "Quên mật khẩu?",
+      "submitting": "Đang đăng nhập...",
+      "submit": "Đăng nhập",
+      "newUser": "Bạn mới sử dụng MeshMind?",
+      "createAccount": "Tạo tài khoản"
+    },
+    "signup": {
+      "metadataTitle": "Đăng ký",
+      "title": "Tạo tài khoản của bạn",
+      "description": "Hoàn thành ba bước ngắn dưới đây để thiết lập hồ sơ.",
+      "steps": {
+        "account": "Tài khoản",
+        "about": "Thông tin cá nhân",
+        "security": "Bảo mật"
+      },
+      "stepTitles": {
+        "email": "Bắt đầu với email của bạn",
+        "about": "Giới thiệu về bạn",
+        "password": "Chọn mật khẩu"
+      },
+      "stepCount": "Bước {current} / {total}",
+      "progress": "Tiến trình đăng ký",
+      "fullName": "Họ và tên",
+      "fullNamePlaceholder": "Nhập họ và tên",
+      "dateOfBirth": "Ngày sinh",
+      "birthDay": "Ngày",
+      "birthMonth": "Tháng sinh",
+      "birthYear": "Năm sinh",
+      "day": "Ngày",
+      "month": "Tháng",
+      "year": "Năm",
+      "months": {
+        "1": "Tháng 1",
+        "2": "Tháng 2",
+        "3": "Tháng 3",
+        "4": "Tháng 4",
+        "5": "Tháng 5",
+        "6": "Tháng 6",
+        "7": "Tháng 7",
+        "8": "Tháng 8",
+        "9": "Tháng 9",
+        "10": "Tháng 10",
+        "11": "Tháng 11",
+        "12": "Tháng 12"
+      },
+      "confirmPassword": "Xác nhận mật khẩu",
+      "passwordHint": "Sử dụng ít nhất 12 ký tự.",
+      "back": "Quay lại",
+      "submitting": "Đang tạo tài khoản...",
+      "submit": "Tạo tài khoản",
+      "continue": "Tiếp tục",
+      "existingUser": "Bạn đã có tài khoản?",
+      "login": "Đăng nhập"
+    },
+    "forgot": {
+      "metadataTitle": "Khôi phục mật khẩu",
+      "title": "Khôi phục mật khẩu của bạn",
+      "description": "Nhập email để bắt đầu quy trình đặt lại mật khẩu.",
+      "successTitle": "Kiểm tra hộp thư của bạn",
+      "submitting": "Đang gửi...",
+      "submit": "Gửi liên kết đặt lại"
+    },
+    "reset": {
+      "metadataTitle": "Đặt lại mật khẩu",
+      "title": "Đặt mật khẩu mới",
+      "description": "Chọn và xác nhận mật khẩu bạn muốn sử dụng.",
+      "successTitle": "Đã đặt lại mật khẩu",
+      "continueToLogin": "Tiếp tục đến đăng nhập",
+      "newPassword": "Mật khẩu mới",
+      "confirmNewPassword": "Xác nhận mật khẩu mới",
+      "submitting": "Đang đặt lại...",
+      "submit": "Đặt lại mật khẩu"
+    },
+    "superadmin": {
+      "metadataTitle": "Truy cập vận hành",
+      "title": "Truy cập vận hành",
+      "description": "Khu vực hạn chế này yêu cầu thông tin đăng nhập tích hợp và mã xác thực hiện hành.",
+      "authenticationCode": "Mã xác thực",
+      "operationsIdentifier": "Mã định danh vận hành",
+      "submitting": "Đang xác minh...",
+      "verify": "Xác minh và tiếp tục"
+    },
+    "actions": {
+      "checkFields": "Kiểm tra các trường được đánh dấu rồi thử lại.",
+      "serviceUnavailable": "Dịch vụ xác thực tạm thời không khả dụng. Vui lòng thử lại.",
+      "invalidCredentials": "Email hoặc mật khẩu không đúng.",
+      "signupRateLimit": "Bạn đã đăng ký quá nhiều lần. Vui lòng thử lại sau.",
+      "accountCreationFailed": "Không thể tạo tài khoản với thông tin này.",
+      "accountCreatedLoginUnavailable": "Tài khoản đã được tạo nhưng chưa thể tự động đăng nhập. Vui lòng thử đăng nhập lại sau ít phút.",
+      "loginRateLimit": "Bạn đã đăng nhập quá nhiều lần. Vui lòng thử lại sau.",
+      "tooManyAttemptsRestart": "Bạn đã thử quá nhiều lần. Vui lòng bắt đầu lại quy trình đăng nhập sau.",
+      "invalidAuthenticationCode": "Mã xác thực không hợp lệ hoặc đã hết hạn.",
+      "invalidSuperadminCredentials": "Thông tin đăng nhập không hợp lệ.",
+      "tooManyAttempts": "Bạn đã thử quá nhiều lần. Vui lòng thử lại sau.",
+      "recoverySent": "Nếu tài khoản tồn tại, hướng dẫn đặt lại mật khẩu đã được gửi.",
+      "resetRateLimit": "Bạn đã đặt lại mật khẩu quá nhiều lần. Vui lòng thử lại sau.",
+      "invalidResetLink": "Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.",
+      "resetSuccess": "Mật khẩu đã được đặt lại. Bạn có thể đăng nhập ngay bây giờ."
+    },
+    "validation": {
+      "passwordMin": "Mật khẩu phải có ít nhất 12 ký tự.",
+      "passwordMax": "Mật khẩu không được vượt quá 128 ký tự.",
+      "passwordLong": "Mật khẩu quá dài.",
+      "emailInvalid": "Nhập địa chỉ email hợp lệ.",
+      "fullNameInvalid": "Nhập họ và tên của bạn.",
+      "birthDayInvalid": "Nhập ngày trong tháng hợp lệ.",
+      "birthMonthInvalid": "Chọn tháng sinh hợp lệ.",
+      "birthYearInvalid": "Nhập năm sinh hợp lệ.",
+      "birthDateInvalid": "Nhập ngày sinh hợp lệ.",
+      "birthDateFuture": "Ngày sinh không thể ở tương lai.",
+      "passwordMismatch": "Mật khẩu xác nhận không khớp.",
+      "totpInvalid": "Nhập mã xác thực gồm sáu chữ số."
+    }
+  },
+  "Dashboard": {
+    "metadataTitle": "Bảng điều khiển",
+    "menuMetadataTitle": "Menu",
+    "homeHeading": "Trang chính bảng điều khiển",
+    "menuHeading": "Menu",
+    "home": "Trang chính",
+    "menu": "Menu",
+    "navigation": "Điều hướng bảng điều khiển",
+    "closeNavigation": "Đóng điều hướng",
+    "openNavigation": "Mở điều hướng",
+    "expandSidebar": "Mở rộng thanh bên",
+    "collapseSidebar": "Thu gọn thanh bên",
+    "userMenu": "Menu tài khoản",
+    "openUserMenu": "Mở menu tài khoản của {name}",
+    "profile": "Thông tin cá nhân",
+    "logout": "Đăng xuất",
+    "logoutUser": "Đăng xuất {name}"
+  },
+  "Profile": {
+    "metadataTitle": "Thông tin cá nhân",
+    "title": "Thông tin cá nhân",
+    "description": "Cập nhật thông tin giúp MeshMind cá nhân hóa trải nghiệm của bạn.",
+    "summary": "Thông tin này được dùng để nhận diện tài khoản và điều chỉnh trải nghiệm phù hợp với bạn.",
+    "form": {
+      "title": "Chi tiết hồ sơ",
+      "description": "Chỉnh sửa thông tin tài khoản của bạn bên dưới.",
+      "fullName": "Họ và tên",
+      "fullNameHint": "Tên hiển thị trong tài khoản của bạn.",
+      "email": "Email",
+      "emailHint": "Đây cũng là email bạn dùng để đăng nhập.",
+      "dateOfBirth": "Ngày sinh",
+      "dateOfBirthHint": "Nhập đầy đủ ngày, tháng và năm sinh của bạn.",
+      "birthDay": "Ngày sinh",
+      "birthMonth": "Tháng sinh",
+      "birthYear": "Năm sinh",
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu..."
+    },
+    "months": {
+      "1": "Tháng 1",
+      "2": "Tháng 2",
+      "3": "Tháng 3",
+      "4": "Tháng 4",
+      "5": "Tháng 5",
+      "6": "Tháng 6",
+      "7": "Tháng 7",
+      "8": "Tháng 8",
+      "9": "Tháng 9",
+      "10": "Tháng 10",
+      "11": "Tháng 11",
+      "12": "Tháng 12"
+    },
+    "validation": {
+      "email": "Nhập địa chỉ email hợp lệ.",
+      "fullName": "Nhập họ và tên có ít nhất 2 ký tự.",
+      "birthDate": "Nhập ngày sinh hợp lệ và không ở tương lai.",
+      "birthDay": "Nhập ngày trong tháng hợp lệ.",
+      "birthMonth": "Chọn tháng sinh hợp lệ.",
+      "birthYear": "Nhập năm sinh từ 1900 đến năm hiện tại."
+    },
+    "actions": {
+      "saved": "Đã lưu thông tin cá nhân.",
+      "checkFields": "Kiểm tra các trường được đánh dấu rồi thử lại.",
+      "emailInUse": "Email này đã được sử dụng bởi một tài khoản khác.",
+      "failed": "Chưa thể lưu thay đổi. Vui lòng thử lại.",
+      "unavailable": "Tài khoản này không có hồ sơ cá nhân để chỉnh sửa."
+    }
+  }
+}
