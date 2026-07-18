@@ -49,7 +49,6 @@ export default async function RootLayout({
         geistMono.variable,
       )}
     >
-      {/* eslint-disable-next-line @next/next/no-sync-scripts */}
       <head>
         {/* Inline init scripts run before React hydration — dev warning is expected and harmless */}
         {/* biome-ignore lint: required for FOUC prevention */}
