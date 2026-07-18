@@ -58,7 +58,6 @@ describe("CV import validation", () => {
     );
   });
 });
-
 describe("CV PDF validation", () => {
   it("accepts a PDF within the upload limit", () => {
     const file = new File(["%PDF-test"], "cv.pdf", {
@@ -84,4 +83,3 @@ describe("CV PDF validation", () => {
     expect(validateCvPdfFile(file)).toBe("tooLarge");
   });
 });
-

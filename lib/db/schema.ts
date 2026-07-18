@@ -6,6 +6,7 @@ import {
   customType,
   date,
   doublePrecision,
+  foreignKey,
   index,
   integer,
   jsonb,
@@ -39,6 +40,42 @@ export const transcriptStage = pgEnum("transcript_stage", [
   "GRADE_12",
   "CUMULATIVE",
 ]);
+export const chatMessageStatus = pgEnum("chat_message_status", [
+  "pending",
+  "streaming",
+  "completed",
+  "cancelled",
+  "failed",
+]);
+export const agentRunStatus = pgEnum("agent_run_status", [
+  "pending",
+  "running",
+  "completed",
+  "cancelled",
+  "failed",
+]);
+export const agentToolCallStatus = pgEnum("agent_tool_call_status", [
+  "pending",
+  "running",
+  "completed",
+  "cancelled",
+  "failed",
+]);
+export const agentCitationSupportStatus = pgEnum(
+  "agent_citation_support_status",
+  ["supported", "unsupported"],
+);
+
+export type AgentRunUsage = {
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+};
+
+export type AgentDataClass =
+  | "public"
+  | "personal_data"
+  | "private_document";
 
 const bytea = customType<{ data: Buffer; driverData: Buffer }>({
   dataType() {
@@ -221,7 +258,10 @@ export const chatSessions = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => [index("chat_sessions_user_id_idx").on(table.userId)],
+  (table) => [
+    uniqueIndex("chat_sessions_id_user_unique").on(table.id, table.userId),
+    index("chat_sessions_user_id_idx").on(table.userId),
+  ],
 );
 
 export const chatMessages = pgTable(
@@ -234,9 +274,231 @@ export const chatMessages = pgTable(
     role: text("role").$type<"user" | "assistant">().notNull(),
     content: text("content").notNull(),
     model: text("model"),
+    status: chatMessageStatus("status").default("completed").notNull(),
+    dataClasses: jsonb("data_classes")
+      .$type<AgentDataClass[]>()
+      .default(sql`'["public"]'::jsonb`)
+      .notNull(),
+    clientRequestId: text("client_request_id"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => [index("chat_messages_session_id_idx").on(table.sessionId)],
+  (table) => [
+    uniqueIndex("chat_messages_id_session_unique").on(table.id, table.sessionId),
+    index("chat_messages_session_id_idx").on(
+      table.sessionId,
+      table.createdAt,
+      table.id,
+    ),
+    uniqueIndex("chat_messages_session_client_request_unique")
+      .on(table.sessionId, table.clientRequestId)
+      .where(sql`${table.clientRequestId} is not null`),
+    check(
+      "chat_messages_data_classes_valid",
+      sql`jsonb_typeof(${table.dataClasses}) = 'array'
+        and jsonb_array_length(${table.dataClasses}) > 0
+        and ${table.dataClasses} <@ '["public", "personal_data", "private_document"]'::jsonb`,
+    ),
+  ],
+);
+
+export const agentRuns = pgTable(
+  "agent_runs",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    sessionId: uuid("session_id").notNull(),
+    clientRequestId: text("client_request_id").notNull(),
+    model: text("model").notNull(),
+    forceWeb: boolean("force_web").default(false).notNull(),
+    status: agentRunStatus("status").default("pending").notNull(),
+    userMessageId: uuid("user_message_id").notNull(),
+    assistantMessageId: uuid("assistant_message_id").notNull(),
+    errorCode: text("error_code"),
+    errorMessage: text("error_message"),
+    usage: jsonb("usage").$type<AgentRunUsage>(),
+    dataClasses: jsonb("data_classes")
+      .$type<AgentDataClass[]>()
+      .default(sql`'["public"]'::jsonb`)
+      .notNull(),
+    toolCallCount: integer("tool_call_count").default(0).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    startedAt: timestamp("started_at", { withTimezone: true }),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("agent_runs_user_client_request_unique").on(
+      table.userId,
+      table.clientRequestId,
+    ),
+    uniqueIndex("agent_runs_assistant_message_id_run_unique").on(
+      table.assistantMessageId,
+      table.id,
+    ),
+    uniqueIndex("agent_runs_session_active_unique")
+      .on(table.sessionId)
+      .where(sql`${table.status} in ('pending', 'running')`),
+    uniqueIndex("agent_runs_user_message_unique").on(table.userMessageId),
+    uniqueIndex("agent_runs_assistant_message_unique").on(
+      table.assistantMessageId,
+    ),
+    index("agent_runs_user_created_at_idx").on(table.userId, table.createdAt),
+    index("agent_runs_session_created_at_idx").on(
+      table.sessionId,
+      table.createdAt,
+    ),
+    foreignKey({
+      columns: [table.sessionId, table.userId],
+      foreignColumns: [chatSessions.id, chatSessions.userId],
+      name: "agent_runs_session_user_chat_sessions_id_user_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [table.userMessageId, table.sessionId],
+      foreignColumns: [chatMessages.id, chatMessages.sessionId],
+      name: "agent_runs_user_message_session_chat_messages_id_session_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [table.assistantMessageId, table.sessionId],
+      foreignColumns: [chatMessages.id, chatMessages.sessionId],
+      name: "agent_runs_assistant_message_session_chat_messages_id_session_fk",
+    }).onDelete("cascade"),
+    check(
+      "agent_runs_distinct_messages",
+      sql`${table.userMessageId} <> ${table.assistantMessageId}`,
+    ),
+    check(
+      "agent_runs_tool_call_count_nonnegative",
+      sql`${table.toolCallCount} >= 0`,
+    ),
+    check(
+      "agent_runs_lifecycle_timestamps_valid",
+      sql`(${table.status} = 'pending' and ${table.startedAt} is null and ${table.finishedAt} is null)
+        or (${table.status} = 'running' and ${table.startedAt} is not null and ${table.finishedAt} is null)
+        or (${table.status} in ('completed', 'cancelled', 'failed') and ${table.startedAt} is not null and ${table.finishedAt} is not null)`,
+    ),
+    check(
+      "agent_runs_error_valid",
+      sql`(${table.status} = 'failed' and ${table.errorCode} is not null and ${table.errorMessage} is not null)
+        or (${table.status} <> 'failed' and ${table.errorCode} is null and ${table.errorMessage} is null)`,
+    ),
+    check(
+      "agent_runs_data_classes_valid",
+      sql`jsonb_typeof(${table.dataClasses}) = 'array'
+        and jsonb_array_length(${table.dataClasses}) > 0
+        and ${table.dataClasses} <@ '["public", "personal_data", "private_document"]'::jsonb`,
+    ),
+  ],
+);
+
+export const agentToolCalls = pgTable(
+  "agent_tool_calls",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    runId: uuid("run_id")
+      .notNull()
+      .references(() => agentRuns.id, { onDelete: "cascade" }),
+    callId: text("call_id").notNull(),
+    name: text("name").notNull(),
+    arguments: jsonb("arguments").$type<unknown>().notNull(),
+    result: jsonb("result").$type<unknown>(),
+    status: agentToolCallStatus("status").default("pending").notNull(),
+    errorMessage: text("error_message"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    startedAt: timestamp("started_at", { withTimezone: true }),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+  },
+  (table) => [
+    uniqueIndex("agent_tool_calls_run_call_unique").on(
+      table.runId,
+      table.callId,
+    ),
+    index("agent_tool_calls_run_id_idx").on(table.runId),
+    check(
+      "agent_tool_calls_lifecycle_timestamps_valid",
+      sql`(${table.status} = 'pending' and ${table.startedAt} is null and ${table.finishedAt} is null)
+        or (${table.status} = 'running' and ${table.startedAt} is not null and ${table.finishedAt} is null)
+        or (${table.status} in ('completed', 'cancelled', 'failed') and ${table.startedAt} is not null and ${table.finishedAt} is not null)`,
+    ),
+    check(
+      "agent_tool_calls_error_valid",
+      sql`(${table.status} = 'failed' and ${table.errorMessage} is not null)
+        or (${table.status} <> 'failed' and ${table.errorMessage} is null)`,
+    ),
+  ],
+);
+
+export const agentSources = pgTable(
+  "agent_sources",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    runId: uuid("run_id")
+      .notNull()
+      .references(() => agentRuns.id, { onDelete: "cascade" }),
+    sourceKey: text("source_key").notNull(),
+    title: text("title").notNull(),
+    url: text("url").notNull(),
+    urlHash: text("url_hash").notNull(),
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+    accessedAt: timestamp("accessed_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("agent_sources_id_run_unique").on(table.id, table.runId),
+    uniqueIndex("agent_sources_run_source_key_unique").on(
+      table.runId,
+      table.sourceKey,
+    ),
+    uniqueIndex("agent_sources_run_url_hash_unique").on(
+      table.runId,
+      table.urlHash,
+    ),
+    index("agent_sources_run_id_idx").on(table.runId),
+  ],
+);
+
+export const agentCitations = pgTable(
+  "agent_citations",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    runId: uuid("run_id").notNull(),
+    sourceId: uuid("source_id").notNull(),
+    messageId: uuid("message_id").notNull(),
+    ordinal: integer("ordinal").notNull(),
+    quote: text("quote").notNull(),
+    supportStatus: agentCitationSupportStatus("support_status").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("agent_citations_message_ordinal_unique").on(
+      table.messageId,
+      table.ordinal,
+    ),
+    index("agent_citations_run_id_idx").on(table.runId),
+    index("agent_citations_source_id_idx").on(table.sourceId, table.runId),
+    foreignKey({
+      columns: [table.sourceId, table.runId],
+      foreignColumns: [agentSources.id, agentSources.runId],
+      name: "agent_citations_source_run_agent_sources_id_run_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [table.messageId, table.runId],
+      foreignColumns: [agentRuns.assistantMessageId, agentRuns.id],
+      name: "agent_citations_message_run_agent_runs_assistant_message_id_run_fk",
+    }).onDelete("cascade"),
+    check("agent_citations_ordinal_nonnegative", sql`${table.ordinal} >= 0`),
+  ],
 );
 
 export type PersonalityScores = Record<
@@ -622,6 +884,15 @@ export const journeyEntries = pgTable(
 
 export type ChatSession = typeof chatSessions.$inferSelect;
 export type ChatMessage = typeof chatMessages.$inferSelect;
+export type NewChatMessage = typeof chatMessages.$inferInsert;
+export type AgentRun = typeof agentRuns.$inferSelect;
+export type NewAgentRun = typeof agentRuns.$inferInsert;
+export type AgentToolCall = typeof agentToolCalls.$inferSelect;
+export type NewAgentToolCall = typeof agentToolCalls.$inferInsert;
+export type AgentSourceRecord = typeof agentSources.$inferSelect;
+export type NewAgentSourceRecord = typeof agentSources.$inferInsert;
+export type AgentCitationRecord = typeof agentCitations.$inferSelect;
+export type NewAgentCitationRecord = typeof agentCitations.$inferInsert;
 export type JourneyEntry = typeof journeyEntries.$inferSelect;
 
 export function lower(column: AnyPgColumn): SQL {
