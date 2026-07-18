@@ -15,6 +15,20 @@
       "when": 1784375500963,
       "tag": "0001_goofy_rattler",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784379852435,
+      "tag": "0002_mushy_vampiro",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1784381864384,
+      "tag": "0003_perfect_wonder_man",
+      "breakpoints": true
     }
   ]
 }

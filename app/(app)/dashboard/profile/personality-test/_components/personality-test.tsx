@@ -126,7 +126,7 @@ function PersonalityResult({
           {t("result.retake")}
         </Button>
         <Link
-          href="/dashboard/profile"
+          href="/dashboard/starting-point"
           className={buttonVariants({ size: "default" })}
         >
           {t("result.backToProfile")}

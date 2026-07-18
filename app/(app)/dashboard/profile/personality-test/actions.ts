@@ -87,7 +87,7 @@ export async function submitPersonalityTestAction(
     });
   }
 
-  revalidatePath("/dashboard/profile");
+  revalidatePath("/dashboard/starting-point");
   revalidatePath("/dashboard/profile/personality-test");
 
   return { status: "success", message: t("actions.saved"), result };

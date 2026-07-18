@@ -179,6 +179,7 @@
     "homeHeading": "Trang chính bảng điều khiển",
     "menuHeading": "Menu",
     "home": "Trang chính",
+    "startingPoint": "Điểm Xuất Phát",
     "menu": "Menu",
     "navigation": "Điều hướng bảng điều khiển",
     "closeNavigation": "Đóng điều hướng",
@@ -190,6 +191,11 @@
     "profile": "Thông tin cá nhân",
     "logout": "Đăng xuất",
     "logoutUser": "Đăng xuất {name}"
+  },
+  "StartingPoint": {
+    "metadataTitle": "Điểm Xuất Phát",
+    "title": "Điểm Xuất Phát",
+    "description": "Tập hợp kết quả tính cách, học vấn, kinh nghiệm và những dấu mốc giúp bạn hiểu rõ nền tảng hiện tại của mình."
   },
   "Profile": {
     "metadataTitle": "Thông tin cá nhân",
@@ -206,7 +212,7 @@
       "retake": "Làm lại bài test",
       "viewDetails": "Xem chi tiết"
     },
-    "form": {
+  "form": {
       "title": "Chi tiết hồ sơ",
       "description": "Chỉnh sửa thông tin tài khoản của bạn bên dưới.",
       "fullName": "Họ và tên",
@@ -219,9 +225,196 @@
       "birthMonth": "Tháng sinh",
       "birthYear": "Năm sinh",
       "save": "Lưu thay đổi",
-      "saving": "Đang lưu..."
+    "saving": "Đang lưu..."
+  },
+  "extended": {
+    "title": "Hồ sơ học tập và kinh nghiệm",
+    "description": "Bổ sung các dấu mốc quan trọng để hồ sơ phản ánh đầy đủ năng lực và hành trình của bạn.",
+    "common": {
+      "add": "Thêm mới",
+      "edit": "Chỉnh sửa",
+      "delete": "Xoá",
+      "cancel": "Huỷ",
+      "save": "Lưu thông tin",
+      "saving": "Đang lưu...",
+      "deleting": "Đang xoá...",
+      "deleteTitle": "Xoá thông tin này?",
+      "deleteDescription": "Thông tin đã xoá không thể khôi phục.",
+      "optional": "Không bắt buộc",
+      "period": "Khoảng thời gian",
+      "startDate": "Bắt đầu",
+      "endDate": "Kết thúc",
+      "month": "Tháng",
+      "year": "Năm"
     },
-    "months": {
+    "education": {
+      "title": "Học vấn",
+      "description": "Sắp xếp theo lộ trình từ Trung học phổ thông đến Cao học.",
+      "empty": "Chưa có thông tin học vấn.",
+      "add": "Thêm học vấn",
+      "editTitle": "Chỉnh sửa học vấn",
+      "addTitle": "Thêm thông tin học vấn",
+      "dialogDescription": "Ghi lại trường học, thời gian học và nhập bảng điểm đúng theo từng bậc.",
+      "level": "Bậc học",
+      "levels": {
+        "HIGH_SCHOOL": "Trung học phổ thông",
+        "UNDERGRADUATE": "Đại học",
+        "GRADUATE": "Cao học"
+      },
+      "institutionName": "Tên trường",
+      "fieldOfStudy": "Ngành học, chương trình hoặc chuyên ban",
+      "fieldOfStudyHint": "Ví dụ: Khoa học máy tính, Toán chuyên hoặc chương trình Thạc sĩ Quản trị kinh doanh.",
+      "fieldLabels": {
+        "HIGH_SCHOOL": "Chuyên ban, tổ hợp hoặc lớp chuyên",
+        "UNDERGRADUATE": "Ngành học",
+        "GRADUATE": "Chuyên ngành hoặc chương trình cao học"
+      },
+      "fieldHints": {
+        "HIGH_SCHOOL": "Ví dụ: lớp chuyên Toán, tổ hợp Khoa học tự nhiên.",
+        "UNDERGRADUATE": "Ví dụ: Khoa học máy tính, Kinh tế quốc tế.",
+        "GRADUATE": "Ví dụ: Thạc sĩ Trí tuệ nhân tạo, Tiến sĩ Kinh tế học."
+      },
+      "transcriptImport": "Nhập bảng điểm Excel",
+      "downloadTemplate": "Tải file Excel mẫu",
+      "grade10File": "Bảng điểm lớp 10",
+      "grade11File": "Bảng điểm lớp 11",
+      "grade12File": "Bảng điểm lớp 12",
+      "transcriptFile": "Bảng điểm tích luỹ",
+      "optionalOnEdit": "Tệp .xlsx tối đa 2 MB. Để trống nếu không muốn thay bảng điểm đã lưu.",
+      "highSchoolTranscriptHint": "Mỗi khối nhập một tệp .xlsx gồm 2 cột: Môn học và Điểm trung bình cả năm. Hệ thống tự tính điểm trung bình trên thang 10.",
+      "higherEducationTranscriptHint": "Tệp .xlsx tối đa 2 MB gồm 3 cột: Môn học, Tín chỉ và Điểm. Hệ thống tự tính điểm trung bình tích luỹ có trọng số tín chỉ.",
+      "scoreScale": "Thang điểm",
+      "scoreScaleHint": "Chọn đúng thang điểm dùng trong tệp Excel.",
+      "scale4": "Thang 4",
+      "scale10": "Thang 10",
+      "transcriptStages": {
+        "GRADE_10": "Lớp 10",
+        "GRADE_11": "Lớp 11",
+        "GRADE_12": "Lớp 12",
+        "CUMULATIVE": "Điểm tích luỹ"
+      },
+      "subjectCount": "{count} môn",
+      "creditCount": "{count} tín chỉ",
+      "noTranscript": "Chưa nhập bảng điểm.",
+      "research": "Nghiên cứu khoa học",
+      "researchHint": "Chỉ áp dụng cho Đại học và Cao học. Nhập đầy đủ tên và mô tả nếu có nghiên cứu.",
+      "researchTitle": "Tên nghiên cứu",
+      "researchDescription": "Mô tả nghiên cứu"
+    },
+    "certificate": {
+      "title": "Chứng chỉ",
+      "description": "Các chứng chỉ chuyên môn kèm bản mềm minh chứng.",
+      "empty": "Chưa có chứng chỉ nào.",
+      "add": "Thêm chứng chỉ",
+      "editTitle": "Chỉnh sửa chứng chỉ",
+      "addTitle": "Thêm chứng chỉ",
+      "dialogDescription": "Nhập tên chứng chỉ, năm cấp và tải lên PDF hoặc ảnh minh chứng.",
+      "name": "Tên chứng chỉ",
+      "issuedYear": "Năm cấp",
+      "evidence": "Bản mềm minh chứng",
+      "evidenceHint": "PDF, JPG, PNG hoặc WebP, tối đa 5 MB.",
+      "replaceEvidenceHint": "Chỉ chọn tệp mới nếu muốn thay minh chứng hiện tại.",
+      "viewEvidence": "Xem minh chứng",
+      "issuedIn": "cấp năm {year}"
+    },
+    "work": {
+      "title": "Kinh nghiệm làm việc",
+      "description": "Hiển thị công việc gần nhất trước, cùng điều đã học và kỹ năng tích luỹ.",
+      "empty": "Chưa có kinh nghiệm làm việc.",
+      "add": "Thêm kinh nghiệm",
+      "editTitle": "Chỉnh sửa kinh nghiệm",
+      "addTitle": "Thêm kinh nghiệm làm việc",
+      "dialogDescription": "Mô tả nơi làm việc, khoảng thời gian và những giá trị bạn tích luỹ được.",
+      "workplaceName": "Nơi làm việc",
+      "position": "Vị trí hoặc vai trò",
+      "startDate": "Thời gian bắt đầu",
+      "endDate": "Thời gian kết thúc",
+      "month": "Tháng",
+      "year": "Năm",
+      "isCurrent": "Tôi đang làm việc tại đây",
+      "present": "Hiện tại",
+      "learnings": "Điều đã học được",
+      "learningsHint": "Những kiến thức, bài học hoặc trải nghiệm đáng chú ý.",
+      "skills": "Kỹ năng tích luỹ",
+      "skillsHint": "Ví dụ: quản lý dự án, giao tiếp, phân tích dữ liệu."
+    },
+    "competition": {
+      "title": "Cuộc thi và thành tích",
+      "description": "Các cuộc thi đã tham gia, ưu tiên năm gần nhất.",
+      "empty": "Chưa có thông tin cuộc thi.",
+      "add": "Thêm cuộc thi",
+      "editTitle": "Chỉnh sửa cuộc thi",
+      "addTitle": "Thêm cuộc thi",
+      "dialogDescription": "Ghi tên cuộc thi, giải thưởng đạt được nếu có và năm tham gia.",
+      "name": "Tên cuộc thi",
+      "awardName": "Tên giải hoặc thành tích",
+      "awardHint": "Để trống nếu chỉ tham gia.",
+      "participated": "Đã tham gia",
+      "resultYear": "Năm tham gia hoặc nhận giải"
+    },
+    "activity": {
+      "title": "Hoạt động khác",
+      "description": "Hoạt động ngoại khoá, cộng đồng, tình nguyện hoặc dự án cá nhân.",
+      "empty": "Chưa có hoạt động khác.",
+      "add": "Thêm hoạt động",
+      "editTitle": "Chỉnh sửa hoạt động",
+      "addTitle": "Thêm hoạt động khác",
+      "dialogDescription": "Nhập tên hoạt động hoặc dự án bạn muốn ghi lại.",
+      "name": "Tên hoạt động"
+    },
+    "actions": {
+      "saved": "Đã lưu thông tin.",
+      "deleted": "Đã xoá thông tin.",
+      "checkFields": "Kiểm tra các trường được đánh dấu rồi thử lại.",
+      "failed": "Chưa thể lưu thông tin. Vui lòng thử lại.",
+      "deleteFailed": "Chưa thể xoá thông tin. Vui lòng thử lại.",
+      "notFound": "Không tìm thấy thông tin hoặc bạn không có quyền chỉnh sửa.",
+      "unavailable": "Tài khoản này không có hồ sơ để chỉnh sửa."
+    },
+    "validation": {
+      "id": "Thông tin không hợp lệ.",
+      "level": "Chọn một bậc học hợp lệ.",
+      "institutionName": "Nhập tên trường.",
+      "fieldOfStudy": "Nội dung ngành học hoặc chuyên ban quá dài.",
+      "scoreScale": "Chọn thang điểm 4 hoặc 10.",
+      "researchTitle": "Tên nghiên cứu quá dài.",
+      "researchDescription": "Mô tả nghiên cứu quá dài.",
+      "research": "Nhập đầy đủ cả tên và mô tả nghiên cứu.",
+      "name": "Nhập tên hợp lệ.",
+      "issuedYear": "Nhập năm cấp hợp lệ.",
+      "awardName": "Tên giải hoặc thành tích quá dài.",
+      "year": "Nhập năm hợp lệ.",
+      "workplaceName": "Nhập tên nơi làm việc.",
+      "position": "Tên vị trí hoặc vai trò quá dài.",
+      "startMonth": "Chọn tháng bắt đầu hợp lệ.",
+      "startYear": "Nhập năm bắt đầu hợp lệ.",
+      "endMonth": "Chọn tháng kết thúc hợp lệ.",
+      "endYear": "Nhập năm kết thúc hợp lệ.",
+      "endDate": "Nhập thời gian kết thúc hợp lệ.",
+      "isCurrent": "Trạng thái công việc không hợp lệ.",
+      "learnings": "Nội dung bài học quá dài.",
+      "skills": "Nội dung kỹ năng quá dài.",
+      "endDateRequired": "Nhập đầy đủ tháng và năm kết thúc hoặc chọn đang làm việc tại đây.",
+      "endDateBeforeStart": "Thời gian kết thúc không được trước thời gian bắt đầu.",
+      "transcriptFile": {
+        "fileTooLarge": "Tệp bảng điểm phải nhỏ hơn hoặc bằng 2 MB.",
+        "invalidFile": "Chọn một tệp Excel .xlsx hợp lệ.",
+        "missingHeaders": "Tệp Excel thiếu hoặc đặt sai tên cột yêu cầu.",
+        "empty": "Tệp Excel chưa có dữ liệu môn học.",
+        "tooManyRows": "Bảng điểm chỉ được có tối đa 200 môn học.",
+        "invalidRow": "Dữ liệu tại dòng {row} không hợp lệ hoặc vượt quá thang điểm.",
+        "duplicateSubject": "Môn học tại dòng {row} bị trùng.",
+        "reimportRequired": "Khi đổi thang điểm, hãy nhập lại bảng điểm tích luỹ."
+      },
+      "evidence": {
+        "required": "Tải lên bản mềm minh chứng.",
+        "tooLarge": "Tệp minh chứng phải nhỏ hơn hoặc bằng 5 MB.",
+        "invalidType": "Chỉ chấp nhận PDF, JPG, PNG hoặc WebP.",
+        "invalidContent": "Nội dung tệp không khớp với định dạng được khai báo."
+      }
+    }
+  },
+  "months": {
       "1": "Tháng 1",
       "2": "Tháng 2",
       "3": "Tháng 3",
@@ -255,7 +448,7 @@
     "metadataTitle": "Bài test tính cách",
     "title": "Bài test tính cách",
     "description": "Khám phá cách bạn nạp năng lượng, tiếp nhận thông tin, đưa ra quyết định và tổ chức cuộc sống.",
-    "backToProfile": "Quay lại hồ sơ",
+    "backToProfile": "Quay lại Điểm Xuất Phát",
     "intro": {
       "title": "Hiểu mình rõ hơn qua 12 câu hỏi",
       "description": "Chọn phương án giống bạn nhất trong phần lớn tình huống. Không có câu trả lời đúng hay sai.",
@@ -285,7 +478,7 @@
       "noteTitle": "Hãy dùng kết quả như một điểm bắt đầu",
       "note": "Tính cách có thể thay đổi theo bối cảnh và trải nghiệm. Bạn có thể làm lại bài test khi cảm thấy kết quả không còn phù hợp.",
       "retake": "Làm lại bài test",
-      "backToProfile": "Xem trong hồ sơ"
+      "backToProfile": "Xem tại Điểm Xuất Phát"
     },
     "traits": {
       "E": {

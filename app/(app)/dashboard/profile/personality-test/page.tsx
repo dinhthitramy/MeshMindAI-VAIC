@@ -42,7 +42,7 @@ export default async function PersonalityTestPage({
   return (
     <section className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
       <Link
-        href="/dashboard/profile"
+        href="/dashboard/starting-point"
         className={buttonVariants({ variant: "ghost", size: "sm" })}
       >
         <ArrowLeft data-icon="inline-start" />

@@ -179,6 +179,7 @@
     "homeHeading": "Dashboard home",
     "menuHeading": "Menu",
     "home": "Home",
+    "startingPoint": "Starting Point",
     "menu": "Menu",
     "navigation": "Dashboard navigation",
     "closeNavigation": "Close navigation",
@@ -190,6 +191,11 @@
     "profile": "Personal information",
     "logout": "Log out",
     "logoutUser": "Log out {name}"
+  },
+  "StartingPoint": {
+    "metadataTitle": "Starting Point",
+    "title": "Starting Point",
+    "description": "Bring together your personality result, education, experience, and key milestones to understand where you are today."
   },
   "Profile": {
     "metadataTitle": "Personal information",
@@ -206,7 +212,7 @@
       "retake": "Retake the test",
       "viewDetails": "View details"
     },
-    "form": {
+  "form": {
       "title": "Profile details",
       "description": "Edit your account information below.",
       "fullName": "Full name",
@@ -219,9 +225,32 @@
       "birthMonth": "Birth month",
       "birthYear": "Birth year",
       "save": "Save changes",
-      "saving": "Saving..."
+    "saving": "Saving..."
+  },
+  "extended": {
+    "title": "Education and experience",
+    "description": "Add meaningful milestones so your profile reflects your capabilities and journey.",
+    "common": { "add": "Add", "edit": "Edit", "delete": "Delete", "cancel": "Cancel", "save": "Save information", "saving": "Saving...", "deleting": "Deleting...", "deleteTitle": "Delete this information?", "deleteDescription": "Deleted information cannot be recovered.", "optional": "Optional", "period": "Period", "startDate": "Start", "endDate": "End", "month": "Month", "year": "Year" },
+    "education": {
+      "title": "Education", "description": "Ordered from high school through graduate study.", "empty": "No education information yet.", "add": "Add education", "editTitle": "Edit education", "addTitle": "Add education", "dialogDescription": "Record your school, study period, and transcript in the format for that level.", "level": "Education level",
+      "levels": { "HIGH_SCHOOL": "High school", "UNDERGRADUATE": "University", "GRADUATE": "Graduate study" },
+      "institutionName": "School name", "fieldOfStudy": "Field, program, or concentration", "fieldOfStudyHint": "For example: Computer Science, advanced Mathematics, or MBA.",
+      "fieldLabels": { "HIGH_SCHOOL": "Concentration or advanced class", "UNDERGRADUATE": "Field of study", "GRADUATE": "Graduate specialization or program" },
+      "fieldHints": { "HIGH_SCHOOL": "For example: advanced Mathematics or Natural Sciences.", "UNDERGRADUATE": "For example: Computer Science or International Economics.", "GRADUATE": "For example: MSc in Artificial Intelligence or PhD in Economics." },
+      "transcriptImport": "Import Excel transcript", "downloadTemplate": "Download Excel template", "grade10File": "Grade 10 transcript", "grade11File": "Grade 11 transcript", "grade12File": "Grade 12 transcript", "transcriptFile": "Cumulative transcript", "optionalOnEdit": "A .xlsx file up to 2 MB. Leave empty to keep the saved transcript.", "highSchoolTranscriptHint": "Upload one .xlsx file per grade with 2 columns: Subject and Year average. The system calculates the average on a 10-point scale.", "higherEducationTranscriptHint": "Upload a .xlsx file up to 2 MB with 3 columns: Subject, Credits, and Score. The system calculates the credit-weighted cumulative average.", "scoreScale": "Score scale", "scoreScaleHint": "Choose the scale used in the Excel file.", "scale4": "4-point scale", "scale10": "10-point scale", "transcriptStages": { "GRADE_10": "Grade 10", "GRADE_11": "Grade 11", "GRADE_12": "Grade 12", "CUMULATIVE": "Cumulative average" }, "subjectCount": "{count} subjects", "creditCount": "{count} credits", "noTranscript": "No transcript imported yet.", "research": "Scientific research", "researchHint": "Available for university and graduate study only. Enter both a title and description when adding research.", "researchTitle": "Research title", "researchDescription": "Research description"
     },
-    "months": {
+    "certificate": { "title": "Certificates", "description": "Professional certificates with supporting documents.", "empty": "No certificates yet.", "add": "Add certificate", "editTitle": "Edit certificate", "addTitle": "Add certificate", "dialogDescription": "Enter the certificate name, issue year, and upload supporting evidence.", "name": "Certificate name", "issuedYear": "Issue year", "evidence": "Supporting document", "evidenceHint": "PDF, JPG, PNG, or WebP, up to 5 MB.", "replaceEvidenceHint": "Choose a new file only if you want to replace the current evidence.", "viewEvidence": "View evidence", "issuedIn": "issued in {year}" },
+    "work": { "title": "Work experience", "description": "Most recent roles appear first, with learnings and skills gained.", "empty": "No work experience yet.", "add": "Add experience", "editTitle": "Edit experience", "addTitle": "Add work experience", "dialogDescription": "Describe the workplace, period, and value you gained.", "workplaceName": "Workplace", "position": "Position or role", "startDate": "Start date", "endDate": "End date", "month": "Month", "year": "Year", "isCurrent": "I currently work here", "present": "Present", "learnings": "What you learned", "learningsHint": "Notable knowledge, lessons, or experiences.", "skills": "Skills gained", "skillsHint": "For example: project management, communication, data analysis." },
+    "competition": { "title": "Competitions and achievements", "description": "Competitions you joined, with recent years first.", "empty": "No competition information yet.", "add": "Add competition", "editTitle": "Edit competition", "addTitle": "Add competition", "dialogDescription": "Record the competition, any award, and participation year.", "name": "Competition name", "awardName": "Award or achievement", "awardHint": "Leave blank if you participated without an award.", "participated": "Participated", "resultYear": "Participation or award year" },
+    "activity": { "title": "Other activities", "description": "Extracurricular, community, volunteer, or personal projects.", "empty": "No other activities yet.", "add": "Add activity", "editTitle": "Edit activity", "addTitle": "Add other activity", "dialogDescription": "Enter the activity or project you want to record.", "name": "Activity name" },
+    "actions": { "saved": "Information saved.", "deleted": "Information deleted.", "checkFields": "Check the highlighted fields and try again.", "failed": "We could not save this information. Please try again.", "deleteFailed": "We could not delete this information. Please try again.", "notFound": "The information was not found or you cannot edit it.", "unavailable": "This account has no editable profile." },
+    "validation": {
+      "id": "Invalid information.", "level": "Choose a valid education level.", "institutionName": "Enter the school name.", "fieldOfStudy": "The field or concentration is too long.", "scoreScale": "Choose a 4-point or 10-point scale.", "researchTitle": "The research title is too long.", "researchDescription": "The research description is too long.", "research": "Enter both the research title and description.", "name": "Enter a valid name.", "issuedYear": "Enter a valid issue year.", "awardName": "The award name is too long.", "year": "Enter a valid year.", "workplaceName": "Enter the workplace name.", "position": "The position or role is too long.", "startMonth": "Choose a valid start month.", "startYear": "Enter a valid start year.", "endMonth": "Choose a valid end month.", "endYear": "Enter a valid end year.", "endDate": "Enter a valid end date.", "isCurrent": "Invalid employment status.", "learnings": "The learnings are too long.", "skills": "The skills are too long.", "endDateRequired": "Enter both an end month and year, or mark this as your current role.", "endDateBeforeStart": "The end date cannot be before the start date.",
+      "transcriptFile": { "fileTooLarge": "The transcript file must be 2 MB or smaller.", "invalidFile": "Choose a valid .xlsx Excel file.", "missingHeaders": "The Excel file is missing required column headers.", "empty": "The Excel file has no subject data.", "tooManyRows": "A transcript can contain at most 200 subjects.", "invalidRow": "Data on row {row} is invalid or outside the selected score scale.", "duplicateSubject": "The subject on row {row} is duplicated.", "reimportRequired": "Re-import the cumulative transcript when changing the score scale." },
+      "evidence": { "required": "Upload a supporting document.", "tooLarge": "The supporting file must be 5 MB or smaller.", "invalidType": "Only PDF, JPG, PNG, or WebP files are accepted.", "invalidContent": "The file content does not match its declared format." }
+    }
+  },
+  "months": {
       "1": "January",
       "2": "February",
       "3": "March",
@@ -255,7 +284,7 @@
     "metadataTitle": "Personality test",
     "title": "Personality test",
     "description": "Explore how you recharge, take in information, make decisions, and organize daily life.",
-    "backToProfile": "Back to profile",
+    "backToProfile": "Back to Starting Point",
     "intro": {
       "title": "Understand yourself through 12 questions",
       "description": "Choose the option that sounds most like you in everyday situations. There are no right or wrong answers.",
@@ -285,7 +314,7 @@
       "noteTitle": "Use this result as a starting point",
       "note": "Personality can shift across contexts and experiences. You can retake the test when the result no longer feels right.",
       "retake": "Retake the test",
-      "backToProfile": "View in profile"
+      "backToProfile": "View in Starting Point"
     },
     "traits": {
       "E": {

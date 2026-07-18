@@ -1,24 +1,19 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
-import { BrainCircuit, Eye, RotateCcw, Sparkles } from "lucide-react";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { requireViewer } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db";
-import { personalityTestResults, users } from "@/lib/db/schema";
-import type { PersonalityType } from "@/lib/personality-test";
+import { users } from "@/lib/db/schema";
 
 import { ProfileForm } from "./_components/profile-form";
 
@@ -37,47 +32,26 @@ function initialsFor(name: string) {
 }
 
 export default async function ProfilePage() {
-  const [viewer, t, personalityT, locale] = await Promise.all([
+  const [viewer, t] = await Promise.all([
     requireViewer(),
     getTranslations("Profile"),
-    getTranslations("PersonalityTest"),
-    getLocale(),
   ]);
-
-  if (viewer.actor.kind !== "user") {
-    redirect("/dashboard");
-  }
+  if (viewer.actor.kind !== "user") redirect("/dashboard");
 
   const [profile] = await getDb()
     .select({
       birthDate: users.birthDate,
       email: users.email,
       fullName: users.fullName,
-      personalityCompletedAt: personalityTestResults.completedAt,
-      personalityType: personalityTestResults.resultType,
     })
     .from(users)
-    .leftJoin(
-      personalityTestResults,
-      eq(personalityTestResults.userId, users.id),
-    )
     .where(eq(users.id, viewer.actor.userId))
     .limit(1);
-
-  if (!profile) {
-    redirect("/login");
-  }
+  if (!profile) redirect("/login");
 
   const [birthYear, birthMonth, birthDay] = profile.birthDate
     .split("-")
     .map(Number);
-  const currentYear = new Date().getUTCFullYear();
-  const personalityCompletedLabel = profile.personalityCompletedAt
-    ? new Intl.DateTimeFormat(locale, { dateStyle: "long" }).format(
-        profile.personalityCompletedAt,
-      )
-    : undefined;
-  const personalityType = profile.personalityType as PersonalityType | null;
 
   return (
     <section className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
@@ -106,85 +80,16 @@ export default async function ProfilePage() {
           </CardContent>
         </Card>
 
-        <div className="flex min-w-0 flex-col gap-6">
-          <Card>
-            <CardHeader>
-              <div className="mb-2 flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <BrainCircuit aria-hidden="true" className="size-5" />
-              </div>
-              <CardTitle>
-                {personalityType
-                  ? t("personality.completedTitle")
-                  : t("personality.emptyTitle")}
-              </CardTitle>
-              <CardDescription>
-                {personalityType
-                  ? t("personality.completedDescription")
-                  : t("personality.emptyDescription")}
-              </CardDescription>
-            </CardHeader>
-
-            {personalityType ? (
-              <CardContent>
-                <div className="flex flex-col gap-2 rounded-xl bg-muted/60 p-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p className="text-2xl font-semibold tracking-tight">
-                      {personalityType}
-                    </p>
-                    <p className="text-sm font-medium">
-                      {personalityT(
-                        `types.${personalityType}.title`,
-                      )}
-                    </p>
-                  </div>
-                  {personalityCompletedLabel ? (
-                    <p className="text-sm text-muted-foreground">
-                      {t("personality.completedOn", {
-                        date: personalityCompletedLabel,
-                      })}
-                    </p>
-                  ) : null}
-                </div>
-              </CardContent>
-            ) : null}
-
-            <CardFooter className="flex-wrap justify-end gap-3">
-              {personalityType ? (
-                <Link
-                  href="/dashboard/profile/personality-test?view=result"
-                  className={buttonVariants({ variant: "outline", size: "lg" })}
-                >
-                  <Eye data-icon="inline-start" />
-                  {t("personality.viewDetails")}
-                </Link>
-              ) : null}
-              <Link
-                href="/dashboard/profile/personality-test"
-                className={buttonVariants({ size: "lg" })}
-              >
-                {personalityType ? (
-                  <RotateCcw data-icon="inline-start" />
-                ) : (
-                  <Sparkles data-icon="inline-start" />
-                )}
-                {personalityType
-                  ? t("personality.retake")
-                  : t("personality.takeTest")}
-              </Link>
-            </CardFooter>
-          </Card>
-
-          <ProfileForm
-            currentYear={currentYear}
-            profile={{
-              birthDay,
-              birthMonth,
-              birthYear,
-              email: profile.email,
-              fullName: profile.fullName,
-            }}
-          />
-        </div>
+        <ProfileForm
+          currentYear={new Date().getUTCFullYear()}
+          profile={{
+            birthDay,
+            birthMonth,
+            birthYear,
+            email: profile.email,
+            fullName: profile.fullName,
+          }}
+        />
       </div>
     </section>
   );
