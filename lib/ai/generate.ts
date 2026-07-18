@@ -1,6 +1,6 @@
 import "server-only";
 
-import { DEFAULT_MODEL } from "./client";
+import { DEFAULT_MODEL, resolveAIModel } from "./client";
 import { AIServiceError } from "./errors";
 import { getLangfuse } from "./langfuse";
 
@@ -19,6 +19,10 @@ export interface AIGenerateOptions {
   traceName?: string;
   userId?: string;
   langfusePromptName?: string;
+  /** Keep sensitive inputs such as CV text out of observability traces. */
+  disableTracing?: boolean;
+  /** Disable response logging when the response can contain personal data. */
+  logResponse?: boolean;
 }
 
 // FPT Cloud returns standard OpenAI format directly (no wrapper)
@@ -76,7 +80,11 @@ function buildMessages(systemPrompt: string, options: AIGenerateOptions): AIMess
   ];
 }
 
-async function callFPT(model: string, messages: AIMessage[]): Promise<FPTRawResponse> {
+async function callFPT(
+  model: string,
+  messages: AIMessage[],
+  logResponse = true,
+): Promise<FPTRawResponse> {
   const apiKey = process.env.FPT_AI_API_KEY;
   if (!apiKey) throw new AIServiceError("Missing FPT_AI_API_KEY");
 
@@ -94,8 +102,27 @@ async function callFPT(model: string, messages: AIMessage[]): Promise<FPTRawResp
 
     if (res.ok) {
       const json = await res.json();
-      console.log("[fpt] raw response:", JSON.stringify(json).slice(0, 500));
-      return json as FPTRawResponse;
+      if (logResponse) {
+        console.log("[fpt] raw response:", JSON.stringify(json).slice(0, 500));
+      }
+      if (!json || typeof json !== "object" || Array.isArray(json)) {
+        throw new AIServiceError("FPT API returned an invalid response shape");
+      }
+
+      const response = json as FPTRawResponse;
+      if (response.model && response.model !== model) {
+        if (attempt < MAX_RETRIES) {
+          console.warn("[fpt] unexpected response model; retrying", {
+            requestedModel: model,
+            responseModel: response.model,
+          });
+          continue;
+        }
+        throw new AIServiceError(
+          `FPT API returned model ${response.model} instead of ${model}`,
+        );
+      }
+      return response;
     }
 
     if ([429, 500, 503].includes(res.status) && attempt < MAX_RETRIES) {
@@ -120,8 +147,8 @@ export async function generateAIResponse(
 ): Promise<AIGenerateResult> {
   const systemPrompt = await resolveSystemPrompt(options);
   const messages = buildMessages(systemPrompt, options);
-  const model = options.model ?? DEFAULT_MODEL;
-  const langfuse = getLangfuse();
+  const requestedModel = resolveAIModel(options.model);
+  const langfuse = options.disableTracing ? null : getLangfuse();
 
   const trace = langfuse?.trace({
     name: options.traceName ?? "ai-generate",
@@ -129,14 +156,44 @@ export async function generateAIResponse(
     input: { messages },
   });
 
-  const generation = trace?.generation({
+  let activeModel = requestedModel;
+  let generation = trace?.generation({
     name: "fpt-generate",
-    model,
+    model: activeModel,
     input: messages,
   });
 
   try {
-    const rawResponse = await callFPT(model, messages);
+    let rawResponse: FPTRawResponse;
+    try {
+      rawResponse = await callFPT(
+        activeModel,
+        messages,
+        options.logResponse ?? true,
+      );
+    } catch (primaryError) {
+      if (activeModel === DEFAULT_MODEL) throw primaryError;
+
+      generation?.end({
+        level: "ERROR",
+        statusMessage: String(primaryError),
+      });
+      console.warn("[ai] selected model failed; retrying with default", {
+        selectedModel: activeModel,
+        fallbackModel: DEFAULT_MODEL,
+      });
+      activeModel = DEFAULT_MODEL;
+      generation = trace?.generation({
+        name: "fpt-generate-fallback",
+        model: activeModel,
+        input: messages,
+      });
+      rawResponse = await callFPT(
+        activeModel,
+        messages,
+        options.logResponse ?? true,
+      );
+    }
 
     const text = rawResponse.choices?.[0]?.message?.content ?? "";
     const usage = rawResponse.usage ?? { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };

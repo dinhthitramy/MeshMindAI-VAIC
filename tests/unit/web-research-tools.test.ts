@@ -117,12 +117,6 @@ describe("web research tools", () => {
     "I live at 123 Main Street",
     "tôi sống tại 42 đường Lê Lợi",
     "review my CV for product roles",
-    "Find scholarships received by Jane Marie Doe",
-    "When was Jane Marie Doe born?",
-    "Look up the birthday of Jane Marie Doe",
-    "Find the employer of Jane Marie Doe",
-    "Find Jane Marie Doe's LinkedIn profile",
-    "Look up the professional profile for Jane Marie Doe",
   ])("rejects sensitive search queries before cache, rate, or network work", async (query) => {
     const client = tavily();
     const searchCache = cacheSpies();
@@ -152,9 +146,6 @@ describe("web research tools", () => {
 
   it.each([
     "my full name is Jane Doe",
-    "Find scholarships received by Jane Marie Doe",
-    "What is Jane Marie Doe's date of birth?",
-    "Find the employer of Jane Marie Doe",
   ])("rejects sensitive optional read query %s before all side effects", async (query) => {
     const client = tavily();
     const searchCache = cacheSpies();

@@ -1,6 +1,11 @@
 import "server-only";
 
-import { generateAIJson, AIServiceError } from "@/lib/ai";
+import {
+  DEFAULT_MODEL,
+  generateAIJson,
+  AIServiceError,
+  resolveAIModel,
+} from "@/lib/ai";
 
 import {
   careerGuidanceInputSchema,
@@ -180,6 +185,7 @@ export function buildCareerGuidanceUserPrompt(input: CareerGuidanceInput): strin
     "Hãy tạo kết quả hướng nghiệp từ dữ liệu đã được xác thực dưới đây.",
     "Trả đúng JSON contract, không thêm markdown hoặc giải thích ngoài JSON.",
     "Nếu dữ liệu đủ, recommendations phải có đúng 3 phần tử theo thứ tự: an toàn, tăng trưởng cao, khám phá.",
+    "Dùng đầy đủ student_profile.starting_point khi tổng hợp tính cách, học vấn, bảng điểm, nghiên cứu, chứng chỉ, cuộc thi, hoạt động và kinh nghiệm làm việc; không tự suy diễn dữ liệu còn thiếu.",
     "Mỗi recommendation phải có đúng ba roadmap stage theo thứ tự: Học tập, Intern, Công việc chính thức; điền đầy đủ chi tiết riêng cho nghề đó.",
     "",
     "<output_contract>",
@@ -459,7 +465,11 @@ function createMockCareerGuidance(input: CareerGuidanceInput): CareerGuidanceOut
       roadmap: createRoadmap({
         pathTitle: title,
         skill: firstSkill,
-        region: posting?.region ?? profile.target_regions[0] ?? profile.current_region,
+        region:
+          posting?.region ||
+          profile.target_regions[0] ||
+          profile.current_region ||
+          "Việt Nam",
         industry: posting?.industry ?? "lĩnh vực mục tiêu",
         salaryBand: posting
           ? formatSalary(posting.avg_salary.min, posting.avg_salary.max)
@@ -575,34 +585,49 @@ export async function generateCareerGuidance(
     return createMockCareerGuidance(input);
   }
 
-  const { data } = await generateAIJson<unknown>({
-    systemPrompt: CAREERLENS_SYSTEM_PROMPT,
-    userPrompt: buildCareerGuidanceUserPrompt(input),
-    model: options.model,
-    traceName: "careerlens-guidance",
-    userId: options.userId,
-  });
+  const requestedModel = resolveAIModel(options.model);
+  const generateWithModel = async (model: string) => {
+    const { data } = await generateAIJson<unknown>({
+      systemPrompt: CAREERLENS_SYSTEM_PROMPT,
+      userPrompt: buildCareerGuidanceUserPrompt(input),
+      model,
+      traceName: "careerlens-guidance",
+      userId: options.userId,
+    });
 
-  const parsedOutput = careerGuidanceOutputSchema.safeParse(data);
-  if (!parsedOutput.success) {
-    throw new AIServiceError(
-      `CareerLens LLM output failed validation: ${parsedOutput.error.issues
-        .slice(0, 5)
-        .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
-        .join("; ")}`,
+    const parsedOutput = careerGuidanceOutputSchema.safeParse(data);
+    if (!parsedOutput.success) {
+      throw new AIServiceError(
+        `CareerLens LLM output failed validation: ${parsedOutput.error.issues
+          .slice(0, 5)
+          .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+          .join("; ")}`,
+      );
+    }
+
+    if (parsedOutput.data.recommendations.length !== 3) {
+      throw new AIServiceError(
+        `CareerLens LLM output must contain exactly 3 recommendations; received ${parsedOutput.data.recommendations.length}`,
+      );
+    }
+
+    return applyMandatoryGuardrails(
+      parsedOutput.data,
+      input.user_request.preferred_output_language,
     );
-  }
+  };
 
-  if (parsedOutput.data.recommendations.length !== 3) {
-    throw new AIServiceError(
-      `CareerLens LLM output must contain exactly 3 recommendations; received ${parsedOutput.data.recommendations.length}`,
-    );
-  }
+  try {
+    return await generateWithModel(requestedModel);
+  } catch (error) {
+    if (requestedModel === DEFAULT_MODEL) throw error;
 
-  return applyMandatoryGuardrails(
-    parsedOutput.data,
-    input.user_request.preferred_output_language,
-  );
+    console.warn("[careerlens] selected model output failed; retrying with default", {
+      selectedModel: requestedModel,
+      fallbackModel: DEFAULT_MODEL,
+    });
+    return generateWithModel(DEFAULT_MODEL);
+  }
 }
 
 export { CAREERLENS_SYSTEM_PROMPT } from "./system-prompt";

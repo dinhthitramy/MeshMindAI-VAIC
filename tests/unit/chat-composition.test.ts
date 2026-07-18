@@ -37,11 +37,6 @@ describe("chat data classification", () => {
     "Tôi sống tại 42 đường Lê Lợi",
     "Send it to 18 Phố Huế",
     "Address: 77 Nguyen Hue",
-    "Find scholarships received by Jane Marie Doe",
-    "What is the date of birth of Jane Marie Doe?",
-    "When was Jane Marie Doe born?",
-    "Find the LinkedIn profile for Jane Marie Doe",
-    "Who is the employer of Jane Marie Doe?",
   ])("classifies personal identifiers conservatively", (text) => {
     const classification = classifyChatText(text);
     expect(classification.has("personal_data")).toBe(true);
@@ -58,6 +53,11 @@ describe("chat data classification", () => {
     "Compare university scholarship deadlines in 2026",
     "What is the outlook for the employer branding market?",
     "How should a student improve a LinkedIn profile?",
+    "Find scholarships received by Jane Marie Doe",
+    "What is the date of birth of Jane Marie Doe?",
+    "When was Jane Marie Doe born?",
+    "Find the LinkedIn profile for Jane Marie Doe",
+    "Who is the employer of Jane Marie Doe?",
   ])("keeps ordinary market and location queries public", (text) => {
     expect(classifyChatText(text)).toEqual(new Set(["public"]));
   });

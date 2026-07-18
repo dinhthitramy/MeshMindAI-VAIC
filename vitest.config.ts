@@ -10,6 +10,9 @@ export default defineConfig({
     },
   },
   test: {
+    env: {
+      FPT_AI_MODEL: process.env.FPT_AI_MODEL ?? "Qwen3.6-27B",
+    },
     environment: "node",
     include: ["tests/unit/**/*.test.ts"],
   },

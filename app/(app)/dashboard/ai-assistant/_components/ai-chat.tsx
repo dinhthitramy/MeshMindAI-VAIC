@@ -605,34 +605,37 @@ export function AIChat({
       messageLoadError ||
       !selectedModel
     ) {
-      setSuggestionsLoading(false);
       return;
     }
 
-    setSuggestedPrompts([]);
-    setSuggestionsLoading(true);
-    getSuggestedPromptsAction(locale, selectedModel)
-      .then((prompts) => {
-        if (suggestionRequestRef.current === requestId) {
-          setSuggestedPrompts(prompts);
-        }
-      })
-      .catch(() => {
-        if (suggestionRequestRef.current === requestId) {
-          setSuggestedPrompts([
-            t("prompts.major"),
-            t("prompts.coding"),
-            t("prompts.university"),
-            t("prompts.skills"),
-            t("prompts.scholarship"),
-          ]);
-        }
-      })
-      .finally(() => {
-        if (suggestionRequestRef.current === requestId) {
-          setSuggestionsLoading(false);
-        }
-      });
+    const start = window.setTimeout(() => {
+      setSuggestedPrompts([]);
+      setSuggestionsLoading(true);
+      getSuggestedPromptsAction(locale, selectedModel)
+        .then((prompts) => {
+          if (suggestionRequestRef.current === requestId) {
+            setSuggestedPrompts(prompts);
+          }
+        })
+        .catch(() => {
+          if (suggestionRequestRef.current === requestId) {
+            setSuggestedPrompts([
+              t("prompts.major"),
+              t("prompts.coding"),
+              t("prompts.university"),
+              t("prompts.skills"),
+              t("prompts.scholarship"),
+            ]);
+          }
+        })
+        .finally(() => {
+          if (suggestionRequestRef.current === requestId) {
+            setSuggestionsLoading(false);
+          }
+        });
+    }, 0);
+
+    return () => window.clearTimeout(start);
   }, [currentSessionId, locale, messageLoadError, messages.length, selectedModel, sessionLoading, t]);
 
   useEffect(() => {

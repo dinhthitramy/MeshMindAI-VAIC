@@ -10,3 +10,7 @@ if (AVAILABLE_MODELS.length === 0) {
 }
 
 export const DEFAULT_MODEL = AVAILABLE_MODELS[0]!;
+
+export function resolveAIModel(model: string | null | undefined) {
+  return model && AVAILABLE_MODELS.includes(model) ? model : DEFAULT_MODEL;
+}

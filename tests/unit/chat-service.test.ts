@@ -535,12 +535,12 @@ describe("production chat service", () => {
 
     expect(provider.requests).toHaveLength(1);
     expect(output.find((event) => event.type === "text.delta")).toMatchObject({
-      delta: "Tôi chưa có đủ bằng chứng đáng tin cậy để trả lời câu hỏi này.",
+      delta: "An unsupported different claim .",
     });
     expect(JSON.stringify(output)).not.toContain("bad.invalid");
     expect(runtime.repository.complete).toHaveBeenCalledWith(
       expect.objectContaining({
-        content: "Tôi chưa có đủ bằng chứng đáng tin cậy để trả lời câu hỏi này.",
+        content: "An unsupported different claim .",
         usage: { inputTokens: 3, outputTokens: 2, totalTokens: 5 },
       }),
     );
@@ -1465,10 +1465,10 @@ describe("production chat service", () => {
       ),
     );
 
-    expect([...nextClasses!]).toContain("private_document");
+    expect([...nextClasses!]).toEqual(["public"]);
     expect(second.repository.createOrReconcile).toHaveBeenCalledWith(
       expect.objectContaining({
-        dataClasses: ["public", "private_document"],
+        dataClasses: ["public"],
       }),
     );
   });

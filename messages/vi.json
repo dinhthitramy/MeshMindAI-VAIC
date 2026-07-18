@@ -427,6 +427,7 @@
     "userMenu": "Menu tài khoản",
     "openUserMenu": "Mở menu tài khoản của {name}",
     "profile": "Thông tin cá nhân",
+    "settings": "Cài đặt",
     "logout": "Đăng xuất",
     "logoutUser": "Đăng xuất {name}",
     "careerRoadmap": "Lộ trình AI"
@@ -477,6 +478,7 @@
       "regionHint": "Danh mục 34 tỉnh/thành hiện hành.",
       "regionPlaceholder": "Gõ để tìm tỉnh/thành",
       "regionEmpty": "Không tìm thấy tỉnh/thành phù hợp.",
+      "optionalSelect": "Không cung cấp",
       "strengths": "Điểm mạnh và điều em quan tâm",
       "strengthsDescription": "Hãy dùng trải nghiệm thật, không cần viết theo cách của hồ sơ xin việc.",
       "subject": "Môn hoặc kỹ năng nổi bật",
@@ -487,7 +489,7 @@
       "interestsHint": "Nhập các mục cách nhau bằng dấu phẩy, hoặc thêm nhanh từ gợi ý theo môn/kỹ năng.",
       "suggestionsLabel": "Gợi ý chủ đề quan tâm",
       "activity": "Hoạt động hoặc dự án em từng làm",
-      "activityPlaceholder": "Mô tả vai trò, việc em đã làm và phần khiến em thấy hứng thú hoặc gặp khó khăn.",
+      "activityPlaceholder": "Mô tả vai trò, việc em đã làm và phần khiến em thấy hứng thú hoặc gặp khó khăn. Có thể để trống.",
       "conditions": "Điều kiện học tập và làm việc",
       "conditionsDescription": "Xác định thời gian, ngân sách và môi trường để mỗi hướng đi phù hợp thực tế.",
       "weeklyHours": "Giờ có thể học mỗi tuần",
@@ -499,14 +501,10 @@
       "constraintsPlaceholder": "Ví dụ: cần học gần nhà, cần vừa học vừa làm. Có thể để trống.",
       "constraintsHint": "Không nhập giới tính, tôn giáo, dân tộc hoặc thông tin nhận dạng không cần thiết.",
       "goal": "Mục tiêu của lần tư vấn",
-      "goalDescription": "Nêu quyết định em cần đưa ra và câu hỏi mà bản phân tích cần trả lời.",
+      "goalDescription": "Nêu điều em mong muốn để bản phân tích ưu tiên hỗ trợ. Có thể để trống.",
       "intent": "Em muốn giải quyết điều gì?",
-      "targetCareer": "Ngành hoặc nghề đang cân nhắc",
-      "targetCareerPlaceholder": "Ví dụ: thiết kế sản phẩm, an toàn thông tin. Có thể để trống.",
-      "question": "Câu hỏi quan trọng nhất của em",
-      "questionPlaceholder": "Ví dụ: Hướng nào phù hợp với điểm mạnh hiện tại nhưng vẫn có lộ trình học trong ngân sách?",
-      "model": "Model phân tích",
-      "modelHint": "Model được gọi qua FPT Cloud AI.",
+      "question": "Điều em mong muốn nhất là gì",
+      "questionPlaceholder": "Ví dụ: Em muốn tìm một hướng phù hợp với điểm mạnh hiện tại và ngân sách học tập. Có thể để trống.",
       "consent": "Tôi đồng ý dùng dữ liệu trong form để tạo lộ trình hướng nghiệp.",
       "consentHint": "AI chỉ đưa gợi ý tham khảo và không quyết định thay người học.",
       "footerHint": "Mỗi lần tạo sẽ sinh ba lựa chọn có giải thích.",
@@ -542,29 +540,25 @@
       "userOnly": "Tính năng tạo lộ trình chỉ khả dụng cho tài khoản người học.",
       "checkFields": "Hãy kiểm tra lại các trường được đánh dấu.",
       "invalidValue": "Giá trị chưa hợp lệ.",
-      "modelUnavailable": "Model đã chọn không khả dụng.",
-      "chooseModel": "Hãy chọn một model trong danh sách.",
       "success": "Lộ trình đã sẵn sàng. Em có thể so sánh và mở từng roadmap bên dưới.",
       "failed": "Chưa thể tạo lộ trình lúc này. Vui lòng thử lại sau ít phút.",
       "fields": {
-        "activity": "Hãy mô tả một hoạt động hoặc dự án bằng ít nhất 10 ký tự.",
+        "activity": "Nội dung hoạt động hoặc dự án đang quá dài.",
         "consent": "Cần có sự đồng ý trước khi phân tích dữ liệu.",
-        "currentRegion": "Hãy chọn khu vực hiện tại.",
-        "educationLevel": "Hãy chọn bậc học hiện tại.",
+        "currentRegion": "Khu vực hiện tại chưa hợp lệ.",
+        "educationLevel": "Bậc học hiện tại chưa hợp lệ.",
         "familyConstraints": "Nội dung ràng buộc đang quá dài.",
-        "interests": "Hãy nhập ít nhất một sở thích.",
-        "intent": "Hãy chọn mục tiêu tư vấn.",
-        "languages": "Hãy nhập ít nhất một ngôn ngữ.",
-        "learningStyle": "Hãy chọn cách học phù hợp.",
-        "model": "Hãy chọn model phân tích.",
-        "question": "Câu hỏi cần có ít nhất 10 ký tự.",
-        "strongSubject": "Hãy nhập một môn hoặc kỹ năng nổi bật.",
+        "interests": "Nội dung sở thích đang quá dài.",
+        "intent": "Mục tiêu tư vấn chưa hợp lệ.",
+        "languages": "Nội dung ngôn ngữ đang quá dài.",
+        "learningStyle": "Cách học chưa hợp lệ.",
+        "question": "Nội dung mong muốn đang quá dài.",
+        "strongSubject": "Nội dung môn hoặc kỹ năng nổi bật đang quá dài.",
         "subjectScore": "Điểm tự đánh giá phải nằm trong khoảng 0-10.",
         "targetBudget": "Nội dung ngân sách đang quá dài.",
-        "targetCareer": "Tên ngành hoặc nghề đang quá dài.",
-        "targetRegion": "Hãy chọn khu vực mục tiêu.",
-        "weeklyHours": "Số giờ học phải nằm trong khoảng 1-80.",
-        "workEnvironment": "Hãy chọn môi trường làm việc mong muốn."
+        "targetRegion": "Khu vực mục tiêu chưa hợp lệ.",
+        "weeklyHours": "Số giờ học phải nằm trong khoảng 0-80.",
+        "workEnvironment": "Môi trường làm việc chưa hợp lệ."
       }
     },
     "market": {
@@ -588,6 +582,86 @@
       "market": "Role và salary chỉ lấy từ market seed được cung cấp cho lần chạy."
     },
     "loading": "Đang tạo lộ trình",
+    "wizard": {
+      "editBadge": "Chỉnh sửa lộ trình",
+      "newBadge": "Lộ trình mới",
+      "title": "Xây dựng lộ trình tư vấn",
+      "description": "Kiểm tra dữ liệu hiện có, bổ sung bối cảnh và nêu rõ quyết định em cần hỗ trợ.",
+      "cancel": "Quay lại lộ trình",
+      "progressLabel": "Tiến trình xây dựng lộ trình",
+      "back": "Quay lại",
+      "next": "Tiếp tục",
+      "reviewErrors": "Kiểm tra mục lỗi",
+      "confirm": {
+        "title": "Xác nhận Điểm Xuất Phát",
+        "description": "Kiểm tra thông tin đã có trước khi dùng để cá nhân hóa lộ trình.",
+        "hint": "Nếu thông tin chưa đúng, hãy cập nhật tại Điểm Xuất Phát rồi quay lại.",
+        "consent": "Tôi xác nhận thông tin trên và đồng ý dùng dữ liệu này để tạo lộ trình.",
+        "consentHint": "AI chỉ đưa gợi ý tham khảo và không quyết định thay người học.",
+        "editStartingPoint": "Cập nhật Điểm Xuất Phát"
+      },
+      "foundation": {
+        "title": "Nền tảng hiện tại",
+        "description": "Bổ sung bậc học, khu vực, ngôn ngữ và năng lực nổi bật của em.",
+        "hint": "Các câu trả lời ở bước này bổ sung cho bảng điểm và kinh nghiệm đã lưu."
+      },
+      "interests": {
+        "title": "Sở thích và chủ đề quan tâm",
+        "description": "Nêu những chủ đề em chủ động tìm hiểu hoặc muốn dành thời gian khám phá.",
+        "hint": "Có thể nhập nhiều nội dung và phân tách bằng dấu phẩy."
+      },
+      "conditions": {
+        "title": "Điều kiện học tập và làm việc",
+        "description": "Xác định thời gian, ngân sách, cách học và môi trường phù hợp thực tế.",
+        "hint": "Chỉ nhập những ràng buộc có ảnh hưởng trực tiếp đến lựa chọn học tập hoặc công việc."
+      },
+      "goal": {
+        "title": "Mục tiêu của lần tư vấn",
+        "description": "Nêu quyết định hoặc vấn đề mà em cần lộ trình này hỗ trợ.",
+        "hint": "Không cần chọn trước một ngành hoặc nghề. Hãy tập trung vào câu hỏi cần được giải đáp."
+      }
+    },
+    "saved": {
+      "badge": "Lộ trình đang chọn",
+      "defaultTitle": "Lộ trình hướng nghiệp",
+      "updatedAt": "Cập nhật {date}",
+      "edit": "Chỉnh sửa",
+      "createNew": "Xây dựng lộ trình mới",
+      "listTitle": "Các lộ trình đã lưu",
+      "listDescription": "Chọn một lộ trình để xem lại hoặc tiếp tục chỉnh sửa.",
+      "current": "Đang xem",
+      "newTitle": "Cần một góc nhìn khác?",
+      "newDescription": "Em có thể xây dựng lộ trình mới mà không làm mất lộ trình hiện tại."
+    },
+    "startingPoint": {
+      "title": "Thông tin Điểm Xuất Phát",
+      "description": "Dữ liệu đã được tích hợp ngắn gọn vào lần phân tích này.",
+      "emptyTitle": "Chưa có thông tin Điểm Xuất Phát",
+      "emptyDescription": "Em vẫn có thể tiếp tục và bổ sung thông tin trực tiếp trong các bước tiếp theo.",
+      "personality": "Kết quả tính cách",
+      "education": "Học vấn, bảng điểm và nghiên cứu",
+      "certificates": "Chứng chỉ",
+      "experience": "Kinh nghiệm làm việc",
+      "competitions": "Cuộc thi và giải thưởng",
+      "activities": "Hoạt động khác",
+      "notProvided": "Chưa có thông tin.",
+      "current": "Hiện tại",
+      "hasEvidence": "có minh chứng",
+      "skills": "Kỹ năng: {value}",
+      "learnings": "Tích lũy: {value}",
+      "average": "{stage}: {value}",
+      "levels": {
+        "HIGH_SCHOOL": "Trung học phổ thông",
+        "UNDERGRADUATE": "Đại học",
+        "GRADUATE": "Cao học"
+      },
+      "stages": {
+        "GRADE_10": "TB lớp 10",
+        "GRADE_11": "TB lớp 11",
+        "GRADE_12": "TB lớp 12",
+        "CUMULATIVE": "Điểm tích lũy"
+      }
+    },
     "results": {
       "eyebrow": "Kết quả phân tích",
       "title": "Ba hướng để em kiểm chứng",
@@ -605,11 +679,23 @@
       "marketDescription": "Các kỹ năng thiếu hụt nổi bật trong market seed.",
       "noMarket": "Chưa đủ dữ liệu để xác định kỹ năng thiếu hụt.",
       "fitLabel": "điểm phù hợp tham khảo",
+      "fitValue": "Mức phù hợp: {value}",
+      "selected": "Đang chọn",
+      "otherDirectionsTitle": "Các hướng khác trong lần tư vấn này",
+      "otherDirectionsDescription": "Đổi hướng đang chọn nếu một phương án khác phù hợp hơn sau khi so sánh.",
+      "chooseDirection": "Chọn hướng này",
       "matchedTitle": "Vì sao hướng này đáng thử",
       "evidenceTitle": "Bằng chứng thị trường",
       "skillGapsTitle": "Skill gap cần ưu tiên",
       "levelRange": "{current} đến {target}",
       "roadmapTitle": "Roadmap thực hành",
+      "roadmapDiagramDescription": "Bấm vào từng chặng trên sơ đồ để xem mục tiêu, công việc và bằng chứng cần hoàn thành.",
+      "roadmapClickHint": "Bấm để xem chi tiết chặng này",
+      "stages": {
+        "learning": "Học tập",
+        "internship": "Thực tập",
+        "full_time": "Công việc chính thức"
+      },
       "relatedJobsTitle": "Việc làm liên quan",
       "followUpTitle": "Câu hỏi cho lần tư vấn tiếp theo",
       "followUpDescription": "Trả lời thêm các câu này để thu hẹp skill gap và chi phí.",
@@ -738,7 +824,46 @@
   "StartingPoint": {
     "metadataTitle": "Điểm Xuất Phát",
     "title": "Điểm Xuất Phát",
-    "description": "Tập hợp kết quả tính cách, học vấn, kinh nghiệm và những dấu mốc giúp bạn hiểu rõ nền tảng hiện tại của mình."
+    "description": "Tập hợp kết quả tính cách, học vấn, kinh nghiệm và những dấu mốc giúp bạn hiểu rõ nền tảng hiện tại của mình.",
+    "cvImport": {
+      "title": "Nhập dữ liệu từ CV",
+      "description": "Tải CV lên để hệ thống nhận diện học vấn, chứng chỉ, thành tích, hoạt động và kinh nghiệm làm việc. Chỉ những thông tin chưa có mới được bổ sung vào hồ sơ.",
+      "badge": "AI hỗ trợ",
+      "fileLabel": "CV của bạn",
+      "fileHint": "Chấp nhận PDF tối đa 6 MB và 15 trang. File cần có lớp văn bản có thể chọn được.",
+      "selectedFile": "Đã chọn: {name}",
+      "privacy": "CV chỉ được xử lý trong lần nhập này và không được lưu dưới dạng tệp. Bạn có thể chỉnh sửa từng mục sau khi hoàn tất.",
+      "submit": "Phân tích và bổ sung hồ sơ",
+      "processing": "Đang đọc và chuẩn hoá CV...",
+      "successTitle": "Đã cập nhật Điểm Xuất Phát",
+      "errorTitle": "Chưa thể nhập CV",
+      "counts": {
+        "education": "{count} học vấn",
+        "transcriptEntries": "{count} môn học",
+        "certificates": "{count} chứng chỉ",
+        "competitions": "{count} cuộc thi",
+        "activities": "{count} hoạt động",
+        "workExperiences": "{count} kinh nghiệm",
+        "duplicates": "{count} mục trùng hoặc không tương thích được bỏ qua"
+      },
+      "actions": {
+        "saved": "Đã bổ sung {count} mục từ CV. Hãy kiểm tra lại thông tin bên dưới.",
+        "noNewData": "Không có thông tin mới để bổ sung. Những mục trùng với hồ sơ hiện tại đã được giữ nguyên.",
+        "checkFile": "Hãy chọn lại một file CV phù hợp.",
+        "analysisFailed": "Hệ thống chưa thể nhận diện dữ liệu trong CV này. Vui lòng kiểm tra nội dung file và thử lại.",
+        "failed": "Không thể lưu dữ liệu từ CV lúc này. Vui lòng thử lại.",
+        "unavailable": "Tài khoản này không có hồ sơ Điểm Xuất Phát để cập nhật."
+      },
+      "validation": {
+        "required": "Hãy chọn file CV PDF.",
+        "tooLarge": "File CV phải có dung lượng không quá 6 MB.",
+        "invalidType": "Chỉ chấp nhận file PDF có phần mở rộng .pdf.",
+        "invalidContent": "Nội dung file không đúng định dạng PDF.",
+        "tooManyPages": "CV chỉ được dài tối đa 15 trang.",
+        "noText": "Không tìm thấy đủ văn bản trong PDF. Nếu đây là bản scan, hãy xuất lại CV dưới dạng PDF có thể chọn chữ.",
+        "readFailed": "Không thể đọc file PDF này. File có thể bị hỏng hoặc được bảo vệ bằng mật khẩu."
+      }
+    }
   },
   "Profile": {
     "metadataTitle": "Thông tin cá nhân",
@@ -1141,6 +1266,42 @@
       "saved": "Kết quả đã được lưu vào hồ sơ của bạn.",
       "failed": "Có lỗi xảy ra khi lưu. Vui lòng thử lại.",
       "unavailable": "Tài khoản này không thể lưu kết quả bài test."
+    }
+  },
+  "Settings": {
+    "metadataTitle": "Cài đặt",
+    "title": "Cài đặt",
+    "description": "Quản lý cách các tính năng AI hoạt động cho tài khoản của bạn.",
+    "career": {
+      "title": "Phân tích lộ trình",
+      "description": "Model này được dùng tự động khi tạo hoặc cập nhật lộ trình.",
+      "model": "Model tư vấn",
+      "modelHint": "Bạn có thể thay đổi model tại đây mà không cần nhập lại trong mỗi lần tư vấn.",
+      "footerHint": "Thay đổi chỉ áp dụng cho các lần tạo lộ trình tiếp theo.",
+      "save": "Lưu cài đặt",
+      "saving": "Đang lưu"
+    },
+    "roadmapData": {
+      "title": "Dữ liệu tạo lộ trình",
+      "description": "Chọn cách điền sẵn thông tin khi bạn xây dựng một lộ trình mới.",
+      "reuseLabel": "Dùng dữ liệu từ lộ trình gần nhất",
+      "reuseHint": "Khi tạo lộ trình mới, hệ thống điền sẵn toàn bộ thông tin đã nhập hoặc chọn ở lần gần nhất. Bạn vẫn có thể sửa từng trường trước khi tạo.",
+      "footerHint": "Cài đặt này không thay đổi dữ liệu của các lộ trình đã lưu.",
+      "save": "Lưu cài đặt dữ liệu",
+      "saving": "Đang lưu",
+      "resetTitle": "Làm mới dữ liệu",
+      "resetDescription": "Bắt đầu lần tạo lộ trình tiếp theo với biểu mẫu mới.",
+      "resetHint": "Thao tác này chỉ bỏ nguồn dữ liệu điền sẵn hiện tại. Các lộ trình đã lưu và dữ liệu dùng để chỉnh sửa từng lộ trình không bị xoá.",
+      "resetFooterHint": "Sau khi làm mới, lộ trình mới đầu tiên sẽ không lấy dữ liệu từ các lộ trình cũ.",
+      "reset": "Làm mới dữ liệu",
+      "resetting": "Đang làm mới"
+    },
+    "actions": {
+      "userOnly": "Cài đặt này chỉ khả dụng cho tài khoản người học.",
+      "invalidModel": "Hãy chọn một model đang khả dụng.",
+      "saved": "Đã lưu cài đặt lộ trình.",
+      "roadmapDataSaved": "Đã lưu cách dùng dữ liệu cho lộ trình mới.",
+      "roadmapDataReset": "Đã làm mới dữ liệu điền sẵn."
     }
   }
 }

@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { AVAILABLE_MODELS } from "@/lib/ai";
 import {
   CAREERLENS_SYSTEM_PROMPT,
   buildCareerGuidanceUserPrompt,
@@ -61,6 +62,7 @@ function createCareerGuidanceInput(): CareerGuidanceInput {
         previous_recommendations: [],
         student_decisions: [],
       },
+      starting_point: null,
     },
     labor_market_signals: {
       source_timestamp: "2026-07-18T00:00:00Z",
@@ -249,20 +251,81 @@ describe("CareerLens AI", () => {
       ),
     );
     vi.stubGlobal("fetch", fetchMock);
+    const addedModel = !AVAILABLE_MODELS.includes("DeepSeek-V4-Flash");
+    if (addedModel) AVAILABLE_MODELS.push("DeepSeek-V4-Flash");
 
-    const output = await generateCareerGuidance(input, { model: "DeepSeek-V4-Flash" });
+    try {
+      const output = await generateCareerGuidance(input, {
+        model: "DeepSeek-V4-Flash",
+      });
 
-    expect(fetchMock).toHaveBeenCalledOnce();
-    const request = fetchMock.mock.calls[0][1] as RequestInit;
-    const requestBody = JSON.parse(String(request.body)) as {
-      messages: Array<{ role: string; content: string }>;
-    };
-    expect(requestBody.messages[0]).toEqual({
-      role: "system",
-      content: CAREERLENS_SYSTEM_PROMPT,
-    });
-    expect(requestBody.messages[1].role).toBe("user");
-    expect(output.disclaimer).not.toContain("mock deterministic");
-    expect(output.recommendations).toHaveLength(3);
+      expect(fetchMock).toHaveBeenCalledOnce();
+      const request = fetchMock.mock.calls[0][1] as RequestInit;
+      const requestBody = JSON.parse(String(request.body)) as {
+        messages: Array<{ role: string; content: string }>;
+      };
+      expect(requestBody.messages[0]).toEqual({
+        role: "system",
+        content: CAREERLENS_SYSTEM_PROMPT,
+      });
+      expect(requestBody.messages[1].role).toBe("user");
+      expect(output.disclaimer).not.toContain("mock deterministic");
+      expect(output.recommendations).toHaveLength(3);
+    } finally {
+      if (addedModel) AVAILABLE_MODELS.pop();
+    }
+  });
+
+  it("retries with Qwen when another model returns an invalid output", async () => {
+    const input = createCareerGuidanceInput();
+    vi.stubEnv("FPT_AI_API_KEY", "");
+    const validModelOutput = await generateCareerGuidance(input);
+    vi.stubEnv("FPT_AI_API_KEY", "test-api-key");
+
+    const completion = (model: string, content: string) =>
+      new Response(
+        JSON.stringify({
+          id: `completion-${model}`,
+          object: "chat.completion",
+          created: 1_752_793_600,
+          model,
+          choices: [
+            {
+              index: 0,
+              finish_reason: "stop",
+              message: { role: "assistant", content },
+            },
+          ],
+          usage: { prompt_tokens: 100, completion_tokens: 200, total_tokens: 300 },
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        completion("DeepSeek-V4-Flash", JSON.stringify({ invalid: true })),
+      )
+      .mockResolvedValueOnce(
+        completion("Qwen3.6-27B", JSON.stringify(validModelOutput)),
+      );
+    vi.stubGlobal("fetch", fetchMock);
+    const addedModel = !AVAILABLE_MODELS.includes("DeepSeek-V4-Flash");
+    if (addedModel) AVAILABLE_MODELS.push("DeepSeek-V4-Flash");
+
+    try {
+      const output = await generateCareerGuidance(input, {
+        model: "DeepSeek-V4-Flash",
+      });
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(
+        fetchMock.mock.calls.map((call) =>
+          JSON.parse(String((call[1] as RequestInit).body)).model,
+        ),
+      ).toEqual(["DeepSeek-V4-Flash", "Qwen3.6-27B"]);
+      expect(output.recommendations).toHaveLength(3);
+    } finally {
+      if (addedModel) AVAILABLE_MODELS.pop();
+    }
   });
 });

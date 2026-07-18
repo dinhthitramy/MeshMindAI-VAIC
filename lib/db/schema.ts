@@ -18,6 +18,10 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
+import type {
+  CareerGuidanceInput,
+  CareerGuidanceOutput,
+} from "@/lib/careerlens/schemas";
 
 export const userStatus = pgEnum("user_status", ["ACTIVE", "DISABLED"]);
 export const auditActorKind = pgEnum("audit_actor_kind", [
@@ -760,6 +764,55 @@ export const workExperiences = pgTable(
       sql`${table.isCurrent} or (${table.endYear}, ${table.endMonth}) >= (${table.startYear}, ${table.startMonth})`,
     ),
     index("work_experiences_user_id_idx").on(table.userId),
+  ],
+);
+
+export const userPreferences = pgTable("user_preferences", {
+  userId: uuid("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  preferredCareerModel: text("preferred_career_model"),
+  reuseLatestRoadmapData: boolean("reuse_latest_roadmap_data")
+    .default(true)
+    .notNull(),
+  roadmapDataResetAt: timestamp("roadmap_data_reset_at", {
+    withTimezone: true,
+  }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+export const careerRoadmaps = pgTable(
+  "career_roadmaps",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    formValues: jsonb("form_values").$type<Record<string, unknown>>().notNull(),
+    guidanceInput: jsonb("guidance_input").$type<CareerGuidanceInput>().notNull(),
+    guidanceOutput: jsonb("guidance_output").$type<CareerGuidanceOutput>().notNull(),
+    selectedRecommendationIndex: integer("selected_recommendation_index")
+      .default(0)
+      .notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    check(
+      "career_roadmaps_selected_recommendation_valid",
+      sql`${table.selectedRecommendationIndex} between 0 and 9`,
+    ),
+    index("career_roadmaps_user_updated_idx").on(table.userId, table.updatedAt),
   ],
 );
 

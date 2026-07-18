@@ -7,7 +7,7 @@ import { requirePermission } from "@/lib/auth/dal";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { getDb } from "@/lib/db";
 import { agentRuns, chatSessions, type ChatSession } from "@/lib/db/schema";
-import { AVAILABLE_MODELS } from "@/lib/ai";
+import { AVAILABLE_MODELS, resolveAIModel } from "@/lib/ai";
 import { createAgentLifecycleRepository } from "@/lib/ai/agent/lifecycle";
 import { generateChatSuggestions } from "@/lib/ai/chat/suggestions";
 import {
@@ -60,9 +60,14 @@ export async function createSessionAction(model: string): Promise<ChatSession> {
   const t = await getTranslations("Assistant");
 
   const db = getDb();
+  const resolvedModel = resolveAIModel(model);
   const [session] = await db
     .insert(chatSessions)
-    .values({ userId: actor.userId, title: t("newChat"), model })
+    .values({
+      userId: actor.userId,
+      title: t("newChat"),
+      model: resolvedModel,
+    })
     .returning();
 
   return session;

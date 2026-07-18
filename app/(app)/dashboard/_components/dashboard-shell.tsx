@@ -23,6 +23,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Route,
+  Settings,
   LogOut,
   UserRound,
   X,
@@ -335,6 +336,17 @@ function SidebarPanel({
                     {t("profile")}
                   </DropdownMenuItem>
                 )}
+                <DropdownMenuItem
+                  render={
+                    <Link
+                      href="/dashboard/settings"
+                      onNavigate={mobile ? onNavigate : undefined}
+                    />
+                  }
+                >
+                  <Settings aria-hidden="true" />
+                  {t("settings")}
+                </DropdownMenuItem>
                 <ThemeMenuToggleGroup />
               </DropdownMenuGroup>
               <DropdownMenuSeparator />

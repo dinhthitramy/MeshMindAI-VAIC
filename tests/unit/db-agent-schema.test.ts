@@ -59,41 +59,19 @@ describe("agent lifecycle database schema", () => {
     ]);
   });
 
-  it("backfills legacy provenance as private while keeping public insert defaults", () => {
+  it("creates provenance columns with public defaults and constraints", () => {
     const migration = readFileSync(
-      new URL("../../drizzle/0007_large_quasar.sql", import.meta.url),
+      new URL("../../drizzle/0006_hot_post.sql", import.meta.url),
       "utf8",
     );
 
+    expect(migration).toContain('CREATE TABLE "agent_runs"');
     expect(migration).toContain(
-      'ALTER TABLE "agent_runs" ADD COLUMN "data_classes" jsonb DEFAULT \'["public"]\'::jsonb NOT NULL;',
+      '"data_classes" jsonb DEFAULT \'["public"]\'::jsonb NOT NULL',
     );
     expect(migration).toContain(
       'ALTER TABLE "chat_messages" ADD COLUMN "data_classes" jsonb DEFAULT \'["public"]\'::jsonb NOT NULL;',
     );
-    const runColumn = migration.indexOf(
-      'ALTER TABLE "agent_runs" ADD COLUMN "data_classes"',
-    );
-    const messageColumn = migration.indexOf(
-      'ALTER TABLE "chat_messages" ADD COLUMN "data_classes"',
-    );
-    const runBackfill = migration.indexOf(
-      'UPDATE "agent_runs" SET "data_classes" = \'["private_document"]\'::jsonb;',
-    );
-    const messageBackfill = migration.indexOf(
-      'UPDATE "chat_messages" SET "data_classes" = \'["private_document"]\'::jsonb;',
-    );
-    const runConstraint = migration.indexOf(
-      'CONSTRAINT "agent_runs_data_classes_valid"',
-    );
-    const messageConstraint = migration.indexOf(
-      'CONSTRAINT "chat_messages_data_classes_valid"',
-    );
-
-    expect(runBackfill).toBeGreaterThan(runColumn);
-    expect(messageBackfill).toBeGreaterThan(messageColumn);
-    expect(runConstraint).toBeGreaterThan(runBackfill);
-    expect(messageConstraint).toBeGreaterThan(messageBackfill);
     expect(migration).toContain('CONSTRAINT "agent_runs_data_classes_valid"');
     expect(migration).toContain(
       'CONSTRAINT "chat_messages_data_classes_valid"',
@@ -175,24 +153,12 @@ describe("agent lifecycle database schema", () => {
     ]);
   });
 
-  it("backfills existing source keys before making the column required", () => {
+  it("creates required source keys in the unified agent migration", () => {
     const migration = readFileSync(
-      new URL("../../drizzle/0006_kind_banshee.sql", import.meta.url),
+      new URL("../../drizzle/0006_hot_post.sql", import.meta.url),
       "utf8",
     );
-    const addColumn = migration.indexOf(
-      'ADD COLUMN "source_key" text;'
-    );
-    const backfill = migration.indexOf(
-      'SET "source_key" = "id"::text;'
-    );
-    const requireColumn = migration.indexOf(
-      'ALTER COLUMN "source_key" SET NOT NULL;'
-    );
-
-    expect(addColumn).toBeGreaterThanOrEqual(0);
-    expect(backfill).toBeGreaterThan(addColumn);
-    expect(requireColumn).toBeGreaterThan(backfill);
+    expect(migration).toContain('"source_key" text NOT NULL');
   });
 
   it.each([
