@@ -1,0 +1,2 @@
+ALTER TABLE "user_preferences" ADD COLUMN "reuse_latest_roadmap_data" boolean DEFAULT true NOT NULL;--> statement-breakpoint
+ALTER TABLE "user_preferences" ADD COLUMN "roadmap_data_reset_at" timestamp with time zone;

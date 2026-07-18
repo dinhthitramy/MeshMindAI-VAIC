@@ -510,6 +510,12 @@ export const userPreferences = pgTable("user_preferences", {
     .primaryKey()
     .references(() => users.id, { onDelete: "cascade" }),
   preferredCareerModel: text("preferred_career_model"),
+  reuseLatestRoadmapData: boolean("reuse_latest_roadmap_data")
+    .default(true)
+    .notNull(),
+  roadmapDataResetAt: timestamp("roadmap_data_reset_at", {
+    withTimezone: true,
+  }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),

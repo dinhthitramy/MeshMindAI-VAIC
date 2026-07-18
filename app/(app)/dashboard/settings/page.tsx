@@ -5,9 +5,10 @@ import { getTranslations } from "next-intl/server";
 import { AVAILABLE_MODELS } from "@/lib/ai";
 import { requirePermission } from "@/lib/auth/dal";
 import { PERMISSIONS } from "@/lib/auth/permissions";
-import { getPreferredCareerModel } from "@/lib/careerlens/preferences";
+import { getCareerPreferences } from "@/lib/careerlens/preferences";
 
 import { CareerSettingsForm } from "./_components/career-settings-form";
+import { RoadmapDataSettingsForm } from "./_components/roadmap-data-settings-form";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Settings");
@@ -18,9 +19,9 @@ export default async function SettingsPage() {
   const viewer = await requirePermission(PERMISSIONS.DASHBOARD_ACCESS);
   if (viewer.actor.kind !== "user") redirect("/dashboard");
 
-  const [t, preferredModel] = await Promise.all([
+  const [t, preferences] = await Promise.all([
     getTranslations("Settings"),
-    getPreferredCareerModel(viewer.actor.userId),
+    getCareerPreferences(viewer.actor.userId),
   ]);
 
   return (
@@ -33,14 +34,19 @@ export default async function SettingsPage() {
           {t("description")}
         </p>
       </header>
-      <CareerSettingsForm
-        models={[...AVAILABLE_MODELS]}
-        preferredModel={
-          AVAILABLE_MODELS.includes(preferredModel)
-            ? preferredModel
-            : AVAILABLE_MODELS[0]
-        }
-      />
+      <div className="flex flex-col gap-6">
+        <CareerSettingsForm
+          models={[...AVAILABLE_MODELS]}
+          preferredModel={
+            AVAILABLE_MODELS.includes(preferences.preferredCareerModel)
+              ? preferences.preferredCareerModel
+              : AVAILABLE_MODELS[0]
+          }
+        />
+        <RoadmapDataSettingsForm
+          reuseLatestRoadmapData={preferences.reuseLatestRoadmapData}
+        />
+      </div>
     </section>
   );
 }

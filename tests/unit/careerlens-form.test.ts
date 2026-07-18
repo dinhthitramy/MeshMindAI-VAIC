@@ -5,6 +5,7 @@ import {
   buildCareerGuidanceInput,
   careerLensFormSchema,
 } from "@/lib/careerlens/form";
+import { saveCareerRoadmap } from "@/lib/careerlens/roadmaps";
 
 vi.mock("@/lib/auth/dal", () => ({
   requirePermission: vi.fn().mockResolvedValue({
@@ -75,6 +76,7 @@ function createValidFormData() {
 }
 
 afterEach(() => {
+  vi.clearAllMocks();
   vi.unstubAllEnvs();
 });
 
@@ -310,6 +312,27 @@ describe("CareerLens form integration", () => {
       "internship",
       "full_time",
     ]);
+    expect(saveCareerRoadmap).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formValues: {
+          activity: "Em từng làm website giới thiệu cho câu lạc bộ ở trường.",
+          currentRegion: "Thành phố Hồ Chí Minh",
+          educationLevel: "THPT",
+          familyConstraints: "Cần học gần nhà",
+          interests: "Công nghệ, bóng đá, kinh doanh",
+          intent: "initial_guidance",
+          languages: "Tiếng Việt, English",
+          learningStyle: "project_based",
+          question: "Em nên bắt đầu kiểm chứng hướng nghề nào trong ba tháng tới?",
+          strongSubject: "Toán",
+          subjectScore: 8.5,
+          targetBudget: "Dưới 20 triệu đồng/năm",
+          targetRegion: "Thành phố Hồ Chí Minh",
+          weeklyHours: 10,
+          workEnvironment: "team_based",
+        },
+      }),
+    );
   });
 
   it("creates a roadmap when the desired outcome is left blank", async () => {

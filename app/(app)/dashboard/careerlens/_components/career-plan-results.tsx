@@ -285,7 +285,7 @@ export function CareerPlanResults({
                     <AccordionItem
                       key={`${stage.stage_order}-${stage.stage_name}`}
                       value={String(stage.stage_order)}
-                      className="relative border-0 bg-transparent pb-6 pl-14 last:pb-0 data-open:bg-transparent"
+                      className="relative border-0 bg-transparent pb-6 pl-14 not-last:border-b-0 last:pb-0 data-open:bg-transparent"
                     >
                       {stageIndex < recommendation.roadmap.length - 1 ? (
                         <span

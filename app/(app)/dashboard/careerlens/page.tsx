@@ -18,9 +18,12 @@ import {
   MARKET_INDUSTRY_COUNT,
   MARKET_ROLE_COUNT_PER_REGION,
 } from "@/lib/careerlens/market-seed";
+import { getCareerPreferences } from "@/lib/careerlens/preferences";
+import { getRoadmapPrefillDefaults } from "@/lib/careerlens/roadmap-prefill";
 import {
   getCareerRoadmap,
   getCareerRoadmapSummaries,
+  getLatestCreatedCareerRoadmap,
   getLatestCareerRoadmap,
 } from "@/lib/careerlens/roadmaps";
 import { getCareerStartingPointSnapshot } from "@/lib/careerlens/starting-point";
@@ -45,7 +48,16 @@ export default async function CareerLensPage({
     ? requestedRoadmap[0]
     : requestedRoadmap;
 
-  const [t, locale, startingPoint, savedRoadmaps, requestedSavedRoadmap] =
+  const [
+    t,
+    locale,
+    startingPoint,
+    savedRoadmaps,
+    requestedSavedRoadmap,
+    latestRoadmap,
+    latestCreatedRoadmap,
+    preferences,
+  ] =
     await Promise.all([
       getTranslations("Roadmap"),
       getLocale(),
@@ -54,10 +66,16 @@ export default async function CareerLensPage({
       requestedRoadmapId
         ? getCareerRoadmap(viewer.actor.userId, requestedRoadmapId)
         : Promise.resolve(null),
+      getLatestCareerRoadmap(viewer.actor.userId),
+      getLatestCreatedCareerRoadmap(viewer.actor.userId),
+      getCareerPreferences(viewer.actor.userId),
     ]);
-  const savedRoadmap =
-    requestedSavedRoadmap ??
-    (await getLatestCareerRoadmap(viewer.actor.userId));
+  const savedRoadmap = requestedSavedRoadmap ?? latestRoadmap;
+  const newRoadmapDefaults = getRoadmapPrefillDefaults({
+    enabled: preferences.reuseLatestRoadmapData,
+    latestRoadmap: latestCreatedRoadmap,
+    resetAt: preferences.roadmapDataResetAt,
+  });
 
   const regionCount = new Set(
     CAREERLENS_MARKET_SEED.postings.map((posting) => posting.region),
@@ -112,6 +130,8 @@ export default async function CareerLensPage({
         </header>
 
         <CareerWorkspace
+          newRoadmapDefaults={newRoadmapDefaults}
+          reuseLatestRoadmapData={preferences.reuseLatestRoadmapData}
           startingPoint={startingPoint}
           savedRoadmap={savedRoadmap}
           savedRoadmaps={savedRoadmaps}

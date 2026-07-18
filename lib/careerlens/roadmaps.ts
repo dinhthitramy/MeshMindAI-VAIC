@@ -68,6 +68,19 @@ export async function getLatestCareerRoadmap(
   return row ? parseRoadmap(row) : null;
 }
 
+export async function getLatestCreatedCareerRoadmap(
+  userId: string,
+): Promise<SavedCareerRoadmap | null> {
+  const [row] = await getDb()
+    .select()
+    .from(careerRoadmaps)
+    .where(eq(careerRoadmaps.userId, userId))
+    .orderBy(desc(careerRoadmaps.createdAt))
+    .limit(1);
+
+  return row ? parseRoadmap(row) : null;
+}
+
 export async function getCareerRoadmap(
   userId: string,
   roadmapId: string,

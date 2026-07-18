@@ -145,6 +145,8 @@ type CareerWorkspaceProps = {
     industryCount: number;
     sourceDate: string;
   };
+  newRoadmapDefaults: CareerLensStoredFormValues | null;
+  reuseLatestRoadmapData: boolean;
   savedRoadmap: SavedCareerRoadmap | null;
   savedRoadmaps: CareerRoadmapSummary[];
   startingPoint: CareerStartingPointSnapshot;
@@ -719,6 +721,8 @@ function RoadmapWizard({
 
 export function CareerWorkspace({
   marketOverview,
+  newRoadmapDefaults,
+  reuseLatestRoadmapData,
   savedRoadmap,
   savedRoadmaps,
   startingPoint,
@@ -773,7 +777,9 @@ export function CareerWorkspace({
         defaults={
           mode === "edit"
             ? generatedPlan?.formValues ?? savedRoadmap?.formValues ?? null
-            : null
+            : reuseLatestRoadmapData
+              ? generatedPlan?.formValues ?? newRoadmapDefaults
+              : null
         }
         startingPoint={startingPoint}
         marketOverview={marketOverview}
@@ -787,7 +793,7 @@ export function CareerWorkspace({
     return (
       <RoadmapWizard
         mode="new"
-        defaults={null}
+        defaults={newRoadmapDefaults}
         startingPoint={startingPoint}
         marketOverview={marketOverview}
         onSaved={handleSaved}

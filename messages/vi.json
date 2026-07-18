@@ -1187,10 +1187,27 @@
       "save": "Lưu cài đặt",
       "saving": "Đang lưu"
     },
+    "roadmapData": {
+      "title": "Dữ liệu tạo lộ trình",
+      "description": "Chọn cách điền sẵn thông tin khi bạn xây dựng một lộ trình mới.",
+      "reuseLabel": "Dùng dữ liệu từ lộ trình gần nhất",
+      "reuseHint": "Khi tạo lộ trình mới, hệ thống điền sẵn toàn bộ thông tin đã nhập hoặc chọn ở lần gần nhất. Bạn vẫn có thể sửa từng trường trước khi tạo.",
+      "footerHint": "Cài đặt này không thay đổi dữ liệu của các lộ trình đã lưu.",
+      "save": "Lưu cài đặt dữ liệu",
+      "saving": "Đang lưu",
+      "resetTitle": "Làm mới dữ liệu",
+      "resetDescription": "Bắt đầu lần tạo lộ trình tiếp theo với biểu mẫu mới.",
+      "resetHint": "Thao tác này chỉ bỏ nguồn dữ liệu điền sẵn hiện tại. Các lộ trình đã lưu và dữ liệu dùng để chỉnh sửa từng lộ trình không bị xoá.",
+      "resetFooterHint": "Sau khi làm mới, lộ trình mới đầu tiên sẽ không lấy dữ liệu từ các lộ trình cũ.",
+      "reset": "Làm mới dữ liệu",
+      "resetting": "Đang làm mới"
+    },
     "actions": {
       "userOnly": "Cài đặt này chỉ khả dụng cho tài khoản người học.",
       "invalidModel": "Hãy chọn một model đang khả dụng.",
-      "saved": "Đã lưu cài đặt lộ trình."
+      "saved": "Đã lưu cài đặt lộ trình.",
+      "roadmapDataSaved": "Đã lưu cách dùng dữ liệu cho lộ trình mới.",
+      "roadmapDataReset": "Đã làm mới dữ liệu điền sẵn."
     }
   }
 }

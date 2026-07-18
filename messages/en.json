@@ -1023,10 +1023,27 @@
       "save": "Save settings",
       "saving": "Saving"
     },
+    "roadmapData": {
+      "title": "Roadmap data",
+      "description": "Choose how information is prefilled when you build a new roadmap.",
+      "reuseLabel": "Use data from the latest roadmap",
+      "reuseHint": "When creating a new roadmap, the system prefills every answer and selection from the latest one. You can still edit each field before generating.",
+      "footerHint": "This setting does not change data stored with existing roadmaps.",
+      "save": "Save data settings",
+      "saving": "Saving",
+      "resetTitle": "Refresh roadmap data",
+      "resetDescription": "Start the next roadmap with a fresh form.",
+      "resetHint": "This only clears the current prefill source. Saved roadmaps and the data used to edit each roadmap are not deleted.",
+      "resetFooterHint": "After refreshing, the first new roadmap will not reuse data from older roadmaps.",
+      "reset": "Refresh data",
+      "resetting": "Refreshing"
+    },
     "actions": {
       "userOnly": "This setting is available only for learner accounts.",
       "invalidModel": "Choose an available model.",
-      "saved": "Roadmap settings saved."
+      "saved": "Roadmap settings saved.",
+      "roadmapDataSaved": "New-roadmap data settings saved.",
+      "roadmapDataReset": "Roadmap prefill data refreshed."
     }
   }
 }
