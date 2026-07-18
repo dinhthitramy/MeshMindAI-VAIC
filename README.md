@@ -101,6 +101,32 @@ Run Redis integration tests against the local Compose service:
 npm run test:integration
 ```
 
+## CareerLens AI service
+
+The server-only CareerLens AI service validates and sanitizes profile and labor-market data,
+applies the guidance system prompt, calls the configured FPT Cloud model, and validates the
+model's JSON response before returning it. If `FPT_AI_API_KEY` is empty, it returns a
+deterministic local POC response instead.
+
+```ts
+import { generateCareerGuidance } from "@/lib/careerlens";
+
+const guidance = await generateCareerGuidance({
+  student_profile: profile,
+  labor_market_signals: marketSignals,
+  user_request: request,
+});
+```
+
+The exported `CAREERLENS_SYSTEM_PROMPT` is the runtime prompt derived from
+`docs/ai/careerlens-ai-system-rule.html`. Inputs and outputs use that document's snake-case
+JSON contract. Unknown profile fields are stripped before the LLM call, so sensitive identity
+fields such as gender, hometown, ethnicity, and religion are not sent to the provider.
+
+Authenticated students can use the integrated form at `/dashboard/careerlens`. The route builds
+the validated AI input from the submitted profile and the local market seed, then displays three
+explainable paths with skill gaps, roadmap modules, and related sample jobs.
+
 ## Deployment
 
 See [`DEPLOYMENT.md`](DEPLOYMENT.md) for the external PostgreSQL/Redis, systemd,

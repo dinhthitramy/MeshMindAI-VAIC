@@ -21,6 +21,7 @@ import {
   Menu as MenuIcon,
   PanelLeftClose,
   PanelLeftOpen,
+  Route,
   LogOut,
   UserRound,
   X,
@@ -169,6 +170,7 @@ function SidebarPanel({
   const t = useTranslations("Dashboard");
   const navigationItems: NavigationItem[] = [
     { href: "/dashboard", label: t("home"), icon: House, exact: true },
+    { href: "/dashboard/careerlens", label: "Lộ trình AI", icon: Route, exact: false },
     { href: "/dashboard/ai-assistant", label: "AI Assistant", icon: Bot, exact: false },
     ...(viewer.isAdmin
       ? [{ href: "/dashboard/admin", label: "Admin", icon: ShieldCheck, exact: false }]
