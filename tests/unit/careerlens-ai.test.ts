@@ -129,7 +129,7 @@ function createCareerGuidanceInput(): CareerGuidanceInput {
     },
     user_request: {
       intent: "initial_guidance",
-      question: "Em nên thử hướng nghề nào?",
+      question: "Tôi nên thử hướng nghề nào?",
       target_career_or_major: null,
       preferred_output_language: "vi",
     },

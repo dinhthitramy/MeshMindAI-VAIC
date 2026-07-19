@@ -19,12 +19,12 @@ import { CAREERLENS_SYSTEM_PROMPT } from "./system-prompt";
 const REQUIRED_OUTPUT_COPY = {
   vi: {
     disclaimer:
-      "Kết quả này là gợi ý tham khảo, không thay thế quyết định của em hoặc tư vấn trực tiếp từ counselor.",
+      "Kết quả này là gợi ý tham khảo, không thay thế quyết định của bạn hoặc tư vấn trực tiếp từ counselor.",
     autonomyNote:
-      "Em có thể chấp nhận, từ chối, xem lại hoặc đổi hướng; nên kiểm chứng lựa chọn với counselor và người đang làm nghề.",
+      "Bạn có thể chấp nhận, từ chối, xem lại hoặc đổi hướng; nên kiểm chứng lựa chọn với counselor và người đang làm nghề.",
     consentConstraint: "Chưa có sự đồng ý xử lý dữ liệu cá nhân.",
     consentQuestion:
-      "Em có đồng ý để CareerLens xử lý dữ liệu hồ sơ nhằm cá nhân hóa gợi ý không?",
+      "Bạn có đồng ý để CareerLens xử lý dữ liệu hồ sơ nhằm cá nhân hóa gợi ý không?",
     mockDisclaimer: "Đây là dữ liệu mock deterministic vì dịch vụ LLM chưa được cấu hình.",
   },
   en: {
@@ -432,7 +432,7 @@ function createMockCareerGuidance(input: CareerGuidanceInput): CareerGuidanceOut
     const memoryEvidence = profile.conversation_memory.stable_abilities[0];
     const switchContext =
       request.intent === "switch_major"
-        ? ` Lộ trình mới tái sử dụng kỹ năng chuyển đổi${memoryEvidence ? ` “${memoryEvidence}”` : " đã lưu"} và tránh các lý do từng khiến em từ chối hướng cũ.`
+        ? ` Lộ trình mới tái sử dụng kỹ năng chuyển đổi${memoryEvidence ? ` “${memoryEvidence}”` : " đã lưu"} và tránh các lý do từng khiến bạn từ chối hướng cũ.`
         : "";
 
     return {
@@ -523,8 +523,8 @@ function createMockCareerGuidance(input: CareerGuidanceInput): CareerGuidanceOut
     },
     recommendations,
     questions_to_improve_recommendation: [
-      "Em muốn ưu tiên thời gian học, chi phí hay cơ hội việc làm gần nơi ở?",
-      "Em đã có project hoặc trải nghiệm thực tế nào liên quan đến ba hướng trên chưa?",
+      "Bạn muốn ưu tiên thời gian học, chi phí hay cơ hội việc làm gần nơi ở?",
+      "Bạn đã có project hoặc trải nghiệm thực tế nào liên quan đến ba hướng trên chưa?",
     ],
     memory_update: {
       stable_interests: interests,
