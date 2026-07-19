@@ -678,7 +678,7 @@
     },
     "startingPoint": {
       "title": "Thông tin Điểm xuất phát",
-      "description": "Dữ liệu đã được tích hợp ngắn gọn vào lần phân tích này.",,
+      "description": "Dữ liệu đã được tích hợp ngắn gọn vào lần phân tích này.",
       "emptyDescription": "Bạn vẫn có thể tiếp tục và bổ sung thông tin trực tiếp trong các bước tiếp theo.",
       "emptyTitle": "Chưa có thông tin Điểm xuất phát",
       "personality": "Kết quả tính cách",
