@@ -56,14 +56,14 @@ function createValidFormData() {
     strongSubject: "Toán",
     subjectScore: "8.5",
     interests: "Công nghệ, bóng đá, kinh doanh",
-    activity: "Em từng làm website giới thiệu cho câu lạc bộ ở trường.",
+    activity: "Tôi từng làm website giới thiệu cho câu lạc bộ ở trường.",
     weeklyHours: "10",
     targetBudget: "Dưới 20 triệu đồng/năm",
     workEnvironment: "team_based",
     learningStyle: "project_based",
     familyConstraints: "Cần học gần nhà",
     intent: "initial_guidance",
-    question: "Em nên bắt đầu kiểm chứng hướng nghề nào trong ba tháng tới?",
+    question: "Tôi nên bắt đầu kiểm chứng hướng nghề nào trong ba tháng tới?",
     consent: "on",
     submitAction: "generate",
   };
@@ -315,7 +315,7 @@ describe("CareerLens form integration", () => {
     expect(saveCareerRoadmap).toHaveBeenCalledWith(
       expect.objectContaining({
         formValues: {
-          activity: "Em từng làm website giới thiệu cho câu lạc bộ ở trường.",
+          activity: "Tôi từng làm website giới thiệu cho câu lạc bộ ở trường.",
           currentRegion: "Thành phố Hồ Chí Minh",
           educationLevel: "THPT",
           familyConstraints: "Cần học gần nhà",
@@ -323,7 +323,7 @@ describe("CareerLens form integration", () => {
           intent: "initial_guidance",
           languages: "Tiếng Việt, English",
           learningStyle: "project_based",
-          question: "Em nên bắt đầu kiểm chứng hướng nghề nào trong ba tháng tới?",
+          question: "Tôi nên bắt đầu kiểm chứng hướng nghề nào trong ba tháng tới?",
           strongSubject: "Toán",
           subjectScore: 8.5,
           targetBudget: "Dưới 20 triệu đồng/năm",

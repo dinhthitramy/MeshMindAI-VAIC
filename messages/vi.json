@@ -441,11 +441,11 @@
     "brief": {
       "status": "Quy trình phân tích",
       "title": "Bản định hướng, không phải phán quyết",
-      "description": "CareerLens chuyển thông tin em chia sẻ thành ba hướng đi để so sánh và kiểm chứng."
+      "description": "CareerLens chuyển thông tin bạn chia sẻ thành ba hướng đi để so sánh và kiểm chứng."
     },
     "steps": {
       "profile": {
-        "title": "Hồ sơ của em",
+        "title": "Hồ sơ của bạn",
         "description": "Chia sẻ nền tảng, sở thích và điều kiện hiện tại."
       },
       "signals": {
@@ -480,7 +480,7 @@
       "regionPlaceholder": "Gõ để tìm tỉnh/thành",
       "regionEmpty": "Không tìm thấy tỉnh/thành phù hợp.",
       "optionalSelect": "Không cung cấp",
-      "strengths": "Điểm mạnh và điều em quan tâm",
+      "strengths": "Điểm mạnh và điều bạn quan tâm",
       "strengthsDescription": "Hãy dùng trải nghiệm thật, không cần viết theo cách của hồ sơ xin việc.",
       "subject": "Môn hoặc kỹ năng nổi bật",
       "subjectPlaceholder": "Ví dụ: Toán, viết nội dung, sửa điện",
@@ -489,8 +489,8 @@
       "interestsPlaceholder": "Công nghệ, bóng đá, thiết kế, kinh doanh",
       "interestsHint": "Nhập các mục cách nhau bằng dấu phẩy, hoặc thêm nhanh từ gợi ý theo môn/kỹ năng.",
       "suggestionsLabel": "Gợi ý chủ đề quan tâm",
-      "activity": "Hoạt động hoặc dự án em từng làm",
-      "activityPlaceholder": "Mô tả vai trò, việc em đã làm và phần khiến em thấy hứng thú hoặc gặp khó khăn. Có thể để trống.",
+      "activity": "Hoạt động hoặc dự án bạn từng làm",
+      "activityPlaceholder": "Mô tả vai trò, việc bạn đã làm và phần khiến bạn thấy hứng thú hoặc gặp khó khăn. Có thể để trống.",
       "conditions": "Điều kiện học tập và làm việc",
       "conditionsDescription": "Xác định thời gian, ngân sách và môi trường để mỗi hướng đi phù hợp thực tế.",
       "weeklyHours": "Giờ có thể học mỗi tuần",
@@ -502,10 +502,10 @@
       "constraintsPlaceholder": "Ví dụ: cần học gần nhà, cần vừa học vừa làm. Có thể để trống.",
       "constraintsHint": "Không nhập giới tính, tôn giáo, dân tộc hoặc thông tin nhận dạng không cần thiết.",
       "goal": "Mục tiêu của lần tư vấn",
-      "goalDescription": "Nêu điều em mong muốn để bản phân tích ưu tiên hỗ trợ. Có thể để trống.",
-      "intent": "Em muốn giải quyết điều gì?",
-      "question": "Điều em mong muốn nhất là gì",
-      "questionPlaceholder": "Ví dụ: Em muốn tìm một hướng phù hợp với điểm mạnh hiện tại và ngân sách học tập. Có thể để trống.",
+      "goalDescription": "Nêu điều bạn mong muốn để bản phân tích ưu tiên hỗ trợ. Có thể để trống.",
+      "intent": "Bạn muốn giải quyết điều gì?",
+      "question": "Điều bạn mong muốn nhất là gì",
+      "questionPlaceholder": "Ví dụ: Bạn muốn tìm một hướng phù hợp với điểm mạnh hiện tại và ngân sách học tập. Có thể để trống.",
       "consent": "Tôi đồng ý dùng dữ liệu trong form để tạo lộ trình hướng nghiệp.",
       "consentHint": "AI chỉ đưa gợi ý tham khảo và không quyết định thay người học.",
       "footerHint": "Mỗi lần tạo sẽ sinh ba lựa chọn có giải thích.",
@@ -541,7 +541,7 @@
       "userOnly": "Tính năng tạo lộ trình chỉ khả dụng cho tài khoản người học.",
       "checkFields": "Hãy kiểm tra lại các trường được đánh dấu.",
       "invalidValue": "Giá trị chưa hợp lệ.",
-      "success": "Lộ trình đã sẵn sàng. Em có thể so sánh và mở từng roadmap bên dưới.",
+      "success": "Lộ trình đã sẵn sàng. Bạn có thể so sánh và mở từng roadmap bên dưới.",
       "failed": "Chưa thể tạo lộ trình lúc này. Vui lòng thử lại sau ít phút.",
       "fields": {
         "activity": "Nội dung hoạt động hoặc dự án đang quá dài.",
@@ -587,7 +587,7 @@
       "editBadge": "Chỉnh sửa lộ trình",
       "newBadge": "Lộ trình mới",
       "title": "Xây dựng lộ trình tư vấn",
-      "description": "Kiểm tra dữ liệu hiện có, bổ sung bối cảnh và nêu rõ quyết định em cần hỗ trợ.",
+      "description": "Kiểm tra dữ liệu hiện có, bổ sung bối cảnh và nêu rõ quyết định bạn cần hỗ trợ.",
       "cancel": "Quay lại lộ trình",
       "progressLabel": "Tiến trình xây dựng lộ trình",
       "back": "Quay lại",
@@ -603,12 +603,12 @@
       },
       "foundation": {
         "title": "Nền tảng hiện tại",
-        "description": "Bổ sung bậc học, khu vực, ngôn ngữ và năng lực nổi bật của em.",
+        "description": "Bổ sung bậc học, khu vực, ngôn ngữ và năng lực nổi bật của bạn.",
         "hint": "Các câu trả lời ở bước này bổ sung cho bảng điểm và kinh nghiệm đã lưu."
       },
       "interests": {
         "title": "Sở thích và chủ đề quan tâm",
-        "description": "Nêu những chủ đề em chủ động tìm hiểu hoặc muốn dành thời gian khám phá.",
+        "description": "Nêu những chủ đề bạn chủ động tìm hiểu hoặc muốn dành thời gian khám phá.",
         "hint": "Có thể nhập nhiều nội dung và phân tách bằng dấu phẩy."
       },
       "conditions": {
@@ -618,7 +618,7 @@
       },
       "goal": {
         "title": "Mục tiêu của lần tư vấn",
-        "description": "Nêu quyết định hoặc vấn đề mà em cần lộ trình này hỗ trợ.",
+        "description": "Nêu quyết định hoặc vấn đề mà bạn cần lộ trình này hỗ trợ.",
         "hint": "Không cần chọn trước một ngành hoặc nghề. Hãy tập trung vào câu hỏi cần được giải đáp."
       }
     },
@@ -632,7 +632,7 @@
       "listDescription": "Chọn một lộ trình để xem lại hoặc tiếp tục chỉnh sửa.",
       "current": "Đang xem",
       "newTitle": "Cần một góc nhìn khác?",
-      "newDescription": "Em có thể xây dựng lộ trình mới mà không làm mất lộ trình hiện tại."
+      "newDescription": "Bạn có thể xây dựng lộ trình mới mà không làm mất lộ trình hiện tại."
     },
     "tabs": {
       "label": "Không gian lộ trình",
@@ -660,7 +660,7 @@
       "unknownDate": "không rõ ngày",
       "progress": "Tiến độ",
       "tasksTitle": "Công việc và bài tập",
-      "tasksDescription": "Đánh dấu hoàn thành khi em tạo được bằng chứng tương ứng.",
+      "tasksDescription": "Đánh dấu hoàn thành khi bạn tạo được bằng chứng tương ứng.",
       "done": "Xong",
       "markDone": "Đánh dấu xong",
       "emptyBadge": "Chưa có lộ trình hoạt động",
@@ -680,7 +680,7 @@
       "title": "Thông tin Điểm Xuất Phát",
       "description": "Dữ liệu đã được tích hợp ngắn gọn vào lần phân tích này.",
       "emptyTitle": "Chưa có thông tin Điểm Xuất Phát",
-      "emptyDescription": "Em vẫn có thể tiếp tục và bổ sung thông tin trực tiếp trong các bước tiếp theo.",
+      "emptyDescription": "Bạn vẫn có thể tiếp tục và bổ sung thông tin trực tiếp trong các bước tiếp theo.",
       "personality": "Kết quả tính cách",
       "education": "Học vấn, bảng điểm và nghiên cứu",
       "certificates": "Chứng chỉ",
@@ -707,7 +707,7 @@
     },
     "results": {
       "eyebrow": "Kết quả phân tích",
-      "title": "Ba hướng để em kiểm chứng",
+      "title": "Ba hướng để bạn kiểm chứng",
       "description": "So sánh mức phù hợp, skill gap và công sức cần đầu tư trước khi chọn.",
       "directionCount": "hướng để so sánh",
       "confidenceLabel": "độ tin cậy hồ sơ",
@@ -895,7 +895,7 @@
     "stop": "Dừng trả lời",
     "disclaimer": "MeshMind AI hỗ trợ các câu hỏi về giáo dục và định hướng nghề nghiệp.",
     "emptyTitle": "Bắt đầu một câu hỏi",
-    "emptyDescription": "Mình có thể giúp em khám phá ngành học, xây lộ trình và chuẩn bị cho cơ hội đầu tiên.",
+    "emptyDescription": "Trợ lý AI có thể giúp bạn khám phá ngành học, xây lộ trình và chuẩn bị cho cơ hội đầu tiên.",
     "sessionsError": "Không thể tải danh sách cuộc trò chuyện.",
     "messageLoadError": "Không thể tải tin nhắn. Nội dung hiện tại vẫn được giữ lại.",
     "loadingMessages": "Đang tải tin nhắn",
