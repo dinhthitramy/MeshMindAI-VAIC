@@ -287,6 +287,37 @@ html[data-preloader-active="true"] .app-preloader {
       );
   }
 
+  .ai-workspace-home {
+    background-image:
+      radial-gradient(
+        circle at 10% 12%,
+        color-mix(in oklch, var(--primary) 15%, transparent),
+        transparent 22rem
+      ),
+      radial-gradient(
+        circle at 92% 82%,
+        color-mix(in oklch, var(--primary) 9%, transparent),
+        transparent 26rem
+      ),
+      linear-gradient(
+        to right,
+        color-mix(in oklch, var(--border) 26%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in oklch, var(--border) 26%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        145deg,
+        color-mix(in oklch, var(--muted) 36%, transparent),
+        transparent 45%,
+        color-mix(in oklch, var(--primary) 3%, transparent)
+      );
+    background-size: auto, auto, 3.5rem 3.5rem, 3.5rem 3.5rem, auto;
+  }
+
   .ai-workspace-grid {
     background-image:
       linear-gradient(
