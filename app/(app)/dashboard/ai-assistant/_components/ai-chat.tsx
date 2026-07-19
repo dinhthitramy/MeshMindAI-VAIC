@@ -1273,7 +1273,7 @@ export function AIChat({
               ) : null}
             </div>
           ) : (
-            <div className="flex-1 overflow-y-auto px-5 md:px-8">
+            <div className="ai-workspace-home flex-1 overflow-y-auto px-5 md:px-8">
               <OverviewHome
                 conversationCount={sessions.length}
                 disabled={interactionDisabled}
