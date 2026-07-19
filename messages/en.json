@@ -417,7 +417,7 @@
     "homeHeading": "Overview",
     "menuHeading": "Menu",
     "home": "Home",
-    "startingPoint": "Starting Point",
+    "startingPoint": "Starting point",
     "menu": "Menu",
     "navigation": "Dashboard navigation",
     "closeNavigation": "Close navigation",
@@ -594,12 +594,12 @@
       "next": "Continue",
       "reviewErrors": "Review invalid section",
       "confirm": {
-        "title": "Confirm your Starting Point",
+        "title": "Confirm your Starting point",
         "description": "Review the information available before using it to personalise your roadmap.",
-        "hint": "If anything is incorrect, update your Starting Point and return here.",
+        "hint": "If anything is incorrect, update your Starting point and return here.",
         "consent": "I confirm the information above and agree to use it to create this roadmap.",
         "consentHint": "AI provides suggestions for consideration and does not decide for the learner.",
-        "editStartingPoint": "Update Starting Point"
+        "editStartingPoint": "Update Starting point"
       },
       "foundation": {
         "title": "Current foundation",
@@ -677,9 +677,9 @@
       "noHistory": "No followed roadmap history yet."
     },
     "startingPoint": {
-      "title": "Starting Point information",
+      "title": "Starting point information",
       "description": "Your saved information has been integrated into this analysis in a concise format.",
-      "emptyTitle": "No Starting Point information yet",
+      "emptyTitle": "No Starting point information yet",
       "emptyDescription": "You can still continue and provide information in the following steps.",
       "personality": "Personality result",
       "education": "Education, grades, and research",
@@ -951,8 +951,8 @@
     }
   },
   "StartingPoint": {
-    "metadataTitle": "Starting Point",
-    "title": "Starting Point",
+    "metadataTitle": "Starting point",
+    "title": "Starting point",
     "description": "Bring together your personality result, education, experience, and key milestones to understand where you are today.",
     "cvImport": {
       "title": "Import from your CV",
@@ -964,7 +964,7 @@
       "privacy": "Your CV is processed only for this import and is not stored as a file. You can edit every imported item afterward.",
       "submit": "Analyze and complete profile",
       "processing": "Reading and organizing your CV...",
-      "successTitle": "Starting Point updated",
+      "successTitle": "Starting point updated",
       "errorTitle": "CV import unavailable",
       "counts": {
         "education": "{count, plural, one {# education record} other {# education records}}",
@@ -981,7 +981,7 @@
         "checkFile": "Choose a suitable CV file and try again.",
         "analysisFailed": "We could not identify profile data in this CV. Check the file content and try again.",
         "failed": "We could not save data from your CV right now. Please try again.",
-        "unavailable": "This account does not have a Starting Point profile to update."
+        "unavailable": "This account does not have a Starting point profile to update."
       },
       "validation": {
         "required": "Choose a PDF CV.",
@@ -1081,7 +1081,7 @@
     "metadataTitle": "Personality test",
     "title": "Personality test",
     "description": "Explore how you recharge, take in information, make decisions, and organize daily life.",
-    "backToProfile": "Back to Starting Point",
+    "backToProfile": "Back to Starting point",
     "intro": {
       "title": "Understand yourself through 12 questions",
       "description": "Choose the option that sounds most like you in everyday situations. There are no right or wrong answers.",
@@ -1111,7 +1111,7 @@
       "noteTitle": "Use this result as a starting point",
       "note": "Personality can shift across contexts and experiences. You can retake the test when the result no longer feels right.",
       "retake": "Retake the test",
-      "backToProfile": "View in Starting Point"
+      "backToProfile": "View in Starting point"
     },
     "traits": {
       "E": {

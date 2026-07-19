@@ -417,7 +417,7 @@
     "homeHeading": "Tổng quan",
     "menuHeading": "Menu",
     "home": "Trang chủ",
-    "startingPoint": "Điểm Xuất Phát",
+    "startingPoint": "Điểm xuất phát",
     "menu": "Menu",
     "navigation": "Điều hướng bảng điều khiển",
     "closeNavigation": "Đóng điều hướng",
@@ -594,12 +594,12 @@
       "next": "Tiếp tục",
       "reviewErrors": "Kiểm tra mục lỗi",
       "confirm": {
-        "title": "Xác nhận Điểm Xuất Phát",
+        "title": "Xác nhận Điểm xuất phát",
         "description": "Kiểm tra thông tin đã có trước khi dùng để cá nhân hóa lộ trình.",
-        "hint": "Nếu thông tin chưa đúng, hãy cập nhật tại Điểm Xuất Phát rồi quay lại.",
+        "hint": "Nếu thông tin chưa đúng, hãy cập nhật tại Điểm xuất phát rồi quay lại.",
         "consent": "Tôi xác nhận thông tin trên và đồng ý dùng dữ liệu này để tạo lộ trình.",
         "consentHint": "AI chỉ đưa gợi ý tham khảo và không quyết định thay người học.",
-        "editStartingPoint": "Cập nhật Điểm Xuất Phát"
+        "editStartingPoint": "Cập nhật Điểm xuất phát"
       },
       "foundation": {
         "title": "Nền tảng hiện tại",
@@ -677,10 +677,10 @@
       "noHistory": "Chưa có lịch sử theo dõi lộ trình."
     },
     "startingPoint": {
-      "title": "Thông tin Điểm Xuất Phát",
-      "description": "Dữ liệu đã được tích hợp ngắn gọn vào lần phân tích này.",
-      "emptyTitle": "Chưa có thông tin Điểm Xuất Phát",
+      "title": "Thông tin Điểm xuất phát",
+      "description": "Dữ liệu đã được tích hợp ngắn gọn vào lần phân tích này.",,
       "emptyDescription": "Bạn vẫn có thể tiếp tục và bổ sung thông tin trực tiếp trong các bước tiếp theo.",
+      "emptyTitle": "Chưa có thông tin Điểm xuất phát",
       "personality": "Kết quả tính cách",
       "education": "Học vấn, bảng điểm và nghiên cứu",
       "certificates": "Chứng chỉ",
@@ -951,8 +951,8 @@
     }
   },
   "StartingPoint": {
-    "metadataTitle": "Điểm Xuất Phát",
-    "title": "Điểm Xuất Phát",
+    "metadataTitle": "Điểm xuất phát",
+    "title": "Điểm xuất phát",
     "description": "Tập hợp kết quả tính cách, học vấn, kinh nghiệm và những dấu mốc giúp bạn hiểu rõ nền tảng hiện tại của mình.",
     "cvImport": {
       "title": "Nhập dữ liệu từ CV",
@@ -964,7 +964,7 @@
       "privacy": "CV chỉ được xử lý trong lần nhập này và không được lưu dưới dạng tệp. Bạn có thể chỉnh sửa từng mục sau khi hoàn tất.",
       "submit": "Phân tích và bổ sung hồ sơ",
       "processing": "Đang đọc và chuẩn hoá CV...",
-      "successTitle": "Đã cập nhật Điểm Xuất Phát",
+      "successTitle": "Đã cập nhật Điểm xuất phát",
       "errorTitle": "Chưa thể nhập CV",
       "counts": {
         "education": "{count} học vấn",
@@ -981,7 +981,7 @@
         "checkFile": "Hãy chọn lại một file CV phù hợp.",
         "analysisFailed": "Hệ thống chưa thể nhận diện dữ liệu trong CV này. Vui lòng kiểm tra nội dung file và thử lại.",
         "failed": "Không thể lưu dữ liệu từ CV lúc này. Vui lòng thử lại.",
-        "unavailable": "Tài khoản này không có hồ sơ Điểm Xuất Phát để cập nhật."
+        "unavailable": "Tài khoản này không có hồ sơ Điểm xuất phát để cập nhật."
       },
       "validation": {
         "required": "Hãy chọn file CV PDF.",
@@ -1245,7 +1245,7 @@
     "metadataTitle": "Bài test tính cách",
     "title": "Bài test tính cách",
     "description": "Khám phá cách bạn nạp năng lượng, tiếp nhận thông tin, đưa ra quyết định và tổ chức cuộc sống.",
-    "backToProfile": "Quay lại Điểm Xuất Phát",
+    "backToProfile": "Quay lại Điểm xuất phát",
     "intro": {
       "title": "Hiểu mình rõ hơn qua 12 câu hỏi",
       "description": "Chọn phương án giống bạn nhất trong phần lớn tình huống. Không có câu trả lời đúng hay sai.",
@@ -1275,7 +1275,7 @@
       "noteTitle": "Hãy dùng kết quả như một điểm bắt đầu",
       "note": "Tính cách có thể thay đổi theo bối cảnh và trải nghiệm. Bạn có thể làm lại bài test khi cảm thấy kết quả không còn phù hợp.",
       "retake": "Làm lại bài test",
-      "backToProfile": "Xem tại Điểm Xuất Phát"
+      "backToProfile": "Xem tại Điểm xuất phát"
     },
     "traits": {
       "E": {
